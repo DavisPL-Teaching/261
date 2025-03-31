@@ -1,0 +1,8 @@
+.DS_Store
+__pycache__
+.pytest_cache
+.hypothesis
+*.dll
+*.runtimeconfig.json
+Cargo.lock
+target/

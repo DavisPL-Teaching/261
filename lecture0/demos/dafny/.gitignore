@@ -1,0 +1,8 @@
+*.cs
+*.csproj
+*.deps.json
+*.runtimeconfig.json
+*.pdb
+*.dll
+obj/
+is-even
