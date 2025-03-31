@@ -19,7 +19,7 @@ Welcome to ECS 261! I am super excited to have you all here.
 - **TA:** [Enzuo Zhu](https://zhuez16.github.io/)
 - **CRN:** 55799
 - **Units:** 4
-- **Lectures:** Tuesdays and Thursdays, 10:30am-11:50am in [Maria Manetti Shrem Art Hall](https://manettishremmuseum.ucdavis.edu/) room 204
+- **Lectures:** Tuesdays and Thursdays, 10:30am-11:50am in [Maria Manetti Shrem Art Hall](https://campusmap.ucdavis.edu/?b=20) room 204. (Please note the location - this is not the same as the Shrem Art Museum that shows up on Google!)
 - **Exams:** One exam planned, either a midterm or a final (TBD). If it is a final it will be on Thursday, June 12, 10:30am-12:30pm.
 - **[Piazza](https://piazza.com/class/m8t4cwl1qsm6yw)** for class Q+A, announcements, and office hours
 
