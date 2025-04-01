@@ -62,7 +62,7 @@ As a graduate course, it will not be solely tool-based, and will also include so
 You may ignore the prerequisite listed on [the department website](https://cs.ucdavis.edu/schedules-classes/ecs-261-program-verification).
 
 This course is appropriate for graduate students or advanced undergraduates.
-Please note if you have taken 189C, there may be a substantial overlap of material.
+Please note if you have taken 189C, there will be a substantial overlap of material and some homeworks.
 
 ### Textbook
 
