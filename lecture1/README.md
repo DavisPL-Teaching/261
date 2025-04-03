@@ -1,12 +1,5 @@
 # Lecture 1: Program Specifications
 
-## Plan for today
-
-1. Announcements
-2. Start with a poll
-3. Finish demos from last time
-4. Introduction to program specifications
-
 ## Following along
 
 You can follow along with the lectures!
@@ -16,6 +9,13 @@ You can follow along with the lectures!
   (Every week to get the latest changes: `git stash` then `git pull`)
 - Also allows you to access the poll link we do in lecture.
 - You will need to complete HW0 to be able to run the code successfully.
+
+## Plan for today
+
+1. Announcements
+2. Start with a poll
+3. Finish demos from last time
+4. Introduction to program specifications
 
 ## Announcements
 
@@ -103,3 +103,6 @@ Today's poll:
 - Question asking you to think about specifications for the is_even function
 
 https://forms.gle/AG5XoCkBiiGKK7WZA
+
+(Answer: Only F)
+(All others are true/false properties of the program, so they are valid specifications.)

@@ -9,6 +9,9 @@ https://hypothesis.readthedocs.io/en/latest/quickstart.html
 
 Question:
 Is the average of a list always between the minimum and maximum values?
+
+    List: [1, 2, 3] ==> avg. 2.0, min 1, max 3
+    Seems true: 2.0 is between 1 and 3
 """
 
 from hypothesis import given

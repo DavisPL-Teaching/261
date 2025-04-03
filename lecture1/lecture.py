@@ -6,20 +6,40 @@ ECS 261 - Spring 2025
 """
 === Program specifications ===
 
-A specification is...
+A specification is any true or false property about a program.
+
+- By "program", at this stage, just think of this as any
+  function in Python.
+
+Any given program either "satisfies" the specification (i.e., the property is true for that program, or does not satisfy the specification, i.e. the property is false for that program.
 
 Some programs satisfy the property (spec), others don't.
 Like a blueprint for a house, or an answer key for a test question.
 
 We saw examples on today's poll:
 https://forms.gle/AG5XoCkBiiGKK7WZA
-
 """
 
+# Specifications in natural language
 # SPECIFICATION:
-# On all inputs x, ...
+# On all inputs x, is_even(x) should return whether or not x is even.
 # On inputs x that are ...,
 def is_even(x):
+    """
+    (Docstring)
+
+    @x: x is an integer
+    Returns: true if x is even, false otherwise.
+
+    ^^ This docstring is a specification!
+
+    That's the same as:
+    "On all inputs x such that x is an integer, is_even(x) returns true
+     iff x is even."
+
+    It's written in English, not in a formal langauge that we can
+    apply automated tools to.
+    """
     # <Body omitted>
     pass
 
@@ -69,6 +89,7 @@ To install:
 # Starting with imports...
 from hypothesis import given
 from hypothesis import strategies as st
+from hypothesis import settings
 
 # We don't need this yet, but will need it later
 import pytest
@@ -87,10 +108,16 @@ def average(l):
 # Next, we need to write down a specification
 
 # Using Hypothesis to test specifications
-# @given(st.lists(st.floats(allow_nan=False, allow_infinity=False), min_size=1))
-# def test_average(xs):
-#     assert min(xs) <= average(xs) <= max(xs)
-
+# This causes Hypothesis to automatically generate a unit test
+# The unit test will: run a bunch of random inputs, try running the program,
+# and raise an error if any assertions are violated.
+@given(st.lists(st.floats(allow_nan=False, allow_infinity=False), min_size=1))
+@pytest.mark.skip
+# Try this to show how many examples were tried - thanks to Hassnain for finding!
+# https://piazza.com/class/m8t4cwl1qsm6yw/post/13
+# @settings(verbosity=3)
+def test_average(xs):
+    assert min(xs) <= average(xs) <= max(xs)
 
 """
 Note the argument xs -- this is called random testing!
@@ -101,14 +128,27 @@ Here's a common experience when doing unit testing:
 """
 
 # Common experience unit testing:
-def ignore_test_average_function():
+def test_average_function():
     assert average([1, 2, 3]) == 2
     assert average([1, 2, 3, 4]) == 2.5
     assert average([1, 2, 3, 4, 5]) == 3
     assert average([2.0]) == 2.0
+    # ^^ long list of cases that may or may not be exhaustive!
 
 # ignore_test_average_function()
 
+"""
+The idea of Hypothesis: instead of running a long list of specific
+examples, randomly generate thousands or tens or hundreds of thousands
+of examples.
+
+This is called "random testing".
+
+Advantages:
+- More likely to find a bug (assertion violation) if one exists
+- Allows to test more general specifications, not just specific input
+  and output examples.
+"""
 
 # Another example
 
@@ -123,14 +163,59 @@ def list_product(l):
 
 from functools import reduce
 
-# @given(st.lists(st.integers()))
-# def test_list_product(xs):
-#     # Unit examples
-#     # assert list_product([]) == 1
-#     # Not very interesting!
-#     # More interesting: check that our implementation
-#     # matches the standard/expected implementation.
-#     assert list_product(xs) == reduce(lambda x, y: x * y, xs, 1)
+# This example generates input lists of integers
+@given(st.lists(st.integers()))
+def test_list_product(xs):
+    # Unit examples
+    # assert list_product([]) == 1
+    # Not very interesting!
+    # More interesting: check that our implementation
+    # matches the standard/expected implementation.
+    assert list_product(xs) == reduce(lambda x, y: x * y, xs, 1)
+
+# Internally: will generate like
+# def __hypothesis_wrapper_test_list_product():
+#     # generate a bunch of random inputs
+#     for xs in input_examples:
+#         run test_list_product(xs)
+#         if error: return error
+#     return Ok
+
+"""
+One important point for now:
+Ties back to the question earlier:
+
+    Q: If we can't find a counterexample to the specification for a program,
+    does that mean the program satisfies the specification?
+
+    A:
+        If we test **all possible inputs**, then yes!
+        If we only test **some** possible inputs, then no.
+
+    Important point: Hypothesis only tests some inputs, not all!
+    (We will see that the tools we cover later actually cover all inputs:
+     Z3 and Dafny will be able to check whether the specification holds on
+     all inputs.)
+
+    This is what makes Hypothesis a **testing** tool, rather than **verification.**
+
+=== Recap ===
+
+1. We defined a "program specification" as any true or false property of a program
+
+2. We are agnostic to how specifications are written, so **any** true or false statement about the program is a valid specification
+
+3. Hypothesis can be used to, given input a program and a specification, determine whether the spec seems to hold on a bunch of random inputs
+(useful for software testing)
+
+4. Difference between testing & verification: Testing = try some inputs, verification (where we're eventually going) = actually determine whether the spec holds on **all** inputs, not just some inputs.
+
+********** Where we ended for today **********
+"""
+
+
+
+
 
 """
 This is really tedious!

@@ -5,6 +5,7 @@
 method IsEven(x: int) returns (y: bool)
     // Try uncommenting one of the following.
     // ===== Definition of correctness 1 =====
+    // (Definition of correctness == Specification)
     // The program should return whether x is even on all inputs
     // requires true
     // ensures y == (x % 2 == 0)
