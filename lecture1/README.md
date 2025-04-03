@@ -18,15 +18,21 @@ You can follow along with the lectures!
 
 ## Announcements
 
-1. Homework 0 is out! "Due" tomorrow Friday
-(can be submitted late - but please try it out :) )
+1. Homework 0 is out!
+
+    [HW0](https://forms.gle/KPTipNm5ZjjznLL48)
+
+    - **Suggested deadline:** tomorrow Friday
+    - can be submitted late - but please try it out :)
+    - Installation help office hours: tomorrow 2pm
 
 2. Waitlist update: 50 + 4 students on waitlist (as of this morning)
 
 3. If new to the class:
-- Please monitor Piazza
-- Lecture 0 slides are available on GitHub
-- Lecture recordings are available on Canvas.
+
+    - Please monitor Piazza
+    - Lecture 0 slides are available on GitHub
+    - Lecture recordings are available on Canvas.
 
 ## Plans for lectures going forward:
 
