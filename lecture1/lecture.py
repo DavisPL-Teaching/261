@@ -6,55 +6,50 @@ ECS 261 - Spring 2025
 """
 === Program specifications ===
 
-A specification is:
-
-
-(Tying this back to lecture 0)
+A specification is...
 
 Some programs satisfy the property (spec), others don't.
 Like a blueprint for a house, or an answer key for a test question.
 
+We saw examples on today's poll:
+https://forms.gle/AG5XoCkBiiGKK7WZA
+
+"""
+
+# SPECIFICATION:
+# On all inputs x, ...
+# On inputs x that are ...,
+def is_even(x):
+    # <Body omitted>
+    pass
+
+"""
+Tying this back to lecture 0?
+
 Some philosophy here:
-remember the car example from lecture 0?
-What does it mean for a program to be "correct"?
-Our answer is that it *can't* mean anything, unless there is some
-definition of what it *means* to be correct.
-That definition is the specification.
+    remember the car example and chess program (Stockfish) examples!
+    What does it mean for a program to be "correct"?
+    Our answer is that it *can't* mean anything, unless there is some
+    definition of what it *means* to be correct.
+    That definition is the specification.
 
 After all, when your boss/teacher/colleague/friend asks you to
 write a program, they probably have some particular expectation
 in mind of what that program should do.
 If we write the expectation down in a precise way, then we get
 a specification.
-
-Examples on today's poll:
-https://forms.gle/AG5XoCkBiiGKK7WZA
-
-We can also come up with more interesting specifications:
-
-    The program is_even(x) always terminates for all x.
-
-Is it always possible to easily check whether a specification holds?
-
-Answer (guesses):
-    Yes?
-    No?
-
-Let's go through the examples from the poll...
 """
 
 """
-Other examples:
+=== Exploring specifications ===
 
-    For all sufficiently large x, ...
+Hypothesis is a nice tool we can use to explore specifications,
+before diving into the deeper formal logic parts of the course.
 
-    The source code of is_even contains...
+It helps transition if you are used to program testing in a more
+pragmatic engineering context, and helps explore the transition to formal
+specs.
 
-    If is_even(x) is run on an arbitrary Python object x...
-
-"""
-
-"""
 === Hypothesis ===
 
 *hypothesis* is...
@@ -65,31 +60,36 @@ To install:
     - Check your pytest version: pytest --version
     - Install Hypothesis:
 
-        pip3 install
+        pip3 install hypothesis
 
     (Note: I know this is not the right way to actually install Python packages,
     but I'm lazy)
-
-Hypothesis is a nice tool we can use to explore specifications,
-before diving into the deeper formal logic parts of the course.
-
-It helps transition if you are used to program testing in a more
-pragmatic engineering context, and helps explore the transition to formal
-specs.
 """
 
+# Starting with imports...
 from hypothesis import given
 from hypothesis import strategies as st
 
+# We don't need this yet, but will need it later
 import pytest
 
+"""
+To run:
+
+    pytest lecture1.py
+
+"""
+
+# First, we need a program to test
 def average(l):
     return sum(l) / len(l)
 
+# Next, we need to write down a specification
+
 # Using Hypothesis to test specifications
-@given(st.lists(st.floats(allow_nan=False, allow_infinity=False), min_size=1))
-def test_average(xs):
-    assert min(xs) <= average(xs) <= max(xs)
+# @given(st.lists(st.floats(allow_nan=False, allow_infinity=False), min_size=1))
+# def test_average(xs):
+#     assert min(xs) <= average(xs) <= max(xs)
 
 
 """
@@ -149,19 +149,53 @@ I haven't included:
 
 I've been using the word "specification" in a very abstract sense.
 
+    "Any true or false property"
 
-without any real guidelines about what it is/is not allowed to say.
+this doesn't really prescribe any guidelines about what it is/is not allowed to say!
 
 In practice, we write specifications in some dedicated tool for the task...
 
 - A **logical specification** is:
 
 What is the specification in the case of a Hypothesis test?
+"""
+
+"""
+Some questions:
+
+- Are all specifications expressible as Hypothesis tests?
 
 
+- Are all specifications easily checkable?
 
-A **safety property** is...
 
+- What are some "more interesting" examples of specifications?
+
+Let's go through the examples from the poll...
+
+Other examples:
+
+    For all sufficiently large x, ...
+
+    The source code of is_even contains...
+
+    If is_even(x) is run on an arbitrary Python object x...
+
+    The program is_even(x) always terminates for all x.
+
+Classes of specifications:
+
+-  A **safety property** is...
+
+- A **functional correctness** property is...
+
+- A **security property** is...
+"""
+
+"""
+Functional correctness is usually expressed using...
+
+=== Preconditions and postconditions ===
 
 A common way to define logical specifications?
 Preconditions and postconditions.
@@ -196,11 +230,12 @@ def double_list(l):
 #         assert new_list[i] == 2 * l[i]
 
 """
-Components of correctness
+=== Components of correctness ===
 
 Review: correctness requires:
 - Model of what the program does (in our case, a Python program)
-- Model of what the program *should* do (in Hypothesis, we do this through the @given and assertion statements)
+- Model of what the program *should* do (a specification)
+    -> in Hypothesis, we do this through the @given and assertion statements)
 
 Model?
 One thing we have swept under the rug:
@@ -217,7 +252,7 @@ Comments
 - Unknown
 """
 
-########## Poll ##########
+##### Exercise #####
 
 from math import sqrt
 

@@ -2,10 +2,10 @@
 
 ## Plan for today
 
-1. Announcements/reminders
+1. Announcements
 2. Start with a poll
 3. Finish demos from last time
-4. Program specifications!
+4. Introduction to program specifications
 
 ## Following along
 
@@ -15,6 +15,7 @@ You can follow along with the lectures!
 - `git clone git@github.com:DavisPL-Teaching/261.git`
   (Every week to get the latest changes: `git stash` then `git pull`)
 - Also allows you to access the poll link we do in lecture.
+- You will need to complete HW0 to be able to run the code successfully.
 
 ## Announcements
 
@@ -48,14 +49,18 @@ You can follow along with the lectures!
 1. Program specifications
 
     - Writing specifications
-    - Types of specifications
-    - Preconditions and postconditions
+    - Testing specifications
 
-2. A way of exploring specifications: Hypothesis
+2. Exploring and testing specifications with Hypothesis
 
     (Putting Dafny aside for a bit - we will come back to Dafny in a few weeks!)
 
-3. Limitations and discussion
+3. Facets
+
+    - Types of specifications
+    - Preconditions and postconditions
+
+4. Limitations and discussion
 
     - Specification is wrong
 
@@ -77,13 +82,17 @@ You can follow along with the lectures!
 
 ## Key definitions
 
+(We can come back and fill these in post-lecture)
+
 **Specification:**
+
+**Testing** vs **Verification**
 
 **Safety property:**
 
-**Precondition:**
+**Precondition** and **Postcondition**
 
-**Postcondition:**
+**Assert** and **Assume**
 
 ## Poll
 
