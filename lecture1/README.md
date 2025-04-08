@@ -109,11 +109,19 @@ https://forms.gle/AG5XoCkBiiGKK7WZA
 
 ## Tuesday, April 8
 
+(Reminder for following along)
+
 Announcements:
 
 - HW1 is released:
 
     https://github.com/DavisPL-Teaching/261-hw1
+
+    Due: next Friday, April 18
+
+    Covers:
+    Writing specifications in both Hypothesis and Z3
+    Introductory-level examples
 
 - Office hours: TA (Weds 1-2pm), Mine (Fridays 3-4pm)
 
@@ -122,6 +130,8 @@ Announcements:
 Plan for today:
 
 - Formal definition of specification and examples
+
+    (Poll somewhere in here)
 
 - Stronger and weaker specifications
 
