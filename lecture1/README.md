@@ -10,7 +10,7 @@ You can follow along with the lectures!
 - Also allows you to access the poll link we do in lecture.
 - You will need to complete HW0 to be able to run the code successfully.
 
-## Plan for today
+## Plan for today (Thursday, April 3)
 
 1. Announcements
 2. Start with a poll
@@ -106,3 +106,33 @@ https://forms.gle/AG5XoCkBiiGKK7WZA
 
 (Answer: Only F)
 (All others are true/false properties of the program, so they are valid specifications.)
+
+## Tuesday, April 8
+
+Announcements:
+
+- HW1 is released:
+
+    https://github.com/DavisPL-Teaching/261-hw1
+
+- Office hours: TA (Weds 1-2pm), Mine (Fridays 3-4pm)
+
+- I am confirming that the exam will be an in-class midterm, not a final.
+
+Plan for today:
+
+- Formal definition of specification and examples
+
+- Stronger and weaker specifications
+
+- Types of specifications. The important ones:
+
+    + Safety properties
+
+    + Functional correctness
+
+    + Preconditions and postconditions
+
+    + Assume and assert
+
+- Goal: finish up Hypothesis by today + next time at the latest.

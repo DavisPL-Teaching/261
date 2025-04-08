@@ -8,8 +8,7 @@ ECS 261 - Spring 2025
 
 A specification is any true or false property about a program.
 
-- By "program", at this stage, just think of this as any
-  function in Python.
+- By "program", at this stage, just think of this as any function in Python.
 
 Any given program either "satisfies" the specification (i.e., the property is true for that program, or does not satisfy the specification, i.e. the property is false for that program.
 
@@ -138,6 +137,18 @@ def test_average_function():
 # ignore_test_average_function()
 
 """
+This is really tedious!
+Hypothesis makes it easier by generating all of these tests (and more)
+automatically.
+
+It's also unclear if my tests are really thorough.
+I haven't included:
+- any lists with negative numbers
+- any lists with both floats and integers
+- any lists with repeated elements
+"""
+
+"""
 The idea of Hypothesis: instead of running a long list of specific
 examples, randomly generate thousands or tens or hundreds of thousands
 of examples.
@@ -211,52 +222,186 @@ Ties back to the question earlier:
 4. Difference between testing & verification: Testing = try some inputs, verification (where we're eventually going) = actually determine whether the spec holds on **all** inputs, not just some inputs.
 
 ********** Where we ended for today **********
+
+=== Tuesday April 8 ===
+
+Recap on methodology so far:
+
+1. We write a program
+    (i.e.: what the program does)
+
+2. We write a specification
+    (i.e.: what the program *should* do)
+
+3. We check whether the program satisfies the spec
+
+    3 Methods:
+    a. Testing (Hypothesis) - try random examples
+    b. Automated Verification (Z3) - try a mathematical proof
+    c. Interactive Verification (Dafny) - write the proof yourself
+
+    (And other methods we won't cover in this class!
+     Though I note that many other methods can be thought of as special cases of the above.
+     E.g.: fuzzing = (a), static analysis = (b), typechecking = (b) and (c), etc.)
 """
 
+"""
+Let's practice this.
+(This time with a simpler example)
 
+Exercise:
 
+    Write a function that calculates
+    the "integer square root" -- that is, takes an integer
+    and calculates the square root of it, rounded down to the nearest
+    integer.
+"""
 
+# We might need this
+from math import sqrt
+
+# 1. Write the program
+def integer_sqrt(n):
+    # TODO
+    raise NotImplementedError
+
+# 2. Write the specification
+# In plain English:
+# ...
+# As a logical assertion:
+# ...
+
+# 3. Check the specification
+# This process will depend on the tool.
+# As a Hypothesis test:
+@pytest.mark.skip
+# @given(st.integers(min_value = , max_value = ))
+def test_integer_sqrt():
+    # TODO
+    raise NotImplementedError
 
 """
-This is really tedious!
-Hypothesis makes it easier by generating all of these tests (and more)
-automatically.
+=== Checking our understanding ===
 
-It's also unclear if my tests are really thorough.
-I haven't included:
-- any lists with negative numbers
-- any lists with both floats and integers
-- any lists with repeated elements
+Before we run the code, let's do a poll.
+
+https://forms.gle/eGnEDsmnmjEVH8ZB9
+
+True/False
+- The function sqrt satisfies the specification we wrote in test_integer_sqrt.
+- All functions that satisfy the specification in test_integer_sqrt are necessarily exactly equivalent to integer_sqrt.
+
+Which of the following additional specifications does integer_sqrt satisfy?
+1. The output of integer_sqrt is always an integer.
+2. If the input to integer_sqrt is an integer, then the output is an integer.
+3. True (true of all programs)
+4. False (false of all programs)
+5. The input arguments are not modified by the program.
+6. If the input is greater than 100, then the output is greater than 10.
+7. If the input is greater than or equal to 100, then the output is greater than or equal to 10.
+
+Answers:
+
+(Let's run the code)
+
+=== Segue ===
+
+The above exercise is a good segue into two topics we want to cover next:
+
+1. Formal definition of a specification
+
+2. Stronger and weaker specifications
+
+3. Types of specifications.
+
+=== Formal Definition of Specifications ===
+
+Definition.
+- A *specification* S is ...
+
+=== Stronger and Weaker Specifications ===
+
+Definition.
+
+- S1 is *stronger* than S2 if...
+
+- S2 is *weaker* than S2 if...
+
+=== Second poll ===
+
+Let's sort the above specifications by which is stronger/weaker than the others.
+
+Let's do this poll together as a class.
+
+https://forms.gle/F4mfmfGvJC1FVVu89
+
+Exercise:
+
+Pick one of the rows/columns in the above poll
+(an example pair where one program is stronger than the other),
+and write an example
+which satisfies one spec and not the other.
+
+(The homework has some similar exercises!)
+"""
+
+def prog_ex(x):
+    # TODO
+    raise NotImplementedError
+
+@pytest.mark.skip
+# @given(st.integers(min_value = , max_value = ))
+def test_prog_ex_stronger():
+    # TODO
+    raise NotImplementedError
+
+"""
+Observations:
+
+"Stronger than" is a mathematical partial order on specifications.
+(This means...)
+
 """
 
 """
 === Types of Specifications ===
 
-I've been using the word "specification" in a very abstract sense.
+Remember that second step...
 
-    "Any true or false property"
+Our definition of "specification" is very broad!
 
-this doesn't really prescribe any guidelines about what it is/is not allowed to say!
+    Informally: "Any true or false property"
 
-In practice, we write specifications in some dedicated tool for the task...
+this is very useful! But it is also not very specific.
 
-- A **logical specification** is:
+In practice, we need our specification to be understandable to the tool
+we are using...
 
-What is the specification in the case of a Hypothesis test?
-"""
+- e.g., Hypothesis doesn't understand English specs!
 
-"""
+- Foreshadowing:
+    Verification tools like Z3 and Dafny only understand specs
+    written in formal logic
+
+Going back to our list of examples 1-7:
+
+1. The output of integer_sqrt is always an integer.
+2. If the input to integer_sqrt is an integer, then the output is an integer.
+3. True (true of all programs)
+4. False (false of all programs)
+5. The input arguments are not modified by the program.
+6. If the input is greater than 100, then the output is greater than 10.
+7. If the input is greater than or equal to 100, then the output is greater than or equal to 10.
+
+Types of specs above?
+
 Some questions:
 
 - Are all specifications expressible as Hypothesis tests?
 
-
 - Are all specifications easily checkable?
 
-
-- What are some "more interesting" examples of specifications?
-
-Let's go through the examples from the poll...
+- What is the specification in the case of a Hypothesis test?
 
 Other examples:
 
@@ -266,40 +411,57 @@ Other examples:
 
     If is_even(x) is run on an arbitrary Python object x...
 
-    The program is_even(x) always terminates for all x.
+    The program is_even(x) always terminates for all x such that...
 
-Classes of specifications:
+=== Classes of specifications ===
 
 -  A **safety property** is...
 
 - A **functional correctness** property is...
 
-- A **security property** is...
+Are the above all possible specifications?
+No! We can imagine much more interesting cases...
+
+- (Just for a fun side note - you don't need to know this)
+  A **security property** is...
+
+- (Just for a fun side note - you don't need to know this)
+  A **hyperproperty** is...
+
+- What are some other "more interesting" examples of specifications?
+  (Imagine your own definitions here)
+
+Let's give an example of the first two and try to test them in Hypothesis,
+going back to our int_sqrt example.
 """
 
 """
-Functional correctness is usually expressed using...
+Zooming in on functional correctness,
+it is often the most important as it can be considered a "full"
+guarantee that the code is correct on all inputs.
+It's not perfect, but it is often a good starting point!
+
+Two classes of specifications we are particularly interested in:
+
+- Preconditions and posconditions;
+
+- Assume and assert.
+
+Functional correctness is usually expressed using the above.
+
+The above also happens to be the limits of what Hypothesis is able to express.
 
 === Preconditions and postconditions ===
 
 A common way to define logical specifications?
 Preconditions and postconditions.
 
-Task:
-Rewrite the examples above using preconditions/postconditions
+Exercise:
+Rewrite the examples 1-7 using preconditions/postconditions
 """
 
-# Review: writing specifications
-# list product example:
-# Spec:
-# - we test whether our impl matches the intended behavior.
-
-# average of a list example:
-# Spec:
-# - we test whether our impl satisfies a property of interest.
-
-#  Another example:
-def double_list(l):
+# Example 1:
+def avg_list(l):
     # Program or implementation
     result = []
     for x in l:
@@ -307,228 +469,397 @@ def double_list(l):
     return result
 
 # Specification
+@pytest.mark.skip
 # @given(st.lists(st.integers()))
-# def test_double_list(l):
-#     new_list = double_list(l)
-#     # range(5) = numbers between 0 and 4
-#     for i in range(len(l)):
-#         assert new_list[i] == 2 * l[i]
+def test_double_list(l):
+    # TODO
+    raise NotImplementedError
 
-"""
-=== Components of correctness ===
+# What's the precondition here?
+# What is the postcondition?
 
-Review: correctness requires:
-- Model of what the program does (in our case, a Python program)
-- Model of what the program *should* do (a specification)
-    -> in Hypothesis, we do this through the @given and assertion statements)
+# Example 2: Division by zero
 
-Model?
-One thing we have swept under the rug:
-- what is the program anyway? What program behaviors are in scope?
-  (Generally speaking this is something we can leave up to the PL and compiler
-   people)
-
-Comments
-
-"All models are wrong, some are useful."
-- attributed to George E. P. Box
-
-"The best model of a cat is a cat, especially the same cat."
-- Unknown
-"""
-
-##### Exercise #####
-
-from math import sqrt
-
-def square_root(x):
-    return int(sqrt(x))
-
-# POLL: Come up with a specification for the program.
-# Also, come up with a specification that does NOT hold of the program.
-# You can write either as a Python function or in words.
-
-# Examples
-# >>> int(sqrt(4))
-# 2
-# >>> int(sqrt(5))
-# 2
-# >>> int(sqrt(10))
-# 3
-
-# @given(st.integers(min_value = 0, max_value = 1000000))
-# def test_square_root(x):
-#     # what should go here?
-#     # Try to make it more interesting that just a specific example
-#     # Ex.: Square_root(x) is a function where it returns a number, when multiplied by itself, equals x.
-#     y = square_root(x)
-#     assert y * y <= x and (y + 1) * (y + 1) > x
-
-"""
-=== More on Hypothesis ===
-
-Hypothesis syntax
-and useful features
-
-https://hypothesis.readthedocs.io/en/latest/data.html
-
-"""
-
-# Some additional useful features
-
-# - Other @given strategies
-
-# - the @example syntax
-
-from hypothesis import example
-
-# @given(st.integers(min_value = 0, max_value = 100))
-# @example(x=10000)
-# def test_square_root_2(x):
-#     y = square_root(x)
-#     assert y * y <= x and (y + 1) * (y + 1) > x
-
-# Writing specifications: additional notes
-
-# Important note: the same function can have multiple specifications!
-# Examples:
-
-def list_interleave(l1, l2):
-    # Return a list with the elements of l1 and l2 interleaved
-    result = []
-    n = min(len(l1), len(l2))
-    for i in range(n):
-        result.append(l1[i])
-        result.append(l2[i])
-    return result
-
-# ex.: interleave([1, 4, 5], [2, 3, 6] --> [1, 2, 4, 3, 5, 6])
-
-# @given(st.lists(st.integers()),st.lists(st.integers()))
-# def test_list_interleave(l1, l2):
-#     l = list_interleave(l1, l2)
-#     # Weak spec
-#     assert len(l) == min(2 * len(l1), 2 * len(l2))
-#     # Stronger spec: check that the elements are as we expect
-#     # for i in range(..):
-#     # check that l[2 * i] = l1[i]
-#     # check that l[2 * i + 1] = l2[i]
-
-# Skip
-def ncr(n, k):
-    # Return the number of ways to choose k items from n items
-    result = 1
-    for i in range(k):
-        result *= n - i
-        result //= i + 1
-    return result
-
-# What can we check about this function?
-
-# A more interesting one:
-
-def functional_map(f, l):
-    return [f(x) for x in l]
-
-# how to generate f?
-# Let's check the documentation
-# @given(st.functions(like=lambda x: x,returns=st.integers()),st.lists(st.integers(), max_size=5))
-# def test_functional_map(f, l):
-#     result = functional_map(f, l)
-#     assert len(result) == len(l)
-
-# Review:
-# - We talked more about writing specs
-# - The same function can have multiple specs, and it can have
-#   incorrect specs
-# - The process of writing a spec can be a good tool for debugging
-#   BOTH problems with the function, and problems with the spec.
-
-# Also, a *different* function can satisfy the same specification
-
-def list_product_2(l):
-    result = 1
-    l.reverse()
-    for x in l:
-        result *= x
-    return result
-
-# Fixing the average function
-
-def fixed_average(l):
-    l_modified = [x / len(l) for x in l]
-    return sum(l_modified)
-    # (could also use a built-in)
-    # e.g. there's a statistics.mean function
-
-ERROR = .000001
-
-# @given(st.lists(st.floats(allow_nan=False, allow_infinity=False), min_size=1))
-# @pytest.mark.xfail
-# def test_fixed_average(xs):
-#     assert min(xs) - ERROR <= fixed_average(xs) <= max(xs) + ERROR
-
-"""
-=== Specifications, more formally? ===
-
-How do we model the program?
-
-We will get to this later in more dedicated verification frameworks.
-
-However, often we are interested most in specifications which actually
-relate to the program behavior
-- (not, e.g., the function contains a comma inside its implementation)
-
-Definition of correctness, slightly more formally:
-
-1. What is a program? For our purposes, a program is something
-that you can run and stuff will happen.
-It has:
-- An input (some keys/words/etc. the user types)
-- An output (something that happens or gets returned at the end)
-May also have:
-- Various other behaviors as the function is executed (e.g.,
-prints stuff to stdout, opens up Google.com on your browser,
-deletes your home directory, reads from id_rsa and sends it
-to an unknown email address, etc.)
-To summarize the output and behaviors part:
-Basically, a sequence of events/behaviors happen when its executed.
-^^ i.e. a program execution
-
-2. What is a specification (or spec, for short)
-WORKING DEFINITION: let's say that a
-spec
-- TAKES AS INPUT: a possible input to the program
-- DESCRIBES AS OUTPUT: a logical constraint on the behaviors that should occur
-when the program is executed.
-Well I mean:
-a) Some sequences of behaviors are OK
-b) Some sequences of behaviors are not OK.
-In other words, it's a boolean property on program executions.
-
-Relating this to preconditions/postconditions
-
-Relating this to another concept: *assumptions* and *assertions*
-
-(Note: assume statement in Hypothesis if we haven't covered it already)
-
+# input two integers
 def divide(x, y):
     return x / y
 
-Notice I haven't asserted that y != 0
-Therefore y != 0 is a precondition of this program.
+@pytest.mark.skip
+@given(
+    st.integers(min_value = -1000, max_value = 1000),
+    st.integers(min_value = 1, max_value = 1000),
+)
+@settings(max_examples=1000)
+@pytest.mark.xfail
+def test_divide(x, y):
+    # what to test here?
+    z = divide(x, y)
+    # Spec ideas:
+    # z is less than the difference between x and y
+    assert z < abs(x - y)
+    # ^^ seems to be true -- but fails for a rare input set,
+    # e.g. x = 2, y = 1
 
-Another example, in lots of C code you'll see things like
+# We couldn't even test our statement, because our program
+# crashed :(
+# Exception handling?
+# this is exactly what preconditions are for.
+# Let's directly make sure the thing we are dividing by (y)
+# is > 0.
 
-void buffer_write(x: *char, idx: i32, val: char):
-    x[idx] = char
 
-This is an important example of preconditions because if idx
-is outside of the bounds of the array, there's really nothing
-that the program can guarantee
+"""
+Even if you have not heard of the word "precondition",
+you are probably intuitively familiar with the concept of preconditions
+if you have some experience programing and working with libraries...
 
-A program is **correct** if
-for all inputs x satisfying the preconditions,
-and if I execute the program on x,
-the program execution satisfies the spec.
+Examples:
+- list pop: https://docs.python.org/3/tutorial/datastructures.html
+
+    "It raises an IndexError if the list is empty or the index is outside the list range."
+
+    This is another way of saying that the precondition of
+    list.pop() is that the list should be nonempty.
+
+- file open: https://docs.python.org/3/library/functions.html#open
+
+    Has a number of preconditions:
+    - The file should be able to be opened (OSError otherwise)
+
+    - "If closefd is False and a file descriptor rather than a filename was given, the underlying file descriptor will be kept open when the file is closed. If a filename is given closefd must be True (the default); otherwise, an error will be raised."
+
+
+Point:
+You can often read off preconditions from the documentation!
+
+Point:
+In practice, exceptions are often used to enforce preconditions --
+if we don't know what to do on a particular input, we crash the program
+
+Note that we can model exceptions in our specification in two
+ways:
+- If the exception is expected behavior, we can test that
+  when the function is run on the bad input, the exception is raised.
+  This does NOT involve excluding the input via the precondition,
+  instead we write an assertion to expect the correct behavior.
+
+- If the exception is not expected behavior, or if we don't
+  want to consider inputs for which the exception is raised
+  as valid, we can exclude them via a precondition.
+"""
+
+
+"""
+We can also write preconditions using...
+
+===== Assume and assert =====
+
+Going back to our divide by zero example.
+
+What if we want to include positive and negative integers, but *only*
+exclude zero?
+"""
+
+from hypothesis import assume
+
+# One solution: Use an assume statement
+@given(
+    st.integers(min_value = -1000, max_value = 1000),
+    st.integers(min_value = -1000, max_value = 1000),
+)
+@settings(max_examples=1000)
+def test_divide_2(x, y):
+    # Assume statement!
+    # Adds some constraint to the precondition.
+    assume(y != 0)
+    assert type(divide(x, y)) is float
+
+"""
+Why is it called "assume"?
+
+- Assert: This property should hold, if it doesn't, that's an
+    error. I want to report a test failure.
+- Assume: This property should hold, if it doesn't, I want to
+    ignore this test.
+"""
+
+# Another poll
+# Is this program for sorting a list correct? :)
+
+def sort_list(l):
+    l = l.copy()
+    return l
+
+# The spec:
+@given(st.lists(st.integers()))
+def test_sort_list(l):
+    assume(l == sorted(l))
+    assert sort_list(l) == sorted(l)
+
+"""
+Multiverse view
+- Quantum bogosort:
+    https://wiki.c2.com/?QuantumBogoSort
+- (Based on: bogosort
+    https://en.wikipedia.org/wiki/Bogosort)
+
+TL;DR:
+Assume is weird
+We use it to assume certain properties are true of the input.
+Another way of thinking about this is, whose responsibility is
+it to ensure the list is sorted?
+- If I use assume, I'm saying it's the caller's responsibility.
+- If I use assert, in a specification to say that some property
+  is true, then I'm saying it's the function's responsibility
+  to guarantee that property.
+
+Point:
+We can think of the precondition as part of the spec!
+Why?
+
+Recall: a spec is just a true or false property about the program.
+def example_test(x):
+    assume(P(x))
+    output = function(x)
+    assert(Q(output))
+
+We can think of the spec for this as the following statement:
+    "On all inputs x such that P(x) holds, Q(function(x)) holds."
+
+Another example:
+"""
+
+def divides_2(x, y):
+    return x / y
+
+ERROR = .000001
+
+@given(
+    st.integers(min_value = -100, max_value = 100),
+    st.integers(min_value = -100, max_value = 100),
+)
+def test_divides_2(x, y):
+    # could do e.g.:
+    # assume -100 <= y <= 100
+    assume(y != 0)
+    result = divides_2(x, y)
+    assert (result * y - x < ERROR)
+
+"""
+With the precondition included, the spec says:
+On all inputs x, y such that
+        -100 <= x <= 100 and
+        -100 <= y <= 100 and
+        y is not zero,
+    divides_2(x, y) * y is approximately x.
+
+Now that we know about assume and assert,
+A more complete definition of specifications in Hypothesis:
+
+- On all inputs such that all assume() statements
+  hold, after executing the program all assert() statements hold.
+
+This definition assumes that assume() is called before assert().
+TRIVIA: In this case, the assume() is called a precondition
+(as we have seen), and the assert() is called a "postcondition".
+"""
+
+"""
+Exercise (or poll)
+
+Which of the following has no effect? (Select all that apply)
+
+1. assert True
+2. assert False
+3. assume True
+4. assume False
+"""
+
+"""
+Recall:
+
+- assert means: if the property is not true,
+    raise an error.
+
+- assume means: if the property is not ture,
+    ignore this branch of computation.
+
+OR (provacatively):
+- assume as "if the property is not true, destroy the universe"
+
+Q: Why is assume useful?
+
+There are going to be cases where there is an
+invariant that should hold when a function is
+executed. It makes sense (both for the programmer
+and for the test case writer) to assume that the
+property holds so that we don't consider edge
+cases where it doesn't hold.
+
+Q: Why don't you just handle every edge case in every function?
+
+Reasons?
+
+A1: You can't.
+In Python you might be passed some weird/invalid input or type that you don't really know what it is.
+def f(x):
+    result = x + 1
+    print(result)
+    return True
+
+Python has what's called "duck typing" which means
+- if it acts like a duck and if it talks like duck,
+    then it is a duck.
+- if it has an x + 1 function, and x + 1 can be printed, then x is a valid input.
+
+Response: why not just specify the types and
+enforce them?
+You can for example do this using something like
+mypy
+Mypy is a static type checker for Python.
+
+A2: You're saving yourself work because
+you're only testing for the cases you actually
+care about rather than the edge cases where
+some error occurs.
+
+A3: It's inefficient!!!
+
+If I re-check the invariants on every single
+function call, my code will be very inefficient.
+It's a significant performance overhead
+
+In OOP it's common to have certain data invariants
+that your class enforces.
+"""
+
+class MyPerson:
+    def __init__(self, name, age):
+        # What are the invariants?
+        # Here, we assume self is an object
+        # with a name and an age field.
+        # self.name = name
+        # self.age = age
+
+        # You might even want to add other invariants, for example name should be nonempty,
+        # age should be between 0 and 120
+        # It's good OOP style to check these in the constructor.
+        if age < 0 or age > 120:
+            raise ValueError("age should be between 0 and 120")
+        self.age = age
+        if name == "":
+            raise ValueError("name should be nonempty")
+        self.name = name
+
+    def get_age(self):
+        # If you want to re-check invariants
+        # on every function call.. this is annoying!
+        # We first have to check that self.age and self.name exist
+        # assert "age" in self.__dir__ # ???
+        # We have to check that age and name
+        # satisfy the invariants
+        assert self.age >= 0
+        assert self.age <= 120
+        # ...
+        return self.age
+
+    # But this is inefficient! We have to recheck
+    # on every call, and we already know that the
+    # invariants hold.
+    # Because we checked it -- in the constructor.
+    # So if they don't hold, the user of the class
+    # probably did something terribly terribly wrong
+
+# Exercise: break the class invariant in Python
+# We can do this because Python doesn't protect us
+# from users misusing our invariants :(
+
+# However, rather than check the invariants again
+# on every method call, it's better style to
+# assume that the user of the class is using
+# your class appropriately, and it's more efficient
+# because it doesn't result in unnecessary overheads
+# on every method call.
+
+"""
+A3 (recap): assume reduces performance
+overhead on each function call
+
+A4: assume is also more efficient in compiled
+languages because it allows compiler optimizations.
+
+when I write a function like
+
+def process_bool(b):
+    if b:
+        print("everything went OK")
+    else:
+        assume(False)
+
+Another word for assume(False) is "unreachable"
+Some languages have an unreachable macro: it
+tells the compiler this branch of code should not
+be reachable
+
+That means the compiler can optimize the code!
+
+Optimize the code to:
+def process_bool(b):
+    print("Everything went OK.")
+
+We couldn't do this if the else branch
+was an assert instead of an assume.
+"""
+
+"""
+===== Discussion and limitations =====
+
+Hypothesis
+
+### Advantages
+
+Some more about advantages:
+https://news.ycombinator.com/item?id=34450736
+
+"I've never introduced property tests [Hypothesis specs] without finding a bug in either the specification or implementation. I have repeatedly spent time figuring out where the bug was in my property testing library before realising that it was correct and the obviously correct code I was testing was actually wrong."
+
+### Disadvantages
+
+Most important limitation:
+
+- Testing might not find the bug!
+
+Edsger Dijkstra:
+
+    "Program testing can be a very effective way to show the presence of bugs, but it is hopelessly inadequate for showing their absence."
+
+This is not a problem with the spec itself, but with using random testing
+as a method of validating the spec.
+
+Other limitations:
+these are not specific to Hypothesis (!)
+
+- Specification could be wrong
+
+- Specification could be incomplete
+
+Other limitations of Hypothesis specifically?
+
+- Customization
+
+- Testing can be redundant.
+
+Quick recap:
+- we talked more about assert/assume
+- why is assume useful? why are invariants useful?
+- we talked about postconditions:
+    most of the specs so far have been postconditions
+    on the output.
+    A pre/post condition based spec is called
+    functional correctness
+- we talked about limitations of Hypothesis: it can't
+    prove there are no bugs.
+    That is what the remaining tools in this class
+    will be about.
+
 """
