@@ -146,3 +146,11 @@ Plan for today:
     + Assume and assert
 
 - Goal: finish up Hypothesis by today + next time at the latest.
+
+## Thursday, April 10
+
+- Reminder: HW1 due a week from tomorrow
+
+- Last time: Stronger and weaker specifications.
+
+- Today: types of specifications.

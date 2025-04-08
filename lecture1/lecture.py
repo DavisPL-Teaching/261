@@ -341,6 +341,15 @@ Definition.
 
     (I can look at the set of programs for which the property is true.)
 
+    Mathematically:
+    If we write ⟦ S ⟧ for the denotation of S:
+
+    Prog := set of all programs (defined by a syntax or grammar)
+
+    ⟦ Spec ⟧ ∈ 2^Prog
+
+    ⟦ Spec ⟧ ⊆ Prog
+
 Q: are properties about the syntax or lines of code considered specifications?
     E.g.: the function must have at least 10 Lines of code
     A: Yes, that's a valid spec but probably not one we're interested in.
@@ -354,6 +363,8 @@ Let S1 and S2 be specifications
 - S1 is *stronger* than S2
     if the set of programs satisfying S1 is a subset (or equal) to the set of programs satisfying S2
 
+    ⟦ S1 ⟧ ⊆ ⟦ S2 ⟧
+
     Think of an example:
     "S1 = the output is 1"
     "S2 = the output is odd"
@@ -364,7 +375,10 @@ Let S1 and S2 be specifications
 - S1 is *weaker* than S2
     if the set of programs satisfying S2 is a subset of the set of programs satisfying S1.
 
-A set is a subset of itself (\\subseteq in latex)
+    ⟦ S2 ⟧ ⊆ ⟦ S1 ⟧
+
+A set is a subset of itself (⊆, not ⊂).
+We could speak of "strictly stronger" or "strictly weaker" specs if desired.
 
 Special cases:
 
@@ -458,6 +472,8 @@ This is what we will do in Z3 in Dafny.
 
 *************** Where we ended for today ***************
 
+===== Thursday, April 10 =====
+
 Observations:
 
 "Stronger than" is a mathematical partial order on specifications.
@@ -470,20 +486,21 @@ Observations:
 
 Remember that second step...
 
-Our definition of "specification" is very broad!
+Our definition of "specification" is very broad! Essentially:
 
-    Informally: "Any true or false property"
+    ⟦ Spec ⟧ ∈ 2^Prog
+
+    ^ read: denotation of a spec is a subset of all programs.
 
 this is very useful! But it is also not very specific.
 
 In practice, we need our specification to be understandable to the tool
 we are using...
 
-- e.g., Hypothesis doesn't understand English specs!
+- Hypothesis only understands specs using @given annotations on pytests (+ assert and assume)
 
-- Foreshadowing:
-    Verification tools like Z3 and Dafny only understand specs
-    written in formal logic
+- Verification tools like Z3 and Dafny only understand specs written in formal logic
+  (typically, first-order logic)
 
 Going back to our list of examples 1-7:
 
@@ -517,9 +534,11 @@ Other examples:
 
 === Classes of specifications ===
 
--  A **safety property** is...
-
 - A **functional correctness** property is...
+
+    + A **full functional correctness** spec is...
+
+-  A **safety property** is...
 
 Are the above all possible specifications?
 No! We can imagine much more interesting cases...
@@ -530,18 +549,22 @@ No! We can imagine much more interesting cases...
 - (Just for a fun side note - you don't need to know this)
   A **hyperproperty** is...
 
+- (Just for a fun side note - you don't need to know this)
+  A **side effect** is...
+
 - What are some other "more interesting" examples of specifications?
-  (Imagine your own definitions here)
+  (Think of your own definitions here)
 
 Let's give an example of the first two and try to test them in Hypothesis,
 going back to our int_sqrt example.
 """
 
 """
-Zooming in on functional correctness,
-it is often the most important as it can be considered a "full"
-guarantee that the code is correct on all inputs.
+Zooming in on functional correctness:
+It is the focus of many program verification efforts in practice
 It's not perfect, but it is often a good starting point!
+And we have good tools for reasoning about it (compared to some of the others
+which require deep and difficult encodings, more on this later.)
 
 Two classes of specifications we are particularly interested in:
 
@@ -557,30 +580,9 @@ The above also happens to be the limits of what Hypothesis is able to express.
 
 A common way to define logical specifications?
 Preconditions and postconditions.
-
-Exercise:
-Rewrite the examples 1-7 using preconditions/postconditions
 """
 
-# Example 1:
-def avg_list(l):
-    # Program or implementation
-    result = []
-    for x in l:
-        result.append(2 * x)
-    return result
-
-# Specification
-@pytest.mark.skip
-# @given(st.lists(st.integers()))
-def test_double_list(l):
-    # TODO
-    raise NotImplementedError
-
-# What's the precondition here?
-# What is the postcondition?
-
-# Example 2: Division by zero
+# Classic example: Division by zero
 
 # input two integers
 def divide(x, y):
@@ -609,8 +611,10 @@ def test_divide(x, y):
 # Let's directly make sure the thing we are dividing by (y)
 # is > 0.
 
-
 """
+Exercise (skip for time):
+Rewrite the examples 1-7 using preconditions/postconditions
+
 Even if you have not heard of the word "precondition",
 you are probably intuitively familiar with the concept of preconditions
 if you have some experience programing and working with libraries...
@@ -629,7 +633,6 @@ Examples:
     - The file should be able to be opened (OSError otherwise)
 
     - "If closefd is False and a file descriptor rather than a filename was given, the underlying file descriptor will be kept open when the file is closed. If a filename is given closefd must be True (the default); otherwise, an error will be raised."
-
 
 Point:
 You can often read off preconditions from the documentation!
@@ -650,9 +653,8 @@ ways:
   as valid, we can exclude them via a precondition.
 """
 
-
 """
-We can also write preconditions using...
+A new way to write preconditions and postconditions...
 
 ===== Assume and assert =====
 
@@ -683,9 +685,23 @@ Why is it called "assume"?
     error. I want to report a test failure.
 - Assume: This property should hold, if it doesn't, I want to
     ignore this test.
+
+Assert and assume interact in interesting ways...
+
+Poll:
+https://forms.gle/cr5DYBDo3nTbB2oK6
+
+Which of the following has no effect? (Select all that apply)
+- assert True
+- assert False
+- assume True
+- assume False
+- assert P if it occurs immediately following assume P
+- assume P if it occurs immediately following assert P
+
 """
 
-# Another poll
+# Another example
 # Is this program for sorting a list correct? :)
 
 def sort_list(l):
@@ -918,14 +934,14 @@ was an assert instead of an assume.
 
 Hypothesis
 
-### Advantages
+# Advantages
 
 Some more about advantages:
 https://news.ycombinator.com/item?id=34450736
 
 "I've never introduced property tests [Hypothesis specs] without finding a bug in either the specification or implementation. I have repeatedly spent time figuring out where the bug was in my property testing library before realising that it was correct and the obviously correct code I was testing was actually wrong."
 
-### Disadvantages
+# Disadvantages
 
 Most important limitation:
 
@@ -938,8 +954,7 @@ Edsger Dijkstra:
 This is not a problem with the spec itself, but with using random testing
 as a method of validating the spec.
 
-Other limitations:
-these are not specific to Hypothesis (!)
+Limitations related to writing specs -- these are not specific to Hypothesis (!)
 
 - Specification could be wrong
 
