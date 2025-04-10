@@ -22,3 +22,6 @@ _ _ x _ x _ _
 _ _ x _ _ x _
 _ _ x _ _ _ x
 ```
+
+April 10 poll:
+A, C, E, F (assert True, assume True, assert P if it immediately follows assume P, and assume P if it immediately follows assert P).
