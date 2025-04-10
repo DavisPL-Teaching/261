@@ -152,7 +152,7 @@ Plan for today:
 Announcements and reminders:
 
 - Reminder: HW1 due a week from tomorrow
-    (come to OH today!)
+    (come to OH tomorrow!)
 
 - Undergraduate enrollment
 

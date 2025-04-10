@@ -435,13 +435,13 @@ def test_prog_ex_spec_6(x):
     if x > 100:
         assert y > 10
 
-@given(st.integers(min_value=100, max_value=100))
+@given(st.integers(min_value=50, max_value=200)) # <- precondition
 # Mark as expected failure -
 @pytest.mark.xfail
 def test_prog_ex_spec_7(x):
     y = prog_ex(x)
-    if x >= 100:
-        assert y >= 10
+    if x >= 100: # <- precondition
+        assert y >= 10 # <- postcondition
 
 # - 7 is stronger than 6 iff all programs satisfying 7 also satisfy 6
 # (Exercise)
@@ -490,7 +490,12 @@ S1 is stronger than S2 if:
 Observation:
 
 -  "Stronger than" is a mathematical partial order on specifications.
-    (This means...)
+    (Actually a preorder)
+    (This means... it's transitive and reflexive)
+
+    1. For all S1, S2, S3, if ⟦ S1 ⟧ ⊆ ⟦ S2 ⟧ and ⟦ S2 ⟧ ⊆ ⟦ S3 ⟧ then ⟦ S1 ⟧ ⊆ ⟦ S3 ⟧.
+
+    2. For all S, ⟦ S ⟧ ⊆ ⟦ S ⟧
 
 Fun exercise (thanks to a student after class last time!)
 
@@ -501,13 +506,10 @@ Another exercise:
 - Define a similar partial order on programs: P1 *refines* P2 if all specs true of P1 are true of P2.
 
   Is this partial order interesting or is it trivial?
-
 """
 
 """
 === Types of Specifications ===
-
-Remember that second step...
 
 Our definition of "specification" is very broad:
 
@@ -516,7 +518,7 @@ Our definition of "specification" is very broad:
 this is very useful! But it is also not very specific.
 
 In practice, we need our specification to be understandable to the tool we are using...
-    i.e.: written in a more specific grammar:
+    i.e.: written in a more specific grammar
 
 - Hypothesis only understands specs using @given annotations on pytests (+ assert and assume)
 
@@ -526,31 +528,50 @@ In practice, we need our specification to be understandable to the tool we are u
 Here are some examples (some previous and some new ones) on integer_sqrt:
 
 1. If the input is an integer, then the output is an integer.
+
+    Let's think of our program integer_sqrt, as just a function f
+
+    Forall x, if x ∈ Int then f(x) ∈ Int.
+
 2. False (false of all programs)
+
+    False
+
 3. The input arguments are not modified by the program.
+
+    # check x before and after the run
+    Forall x0, if x = x0 then after f(x) is called (?) x = x0.
+
+    What if f modifies x, does something, and then changes it back?
+    A: We have no way of really getting a hold on this purely
+    using statements about what's true before and after f runs.
+
 4. If the input is greater than or equal to 100, then the output is greater than or equal to 10.
+
+    Forall x, if x ≥ 100 then f(x) ≥ 10
+
 5. The program does not read any files from the filesystem
+
+    ???
+    Check the journal log of the computer?
+    We would need some way to log all of the function calls
+    (in this case sytem calls) that are made by f when it executes.
+    This would be somewhat difficult to do in Hypothesis alone.
+
 6. The program executes in constant time
 7. The program always terminates
 
-Types of specs above?
-Try translating them to logical statements about a program f.
-
-Some questions:
-
-- Which of these specifications expressible as Hypothesis tests?
-
-- Which of these specifications easily checkable?
-
-Other examples?
-    (see cut/other-specs.md)
-
-We can try writing some of these in Hypothesis:
+You could try to write these in Hypothesis...
+... but you would soon run into trouble.
 """
 
 @pytest.mark.skip
 def test_int_sqrt_always_terminates(x):
-    # TODO
+    y = integer_sqrt(x)
+    # assert type(y) == int ?
+    # assert True ?
+    # assert False ?
+    # I can't assert that we actually got to this point in the program.
     raise NotImplementedError
 
 @pytest.mark.skip
@@ -559,19 +580,77 @@ def test_int_sqrt_never_opens_a_file(x):
     raise NotImplementedError
 
 """
+Types of specs above?
+Try translating them to logical statements about a program f.
+
+Some questions:
+
+- Are all of these specifications expressible as Hypothesis tests?
+
+    No - some are, some aren't
+
+- Are all of these specifications easily checkable?
+
+    No - some are, some aren't
+
+Other examples?
+    (see cut/other-specs.md)
+
 === Classes of specifications ===
 
-The discsussion about which are testable using Hypothesis should reveal an important distinction:
+The discussion about which are testable using Hypothesis might leave
+you wondering what properties exactly *can* be tested using Hypothesis
+(or easily tested in general)?
 
-- A **functional correctness** property is...
+This raises an important distinction:
 
-Two other special cases of specifications that turn out to be particularly useful:
+    For some of the specs above, we were able to write the spec
+    just thinking of the program as a mathematical function f
+    (like f(x) = x^2, f(x) = e^x, etc.)
+    only defined by its input-output behavior.
 
-- A **full functional correctness** spec is...
+- A **functional correctness** property is a spec which only depends
+  on the set of all ordered pairs (x, y) such that f(x) = y.
 
-- A **safety property** is...
+But even "True" and "False" are examples of this which aren't very useful.
+Also "if the input is an integer, then the output is an integer"
+isn't very useful.
 
-- A **liveness property** is...
+- A **full functional correctness** spec is one which exactly specifies
+    what f should do on every input.
+
+    That means: for all x, f(x) is exactly the value y
+    Or more formally our spec should satisfy a functional property like
+
+    Example: if we say "whenever x is an integer, f(x) is an integer", this doesn't define which integer it is!
+    but in our example:
+
+        "for all integers x, y = f(x) is an integer such that x * x <= y < (x + 1) * (x + 1)"
+
+    can actually show that there is only one such y.
+    So this is a full functional correctness spec.
+
+    For any f1, f2 satisfying the spec S, if f1(x) = y1 and f2(x) = y2
+    then y1 == y2.
+
+Two other special cases of specifications that turn out to be particularly useful
+(these are not functional correctness):
+
+These have to do with the behavior of the program when run
+(properties of the program trace):
+
+- A **safety property** states that "for all x, when f(x) is run,
+  some bad event X does not happen."
+
+    "the program doesn't read any files"
+    "the program doesn't modify its input x"
+
+- A **liveness property** states that "for all x, when f(x) is run,
+  some good event X does happen."
+
+    "f(x) does terminate"
+
+(Neither of these can be specified using functional correctness.)
 
 Are the above all possible specifications?
 No! We can imagine much more interesting cases...
@@ -595,33 +674,64 @@ It's not perfect, but it is often a good starting point!
 And we have good tools for reasoning about it (compared to some of the others
 which require deep and difficult encodings, more on this later.)
 
+- Often other properties can be encoded as functional correctness
+  by maintaining some additional "state".
+
 We typically express functional correctness using...
 
 === Preconditions and postconditions ===
 
-Let's start with an example:
+    (A.k.a. Hoare triples)
+
+A pre/postcondition spec has the following form:
+
+    precondition: P: Input -> Bool
+    postcondition: Q: Output -> Bool
+
+    - if P is true before executing the program, and we execute f,
+      Q is true after.
+
+    - Equivalently: if P(x) is true and y = f(x) then Q(y) is true.
+
+All functional correctness specs can be written using preconditions
+and postconditions!
+
+Q: Why do we need preconditions?
+
+    can't we do:
+    if y = f(x) then (P(x) -> Q(y)) is true?
+
+    Yes that encoding works but doesn't allow us to talk about the
+    state of the program before executing it.
 """
 
 # Classic example: Division by zero
 
 # input two integers
 def divide(x, y):
-    return x / y
+    # (integer division)
+    return x // y
 
-@pytest.mark.skip
+# @pytest.mark.skip
 # @pytest.mark.xfail
 @given(
-    st.integers(min_value = -100, max_value = 100),
-    st.integers(min_value = -100, max_value = 100),
+    st.integers(min_value = -1000, max_value = 1000),
+    # st.integers(min_value = -1000, max_value = 1000),
+    # st.integers(min_value = 1, max_value = 1000),
+    st.integers(min_value = 0, max_value = 1000),
 )
-@settings(max_examples=10_000)
+@settings(max_examples=1000)
 def test_divide(x, y):
-    # what to test here?
-    z = divide(x, y)
-    # Write the spec here:
-    assert type(divide(x, y)) is float
-    # (or another property)
-    raise NotImplementedError
+    # # what to test here?
+    # z = divide(x, y)
+    # # Write the spec here:
+    # # (you could write any spec here, but let's use:)
+    # assert z * y <= x < (z + 1) * y
+
+    # Fixed version with added precondition
+    if y > 0:
+        z = divide(x, y)
+        assert z * y <= x < (z + 1) * y
 
 # We couldn't even test our statement, because our program
 # crashed :(
@@ -657,6 +767,8 @@ Point:
 You can often read off preconditions from the documentation!
 
 Point:
+Often a precondition that's useful is whatever is needed to not
+have the program crash.
 In practice, exceptions are often used to enforce preconditions --
 if we don't know what to do on a particular input, we crash the program
 
@@ -672,6 +784,8 @@ ways:
   as valid, we can exclude them via a precondition.
 
 Another example:
+
+(skip for time)
 """
 
 def divides_2(x, y):
@@ -700,7 +814,7 @@ On all inputs x, y such that
 
 More generally, the spec has the following form:
 
-    "On all inputs x such that P(x) holds, Q(function(x)) holds."
+    "On all inputs x such that P(x) holds, Q(f(x)) holds."
 
 Are pre and postconditions sufficient?
 
@@ -708,7 +822,21 @@ Are pre and postconditions sufficient?
 
 - Can Hypothesis express anything that pre/postconditions can't?
 
-More general:
+A: Yes
+    - Runtime? we could write a Hypothesis test that times the program
+      (using time.time or something)
+    - What about running the program multiple times?
+        e.g.: test that the program is deterministic
+            y1 = f(x)
+            y2 = f(x)
+            assert y1 == y2
+    - What about asserting something inside the program?
+        Put assertions inside your program
+        and assertions before/after running different programs
+        so, you don't only have to assert things at the end.
+
+More general way of thinking about the
+kind of specifications that Hypothesis can support:
 
 ===== Assume and assert =====
 
@@ -720,7 +848,9 @@ not only positive integers?
 
 from hypothesis import assume
 
-@pytest.mark.skip
+def divides_2(x, y):
+    return x / y
+
 @given(
     st.integers(min_value = -1000, max_value = 1000),
     st.integers(min_value = -1000, max_value = 1000),
@@ -729,12 +859,13 @@ from hypothesis import assume
 def test_divide_2(x, y):
     # Assume statement!
     # Adds some constraint to the precondition.
-    assume(y != 0)
+    assume(y != 0) # If this isn't true, throw away this particular test run.
     # assert type(divide(x, y)) is float
-    # assert abs(divide(x, y) * y - x) < ERROR
+    assert abs(divides_2(x, y) * y - x) < ERROR
 
 """
-Why is it called "assume"?
+These two little functions, assume and assert, turn out to be
+fundamentally important to testing & verification.
 
 - Assert: This property should hold, if it doesn't, that's an
     error. I want to report a test failure.
@@ -753,6 +884,20 @@ Which of the following has no effect? (Select all that apply)
 - assume False
 - assert P if it occurs immediately following assume P
 - assume P if it occurs immediately following assert P
+
+Some of you may have picked up on the facts that:
+
+- preconditions are just assume() statements
+- postconditions are just assert() statements.
+
+precond P, program f, postcondition Q
+    == equivalent to ==
+    assume(P(x))
+    y = f(x)
+    assert(Q(y))
+
+We have to be careful with assume!
+It's very dangerous.
 """
 
 # Another example
@@ -786,6 +931,9 @@ it to ensure the list is sorted?
 """
 Now that we know about assume and assert,
 A more complete definition of specifications in Hypothesis:
+
+Hypothesis can express exactly those specifications that are
+expressible using assume() and assert().
 
 - On all input executions such that all assume() statements
   hold up to a given point,
@@ -830,13 +978,17 @@ Other limitations of Hypothesis specifically?
 - Testing can be redundant.
 
 Quick recap:
-- we talked more about assert/assume
-- why is assume useful? why are invariants useful?
-- we talked about postconditions:
-    most of the specs so far have been postconditions
-    on the output.
-    A pre/post condition based spec is called
-    functional correctness
+- we talked about different types of specifications
+    (functional correctness, safety, liveness)
+- we talked about preconditions and postconditions
+- we talked about assert/assume
+
+    + A pre/post condition based spec is called
+        functional correctness
+
+    + assume/assert based spec is everything that Hypothesis can express
+        (slightly more general)
+
 - we talked about limitations of Hypothesis: it can't
     prove there are no bugs.
     That is what the remaining tools in this class
