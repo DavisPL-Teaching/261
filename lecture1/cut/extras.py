@@ -1,7 +1,5 @@
 """
 Additional cut content
-
-This will most likely be skipped for time.
 """
 
 """
@@ -113,6 +111,146 @@ The output is between 0 and the length of the input list, inclusive.
 
 The output is equal to a standard implementation of the same function.
 (strongest possible postcondition)
+"""
+
+"""
+=== Review on assume and assert ===
+
+Recap:
+
+- assert means: if the property is not true,
+    raise an error.
+
+- assume means: if the property is not ture,
+    ignore this branch of computation.
+
+OR (provacatively):
+- assume as "if the property is not true, destroy the universe"
+
+=== Q+A ===
+
+Q: Why are preconditions and assume useful?
+
+There are going to be cases where there is an
+invariant that should hold when a function is
+executed. It makes sense (both for the programmer
+and for the test case writer) to assume that the
+property holds so that we don't consider edge
+cases where it doesn't hold.
+
+Q: Why don't you just handle every edge case in every function?
+
+Reasons?
+
+A1: You can't.
+In Python you might be passed some weird/invalid input or type that you don't really know what it is.
+def f(x):
+    result = x + 1
+    print(result)
+    return True
+
+Python has what's called "duck typing" which means
+- if it acts like a duck and if it talks like duck,
+    then it is a duck.
+- if it has an x + 1 function, and x + 1 can be printed, then x is a valid input.
+
+Response: why not just specify the types and
+enforce them?
+You can for example do this using something like
+mypy
+Mypy is a static type checker for Python.
+
+A2: You're saving yourself work because
+you're only testing for the cases you actually
+care about rather than the edge cases where
+some error occurs.
+
+A3: It's inefficient!!!
+
+If I re-check the invariants on every single
+function call, my code will be very inefficient.
+It's a significant performance overhead
+
+In OOP it's common to have certain data invariants
+that your class enforces.
+"""
+
+class MyPerson:
+    def __init__(self, name, age):
+        # What are the invariants?
+        # Here, we assume self is an object
+        # with a name and an age field.
+        # self.name = name
+        # self.age = age
+
+        # You might even want to add other invariants, for example name should be nonempty,
+        # age should be between 0 and 120
+        # It's good OOP style to check these in the constructor.
+        if age < 0 or age > 120:
+            raise ValueError("age should be between 0 and 120")
+        self.age = age
+        if name == "":
+            raise ValueError("name should be nonempty")
+        self.name = name
+
+    def get_age(self):
+        # If you want to re-check invariants
+        # on every function call.. this is annoying!
+        # We first have to check that self.age and self.name exist
+        # assert "age" in self.__dir__ # ???
+        # We have to check that age and name
+        # satisfy the invariants
+        assert self.age >= 0
+        assert self.age <= 120
+        # ...
+        return self.age
+
+    # But this is inefficient! We have to recheck
+    # on every call, and we already know that the
+    # invariants hold.
+    # Because we checked it -- in the constructor.
+    # So if they don't hold, the user of the class
+    # probably did something terribly terribly wrong
+
+# Exercise: break the class invariant in Python
+# We can do this because Python doesn't protect us
+# from users misusing our invariants :(
+
+# However, rather than check the invariants again
+# on every method call, it's better style to
+# assume that the user of the class is using
+# your class appropriately, and it's more efficient
+# because it doesn't result in unnecessary overheads
+# on every method call.
+
+"""
+A3 (recap): assume reduces performance
+overhead on each function call
+
+A4: assume is also more efficient in compiled
+languages because it allows compiler optimizations.
+
+when I write a function like
+
+def process_bool(b):
+    if b:
+        print("everything went OK")
+    else:
+        assume(False)
+
+Another word for assume(False) is "unreachable"
+Some languages have an unreachable macro: it
+tells the compiler this branch of code should not
+be reachable
+
+That means the compiler can optimize the code!
+
+Optimize the code to:
+def process_bool(b):
+    print("Everything went OK.")
+
+We couldn't do this if the else branch
+was an assert instead of an assume.
 """
 
 """

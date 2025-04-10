@@ -149,8 +149,19 @@ Plan for today:
 
 ## Thursday, April 10
 
+Announcements and reminders:
+
 - Reminder: HW1 due a week from tomorrow
+    (come to OH today!)
+
+- Undergraduate enrollment
+
+Plan:
 
 - Last time: Stronger and weaker specifications.
 
-- Today: types of specifications.
+- Today: finish Lecture 1
+
+    + Types of specifications
+    + Preconditions and postconditions
+    + Assume and assert

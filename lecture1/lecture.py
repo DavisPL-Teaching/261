@@ -474,10 +474,33 @@ This is what we will do in Z3 in Dafny.
 
 ===== Thursday, April 10 =====
 
-Observations:
+From last time, a specification denotes a set of programs:
 
-"Stronger than" is a mathematical partial order on specifications.
-(This means...)
+    ⟦ Spec ⟧ ∈ 2^Prog
+
+    ^ read: denotation of a spec is a subset of all programs.
+
+    Spec is written in some grammar
+    Prog is the set of all programs written in some grammar
+
+S1 is stronger than S2 if:
+
+    ⟦ S1 ⟧ ⊆ ⟦ S2 ⟧
+
+Observation:
+
+-  "Stronger than" is a mathematical partial order on specifications.
+    (This means...)
+
+Fun exercise (thanks to a student after class last time!)
+
+- Show that the partial order is countable, has infinite width, and has infinite height.
+
+Another exercise:
+
+- Define a similar partial order on programs: P1 *refines* P2 if all specs true of P1 are true of P2.
+
+  Is this partial order interesting or is it trivial?
 
 """
 
@@ -486,100 +509,97 @@ Observations:
 
 Remember that second step...
 
-Our definition of "specification" is very broad! Essentially:
+Our definition of "specification" is very broad:
 
     ⟦ Spec ⟧ ∈ 2^Prog
 
-    ^ read: denotation of a spec is a subset of all programs.
-
 this is very useful! But it is also not very specific.
 
-In practice, we need our specification to be understandable to the tool
-we are using...
+In practice, we need our specification to be understandable to the tool we are using...
+    i.e.: written in a more specific grammar:
 
 - Hypothesis only understands specs using @given annotations on pytests (+ assert and assume)
 
 - Verification tools like Z3 and Dafny only understand specs written in formal logic
   (typically, first-order logic)
 
-Going back to our list of examples 1-7:
+Here are some examples (some previous and some new ones) on integer_sqrt:
 
-1. The output of integer_sqrt is always an integer.
-2. If the input to integer_sqrt is an integer, then the output is an integer.
-3. True (true of all programs)
-4. False (false of all programs)
-5. The input arguments are not modified by the program.
-6. If the input is greater than 100, then the output is greater than 10.
-7. If the input is greater than or equal to 100, then the output is greater than or equal to 10.
+1. If the input is an integer, then the output is an integer.
+2. False (false of all programs)
+3. The input arguments are not modified by the program.
+4. If the input is greater than or equal to 100, then the output is greater than or equal to 10.
+5. The program does not read any files from the filesystem
+6. The program executes in constant time
+7. The program always terminates
 
 Types of specs above?
+Try translating them to logical statements about a program f.
 
 Some questions:
 
-- Are all specifications expressible as Hypothesis tests?
+- Which of these specifications expressible as Hypothesis tests?
 
-- Are all specifications easily checkable?
+- Which of these specifications easily checkable?
 
-- What is the specification in the case of a Hypothesis test?
+Other examples?
+    (see cut/other-specs.md)
 
-Other examples:
+We can try writing some of these in Hypothesis:
+"""
 
-    For all sufficiently large x, ...
+@pytest.mark.skip
+def test_int_sqrt_always_terminates(x):
+    # TODO
+    raise NotImplementedError
 
-    The source code of is_even contains...
+@pytest.mark.skip
+def test_int_sqrt_never_opens_a_file(x):
+    # TODO
+    raise NotImplementedError
 
-    If is_even(x) is run on an arbitrary Python object x...
-
-    The program is_even(x) always terminates for all x such that...
-
+"""
 === Classes of specifications ===
+
+The discsussion about which are testable using Hypothesis should reveal an important distinction:
 
 - A **functional correctness** property is...
 
-    + A **full functional correctness** spec is...
+Two other special cases of specifications that turn out to be particularly useful:
 
--  A **safety property** is...
+- A **full functional correctness** spec is...
+
+- A **safety property** is...
+
+- A **liveness property** is...
 
 Are the above all possible specifications?
 No! We can imagine much more interesting cases...
+    (More examples, again, in cut/other-specs.md)
 
-- (Just for a fun side note - you don't need to know this)
-  A **security property** is...
+Review:
 
-- (Just for a fun side note - you don't need to know this)
-  A **hyperproperty** is...
+Can we test safety properties in Hypothesis?
 
-- (Just for a fun side note - you don't need to know this)
-  A **side effect** is...
+Can we test liveness properties in Hypothesis?
 
-- What are some other "more interesting" examples of specifications?
-  (Think of your own definitions here)
-
-Let's give an example of the first two and try to test them in Hypothesis,
-going back to our int_sqrt example.
+What are all possible specifications expressible in Hypothesis?
+(pin in this question - more on this soon)
 """
 
 """
-Zooming in on functional correctness:
-It is the focus of many program verification efforts in practice
+=== Functional correctness ===
+
+Functional correctness is the focus of many program verification efforts in practice.
 It's not perfect, but it is often a good starting point!
 And we have good tools for reasoning about it (compared to some of the others
 which require deep and difficult encodings, more on this later.)
 
-Two classes of specifications we are particularly interested in:
-
-- Preconditions and posconditions;
-
-- Assume and assert.
-
-Functional correctness is usually expressed using the above.
-
-The above also happens to be the limits of what Hypothesis is able to express.
+We typically express functional correctness using...
 
 === Preconditions and postconditions ===
 
-A common way to define logical specifications?
-Preconditions and postconditions.
+Let's start with an example:
 """
 
 # Classic example: Division by zero
@@ -589,20 +609,19 @@ def divide(x, y):
     return x / y
 
 @pytest.mark.skip
+# @pytest.mark.xfail
 @given(
-    st.integers(min_value = -1000, max_value = 1000),
-    st.integers(min_value = 1, max_value = 1000),
+    st.integers(min_value = -100, max_value = 100),
+    st.integers(min_value = -100, max_value = 100),
 )
-@settings(max_examples=1000)
-@pytest.mark.xfail
+@settings(max_examples=10_000)
 def test_divide(x, y):
     # what to test here?
     z = divide(x, y)
-    # Spec ideas:
-    # z is less than the difference between x and y
-    assert z < abs(x - y)
-    # ^^ seems to be true -- but fails for a rare input set,
-    # e.g. x = 2, y = 1
+    # Write the spec here:
+    assert type(divide(x, y)) is float
+    # (or another property)
+    raise NotImplementedError
 
 # We couldn't even test our statement, because our program
 # crashed :(
@@ -651,98 +670,6 @@ ways:
 - If the exception is not expected behavior, or if we don't
   want to consider inputs for which the exception is raised
   as valid, we can exclude them via a precondition.
-"""
-
-"""
-A new way to write preconditions and postconditions...
-
-===== Assume and assert =====
-
-Going back to our divide by zero example.
-
-What if we want to include positive and negative integers, but *only*
-exclude zero?
-"""
-
-from hypothesis import assume
-
-# One solution: Use an assume statement
-@given(
-    st.integers(min_value = -1000, max_value = 1000),
-    st.integers(min_value = -1000, max_value = 1000),
-)
-@settings(max_examples=1000)
-def test_divide_2(x, y):
-    # Assume statement!
-    # Adds some constraint to the precondition.
-    assume(y != 0)
-    assert type(divide(x, y)) is float
-
-"""
-Why is it called "assume"?
-
-- Assert: This property should hold, if it doesn't, that's an
-    error. I want to report a test failure.
-- Assume: This property should hold, if it doesn't, I want to
-    ignore this test.
-
-Assert and assume interact in interesting ways...
-
-Poll:
-https://forms.gle/cr5DYBDo3nTbB2oK6
-
-Which of the following has no effect? (Select all that apply)
-- assert True
-- assert False
-- assume True
-- assume False
-- assert P if it occurs immediately following assume P
-- assume P if it occurs immediately following assert P
-
-"""
-
-# Another example
-# Is this program for sorting a list correct? :)
-
-def sort_list(l):
-    l = l.copy()
-    return l
-
-# The spec:
-@given(st.lists(st.integers()))
-def test_sort_list(l):
-    assume(l == sorted(l))
-    assert sort_list(l) == sorted(l)
-
-"""
-Multiverse view
-- Quantum bogosort:
-    https://wiki.c2.com/?QuantumBogoSort
-- (Based on: bogosort
-    https://en.wikipedia.org/wiki/Bogosort)
-
-TL;DR:
-Assume is weird
-We use it to assume certain properties are true of the input.
-Another way of thinking about this is, whose responsibility is
-it to ensure the list is sorted?
-- If I use assume, I'm saying it's the caller's responsibility.
-- If I use assert, in a specification to say that some property
-  is true, then I'm saying it's the function's responsibility
-  to guarantee that property.
-
-Point:
-We can think of the precondition as part of the spec!
-Why?
-
-Recall: a spec is just a true or false property about the program.
-def example_test(x):
-    assume(P(x))
-    output = function(x)
-    assert(Q(output))
-
-We can think of the spec for this as the following statement:
-    "On all inputs x such that P(x) holds, Q(function(x)) holds."
 
 Another example:
 """
@@ -771,162 +698,98 @@ On all inputs x, y such that
         y is not zero,
     divides_2(x, y) * y is approximately x.
 
+More generally, the spec has the following form:
+
+    "On all inputs x such that P(x) holds, Q(function(x)) holds."
+
+Are pre and postconditions sufficient?
+
+- Can we now express all properties we are interested in?
+
+- Can Hypothesis express anything that pre/postconditions can't?
+
+More general:
+
+===== Assume and assert =====
+
+Going back to our divide by zero example.
+
+What if we want to write it to include positive and negative integers,
+not only positive integers?
+"""
+
+from hypothesis import assume
+
+@pytest.mark.skip
+@given(
+    st.integers(min_value = -1000, max_value = 1000),
+    st.integers(min_value = -1000, max_value = 1000),
+)
+@settings(max_examples=1000)
+def test_divide_2(x, y):
+    # Assume statement!
+    # Adds some constraint to the precondition.
+    assume(y != 0)
+    # assert type(divide(x, y)) is float
+    # assert abs(divide(x, y) * y - x) < ERROR
+
+"""
+Why is it called "assume"?
+
+- Assert: This property should hold, if it doesn't, that's an
+    error. I want to report a test failure.
+- Assume: This property should hold, if it doesn't, I want to
+    ignore this test.
+
+Assert and assume interact in interesting ways...
+
+Poll:
+https://forms.gle/cr5DYBDo3nTbB2oK6
+
+Which of the following has no effect? (Select all that apply)
+- assert True
+- assert False
+- assume True
+- assume False
+- assert P if it occurs immediately following assume P
+- assume P if it occurs immediately following assert P
+"""
+
+# Another example
+# Is this program for sorting a list correct? :)
+
+def sort_list(l):
+    l = l.copy()
+    return l
+
+# The spec:
+@given(st.lists(st.integers()))
+def test_sort_list(l):
+    assume(l == sorted(l))
+    assert sort_list(l) == sorted(l)
+
+"""
+Multiverse view
+- Quantum bogosort:
+    https://wiki.c2.com/?QuantumBogoSort
+- (Based on: bogosort
+    https://en.wikipedia.org/wiki/Bogosort)
+
+Another way of thinking about this is, whose responsibility is
+it to ensure the list is sorted?
+- If I use assume, I'm saying it's the caller's responsibility.
+- If I use assert, in a specification to say that some property
+  is true, then I'm saying it's the function's responsibility
+  to guarantee that property.
+"""
+
+"""
 Now that we know about assume and assert,
 A more complete definition of specifications in Hypothesis:
 
-- On all inputs such that all assume() statements
-  hold, after executing the program all assert() statements hold.
-
-This definition assumes that assume() is called before assert().
-TRIVIA: In this case, the assume() is called a precondition
-(as we have seen), and the assert() is called a "postcondition".
-"""
-
-"""
-Exercise (or poll)
-
-Which of the following has no effect? (Select all that apply)
-
-1. assert True
-2. assert False
-3. assume True
-4. assume False
-"""
-
-"""
-Recall:
-
-- assert means: if the property is not true,
-    raise an error.
-
-- assume means: if the property is not ture,
-    ignore this branch of computation.
-
-OR (provacatively):
-- assume as "if the property is not true, destroy the universe"
-
-Q: Why is assume useful?
-
-There are going to be cases where there is an
-invariant that should hold when a function is
-executed. It makes sense (both for the programmer
-and for the test case writer) to assume that the
-property holds so that we don't consider edge
-cases where it doesn't hold.
-
-Q: Why don't you just handle every edge case in every function?
-
-Reasons?
-
-A1: You can't.
-In Python you might be passed some weird/invalid input or type that you don't really know what it is.
-def f(x):
-    result = x + 1
-    print(result)
-    return True
-
-Python has what's called "duck typing" which means
-- if it acts like a duck and if it talks like duck,
-    then it is a duck.
-- if it has an x + 1 function, and x + 1 can be printed, then x is a valid input.
-
-Response: why not just specify the types and
-enforce them?
-You can for example do this using something like
-mypy
-Mypy is a static type checker for Python.
-
-A2: You're saving yourself work because
-you're only testing for the cases you actually
-care about rather than the edge cases where
-some error occurs.
-
-A3: It's inefficient!!!
-
-If I re-check the invariants on every single
-function call, my code will be very inefficient.
-It's a significant performance overhead
-
-In OOP it's common to have certain data invariants
-that your class enforces.
-"""
-
-class MyPerson:
-    def __init__(self, name, age):
-        # What are the invariants?
-        # Here, we assume self is an object
-        # with a name and an age field.
-        # self.name = name
-        # self.age = age
-
-        # You might even want to add other invariants, for example name should be nonempty,
-        # age should be between 0 and 120
-        # It's good OOP style to check these in the constructor.
-        if age < 0 or age > 120:
-            raise ValueError("age should be between 0 and 120")
-        self.age = age
-        if name == "":
-            raise ValueError("name should be nonempty")
-        self.name = name
-
-    def get_age(self):
-        # If you want to re-check invariants
-        # on every function call.. this is annoying!
-        # We first have to check that self.age and self.name exist
-        # assert "age" in self.__dir__ # ???
-        # We have to check that age and name
-        # satisfy the invariants
-        assert self.age >= 0
-        assert self.age <= 120
-        # ...
-        return self.age
-
-    # But this is inefficient! We have to recheck
-    # on every call, and we already know that the
-    # invariants hold.
-    # Because we checked it -- in the constructor.
-    # So if they don't hold, the user of the class
-    # probably did something terribly terribly wrong
-
-# Exercise: break the class invariant in Python
-# We can do this because Python doesn't protect us
-# from users misusing our invariants :(
-
-# However, rather than check the invariants again
-# on every method call, it's better style to
-# assume that the user of the class is using
-# your class appropriately, and it's more efficient
-# because it doesn't result in unnecessary overheads
-# on every method call.
-
-"""
-A3 (recap): assume reduces performance
-overhead on each function call
-
-A4: assume is also more efficient in compiled
-languages because it allows compiler optimizations.
-
-when I write a function like
-
-def process_bool(b):
-    if b:
-        print("everything went OK")
-    else:
-        assume(False)
-
-Another word for assume(False) is "unreachable"
-Some languages have an unreachable macro: it
-tells the compiler this branch of code should not
-be reachable
-
-That means the compiler can optimize the code!
-
-Optimize the code to:
-def process_bool(b):
-    print("Everything went OK.")
-
-We couldn't do this if the else branch
-was an assert instead of an assume.
+- On all input executions such that all assume() statements
+  hold up to a given point,
+  all assert() statements hold after that point.
 """
 
 """
