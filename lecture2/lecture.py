@@ -16,6 +16,9 @@ Which of the following is a limitation of testing with Hypothesis? (Select all t
 3. The specification written could be incomplete (underspecified)
 4. It can only test preconditions and postconditions
 5. It can only test assume and assert statements
+
+Respond here:
+https://forms.gle/wRkt67StL7eTmZn29
 """
 
 #######################
@@ -23,11 +26,13 @@ Which of the following is a limitation of testing with Hypothesis? (Select all t
 #######################
 
 """
-Recap:
-- We've learned about writing specifications
-    + Ways to write specifications: precondtions, postconditions, assume, assert
-- Hypothesis uses random testing (also known as property-based testing) to generate test cases
-- Hypothesis is limited to finding bugs; it can't prove the specification holds for all inputs.
+You might be wondering:
+In a verification class, why did we start by talking about Hypothesis?
+
+Answers:
+-
+
+Limitations of Hypothesis? (See poll above)
 
 Example:
 """
@@ -61,13 +66,28 @@ def test_absolute_value(x):
 # We could try increasing the number of test cases...
 
 """
-=== Programs are logical formulas ===
-
 Let's *prove* that the function is correct for all inputs using Z3.
 
-Recall:
-A proof is a rigorous mathematical argument that convinces the
-reader (or a computer) that the conclusion must be true.
+=== How verification works ===
+
+Insight: Programs can be encoded as logical formulas.
+
+Take abs() as an example above: it was written in Python but it's really just
+a mathematical formula:
+
+    output == if x > 0 then x else -x
+
+Once we have written the program this way we can try to prove that
+
+    for all input, output,
+        if output = input(prog) and
+        precond(input) then
+        postcond(output).
+
+(Recall: A proof is a rigorous mathematical argument that convinces the
+reader (or a computer) that the conclusion must be true.)
+
+=== Automated verification ===
 
 What is Z3?
 
@@ -179,20 +199,19 @@ A formula is *satisfiable* if it is true for *at least one* input.
 
 Examples:
 
-    - first one: true, for example, for x = 101 and y = 5
+    - first one:
+        true, for example, for x = 101 and y = 5
         =====> Satisfiable
-    - second one: true for x = sqrt(2) (in the real numbers)
+
+    - second one:
+        true for x = sqrt(2) (in the real numbers)
         never true in the integers
-        =====> Satisfiable in real numbers, not satisfiable in integers
+        =====> Satisfiable in real numbers
+        =====> Unsatisfiable in integers
+
     - third one: true for any integer x, e.g. x = 5
-        =====> Satisfiable both in real numbers or in integers
-    - fourth one: satisfiable because we can take "Socrates" to be the actual
-        Socrates and we can take "mortal" and "human" to be the usual meanings
-        of those words, and then the statement is a true statement about
-        Socrates, humans, and being mortal
-        ^^ We're not going to encode this in Z3, but we could if we really wanted
-        =====> Satisfiable because it's true for **some** examples of the terms
-            or variables involved, i.e. true for some inputs.
+        =====> Satisfiable in real numbers
+        =====> Satisfiable in integers
 
 Key point: Satisfiable == True for at least one input.
 
@@ -330,9 +349,9 @@ The key to applying Z3 in the real world is to define the right
 mathematical domain to map your programs to.
 """
 
-####################
-###     Poll     ###
-####################
+############################
+###     Another Poll     ###
+############################
 
 """
 The z3.prove function (or our custom prove function)

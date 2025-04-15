@@ -8,14 +8,15 @@ Announcements:
 
 - My OH will be moved this week to Thursday (3-4pm), instead of Friday
 
-Project details (see `project/project.md`)
+Plan for today:
+move on to automated verification!
 
-- Please start thinking about your project now!
-
-Plan for the next few days:
+- Start with the quiz
 
 - Introduction to Z3
 
 - Satisfiability and validity
 
 - Theories of interest (integers, strings)
+
+- End of class today: Project details (see `project/overview.md`)
