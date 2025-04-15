@@ -34,14 +34,14 @@ def prove(spec):
     solver = z3.Solver()
     solver.add(z3.Not(spec))
     result = solver.check()
-    if result == UNSAT:
+    if result == PROVED:
         print("proved")
-    elif result == UNKNOWN:
-        print("failed to prove")
-    else:
-        # result == SAT
+    elif result == COUNTEREXAMPLE:
         print("counterexample")
         print(solver.model())
+    else:
+        # result == UNKNOWN
+        print("failed to prove or find counterexample")
     return result
 
 """

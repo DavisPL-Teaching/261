@@ -1,7 +1,7 @@
 """
 Lecture 3: Z3 and Satisfiability
 ECS 189C
-April 15, 2024
+April 15, 2025
 """
 
 ####################
@@ -29,8 +29,11 @@ https://forms.gle/wRkt67StL7eTmZn29
 You might be wondering:
 In a verification class, why did we start by talking about Hypothesis?
 
-Answers:
--
+Answers: I wanted to convince you that
+- You're writing specifications all the time! Any time you put an assertion
+  your code, or write a test or unit test, or document a precondition,
+  you are writing specifications.
+- I wanted to highlight the difference between testing and verification.
 
 Limitations of Hypothesis? (See poll above)
 
@@ -49,14 +52,18 @@ def absolute_value(x):
 
 from hypothesis import given
 import hypothesis.strategies as st
+from hypothesis import settings
 import pytest
 
 @pytest.mark.skip
 @given(st.integers())
+# @settings(max_examples = 10_000)
 def test_absolute_value(x):
     y = absolute_value(x)
     assert y == x or y == -x
     assert y >= 0
+    # ^^ Convince yourself that this is a full functional correctness spec
+    # for abs().
 
 # What happens when we test it?
 
@@ -71,6 +78,7 @@ Let's *prove* that the function is correct for all inputs using Z3.
 === How verification works ===
 
 Insight: Programs can be encoded as logical formulas.
+    Encode what used to be a function in Python as a logical formula.
 
 Take abs() as an example above: it was written in Python but it's really just
 a mathematical formula:
@@ -84,6 +92,22 @@ Once we have written the program this way we can try to prove that
         precond(input) then
         postcond(output).
 
+    for all x, y:
+        if (y == (if x > 0 then x else -x)) and
+        True then
+        (y == x or y == -x) and (y >= 0).
+
+    for all x, y:
+        if
+            (
+                x > 0 && y == x
+                or
+                !(x > 0) && y == -x
+            )
+        then
+            (y == x or y == -x) and (y >= 0)
+        .
+
 (Recall: A proof is a rigorous mathematical argument that convinces the
 reader (or a computer) that the conclusion must be true.)
 
@@ -92,14 +116,16 @@ reader (or a computer) that the conclusion must be true.)
 What is Z3?
 
 Z3 is an automated theorem prover (from Microsoft Research),
-more specifically, it's a satisfiability modulo thoeries (SMT) solver.
+more specifically, it's a satisfiability modulo theories (SMT) solver.
 
 Basically:
 - You input a mathematical statement (mathematical formula)
-- If it's true, Z3 tries to prove it.
-- If it's false, Z3 tries to find a counterexample.
+- Z3 tries to prove it --> if so, returns a proof (formula is true)
+- Simultaneously, Z3 tries to find a counterexample --> if so, returns a counterexample (formula is false)
+- If it can't figure out if it's true or false, it may fail and return "Unknown"
+    (more on this later).
 
-It tries to do this fully automatically. (Not always successfully, as we will later see.)
+It tries to do this fully automatically.
 
 First step: we need to have Z3 installed
 
@@ -126,6 +152,8 @@ Second step: we have to rewrite the function using Z3.
 
 def absolute_value_z3(x):
     # Read this as: if x < 0 then -x else x.
+    # Cannot stress enough: this is NOT an executable program
+    # It's an abstract if statement.
     return z3.If(x < 0, -x, x)
 
 # Notice this is exactly the same function as before,
@@ -133,7 +161,6 @@ def absolute_value_z3(x):
 
 # To see output:
 # run with pytest lecture.py -rP
-@pytest.mark.skip
 def test_absolute_value_z3():
     # Declare our variables
     x = z3.Int('x')
@@ -176,7 +203,8 @@ or a counterexample.
 
 "Mathematical statement" = statement is some logic.
 
-Let's talk about logic & satisfiability.
+In order to understand how Z3 works, we need to understand
+logical formulas and satisfiability.
 """
 
 ##########################
@@ -190,12 +218,27 @@ the core objects that Z3 works with.
 Examples:
 
     - "x > 100 and y < 100"
-    - "x * x = 2"
+    - "x * x == 2"
     - "x is an integer"
 
-Essence of satisfiability:
+Formulas can have variables (x and y above)
 
-A formula is *satisfiable* if it is true for *at least one* input.
+An *assignment* to the variables is a mapping from each variable to a value.
+
+    Ex.: assigment: x ↦ 2, y ↦ 3
+    Under this assignment the formulas above evaluate to:
+    - "2 > 100 and 3 < 100"
+    - "2 * 2 == 2"
+    - "2 is an integer"
+
+A formula is *satisfiable* if it is true for *at least one* assignment.
+
+    i.e. an existential quantification:
+    phi = spec
+
+    "There exists an assignment v such that phi(v) is true".
+                                            ^ not executable program,
+                                            mathematical statement
 
 Examples:
 
@@ -215,9 +258,161 @@ Examples:
 
 Key point: Satisfiable == True for at least one input.
 
-Side note:
-If you've taken ECS 120, you may have seen the Boolean satisfiability problem,
-or SAT or 3SAT, and this is an example of what I'm calling Satisfiability.
+The satisfiability problem:
+
+    INPUT: a mathematical formula φ
+
+    OUTPUT: True if φ is satisfiable, false otherwise.
+
+Question:
+
+    -> Is satisfiability decidable?
+    -> If so, what is the complexity?
+
+It depends on the grammar of allowed formulas.
+
+    What syntax do we allow for formulas?
+
+Boolean logic:
+
+    Infinite family of Boolean variables
+
+        Var ::= b1, b2, b3, b4, ...
+
+    Formula
+
+        Formula φ ::= φ v φ  |  φ ^ φ  |  !φ  |  Var
+
+            (add if you like -- expressible using above)
+            | φ <-> φ
+            | φ  -> φ
+            | True
+            | False
+            | φ ⊕ φ (xor)
+
+    Example:
+
+        (b1 ^ !b2) v (b3 ^ !b1) v True
+
+Is the satisfiability problem decidable?
+
+    Idea:
+    We can try brute forcing all variables!
+    Only a finite number of vars occur in our formula -- let's n variables
+    Try all 2^n variable assignments.
+    (assignment = maps each var to True or False)
+    Evaluate the formula
+
+    Pseudocode:
+    Enumerate n vars b1, b2, ..., b_n
+    For all assignments v: Var -> Bool:
+        evaluate φ(v)
+        if φ(v) = true, return SAT
+    Else (for loop terminates without finding a satisfying assignment):
+        return UNSAT.
+
+    Complexity: exponential.
+
+    2^n (exponential in the length of the input formula).
+
+(Review from ECS 120)
+Because the input grammar is a Boolean formula, this is
+called the Boolean satisfiability problem (or SAT or 3SAT for the 3-CNF version.)
+
+What happens if we don't just have Booleans?
+
+    Z3 = Satisfiability "Modulo Theories"
+    This is the "Modulo Theories" part.
+
+What's a mathematical theory?
+We can do examples of data types like... integers, reals, lists, sets, ...
+
+We want to replace our Boolean variables with constraints over the data type
+we're interested in.
+
+Theory of integers:
+
+    Infinite family of Boolean variables
+
+        IntVar ::= n1, n2, n3, ...
+
+    Integer expressions
+    (let's not include division)
+    (other interesting operations -- % (modulo), ^ (exponentiation), ! (factorial))
+
+        IntExpr ::=
+            IntExpr + IntExpr
+            | IntExpr - IntExpr
+            | IntExpr * IntExpr
+            | IntVar
+            | 0
+            | 1
+
+    Formula
+    We can compare two integers! (A relation)
+
+        Formula φ ::= φ v φ  |  φ ^ φ  |  !φ
+            | IntExpr == IntExpr
+            | IntExpr < IntExpr
+
+            (add if you like -- expressible using above)
+            | φ <-> φ
+            | φ  -> φ (if then)
+            | True
+            | False
+            | φ ⊕ φ (xor)
+            | IntExpr <= IntExpr
+            | IntExpr >= IntExpr
+            | IntExpr > IntExpr
+
+
+    Example:
+
+        (x > 0 ^ y > x) -> y > 0
+
+        (x == y1 + y2 + y3 + y4)
+            ^ (y1 == z1 * z1)
+            ^ (y2 == z2 * z2)
+            ^ (y3 == z3 * z3)
+            ^ (y4 == z4 * z4)
+
+            "x is expressible as the sum of four square numbers"
+
+Question:
+    Is the satisfiability problem for integers decidable?
+
+    (Q: Is this just integer programming?)
+    Claim: yes - can we just brute force and go through all the values and
+        check whether it is true or not?
+        That would work if the integers are in a bounded range.
+        But what if the integers are unbounded integers
+            (e.g., Python integers, not C integers)
+
+
+    Famous open problem posed by Hilbert in 1900
+    "Hilbert's 10th problem"
+    Turned out to be undecidable, proof due to Julia Robinson and others.
+
+--------------------
+
+Recap:
+we talked about the methodology of automated verification
+- rewrite the program using mathematical formulas
+- try an automated theorem prover (Z3) to check if the formula is true or not
+
+we talked about satisfiability
+- input a formula, determine if ∃ a assignment to the variables that renders the
+  formula true
+- decidable for Booleans (NP complete), undecidable already even for the simplest
+    infinite datatype, integers.
+
+where we are going next:
+- what does satisfiability  have to do with provability?
+- other theories (other than Booleans and integers)
+
+***** where we ended for today *****
+
+.............................................
 
 Let's start with boolean variables. Using Z3:
 
@@ -226,8 +421,8 @@ To make a Boolean variable, we use:
 - z3.Bools
 """
 
-a = z3.Bool('a')
-b = z3.Bool('b')
+# a = z3.Bool('a')
+# b = z3.Bool('b')
 
 # This defines two boolean variables, a and b.
 # We'll see what the 'a' and 'b' mean in a moment
@@ -238,10 +433,10 @@ Creating a formula
 We can take our boolean variables and combine them
 """
 
-form1 = z3.And(a, b)
-form2 = z3.Or(a, b)
-form3 = z3.Not(a)
-form4 = z3.And(z3.Or(a, b), z3.Or(a, z3.Not(b)))
+# form1 = z3.And(a, b)
+# form2 = z3.Or(a, b)
+# form3 = z3.Not(a)
+# form4 = z3.And(z3.Or(a, b), z3.Or(a, z3.Not(b)))
 
 # We could run z3.prove() on these formulas or a new function called
 # z3.solve() -- we will do this in a moment
@@ -307,21 +502,21 @@ form3 = z3.Not(a)
 form4 = z3.And(z3.Or(a, b), z3.Or(a, z3.Not(b)))
 """
 
-z3.solve(form1)
-z3.solve(form2)
-z3.solve(form3)
-z3.solve(form4)
+# z3.solve(form1)
+# z3.solve(form2)
+# z3.solve(form3)
+# z3.solve(form4)
 # =====> Satisfiable, Z3 gives an example
 
 # For all four examples, the formula is satisfiable -- Z3 returns an example
 # where the formula is true.
 # What about something that's NOT satisfiable?
 
-form5 = z3.And(a, z3.Not(a))
-# A and Not A --> always false, should be never true, i.e. not satisfiable
+# form5 = z3.And(a, z3.Not(a))
+# # A and Not A --> always false, should be never true, i.e. not satisfiable
 
-z3.solve(form5)
-# =====> Unsatisfiable, Z3 says "no solution"
+# z3.solve(form5)
+# # =====> Unsatisfiable, Z3 says "no solution"
 
 ########################
 ###     Validity     ###
@@ -447,11 +642,11 @@ Examples:
 
 """
 
-print("More examples:")
-x = z3.Bool('x')
-y = z3.Bool('y')
+# print("More examples:")
+# x = z3.Bool('x')
+# y = z3.Bool('y')
 # What does implies do?
-z3.solve(z3.Implies(x, y))
+# z3.solve(z3.Implies(x, y))
 # Implies is basically the "if then" function and it has the following meaning:
 # if x is true then y, otherwise true.
 # arrow (-->)
@@ -460,9 +655,9 @@ z3.solve(z3.Implies(x, y))
 
 # XOR implies or?
 # XOR is exclusive or (exactly one, but not both of x and y are true)
-x_xor_y = z3.Xor(x, y)
-x_or_y = z3.Or(x, y)
-z3.prove(z3.Implies(x_xor_y, x_or_y))
+# x_xor_y = z3.Xor(x, y)
+# x_or_y = z3.Or(x, y)
+# z3.prove(z3.Implies(x_xor_y, x_or_y))
 
 """
 Convenient shortcuts:
@@ -618,9 +813,9 @@ Basic data types: Bool, Int, Real
 """
 
 # How to define a boolean using integers
-b = z3.Int('b')
-boolean_spec = z3.And(b >= 0, b <= 1)
-z3.solve(boolean_spec)
+# b = z3.Int('b')
+# boolean_spec = z3.And(b >= 0, b <= 1)
+# z3.solve(boolean_spec)
 # If you wanted to do boolean operations,
 # and, or, implies, etc. you could define these on integers.
 
@@ -639,9 +834,9 @@ z3.Ints -- creates multiple integers
 
 Examples
 """
-x, y = z3.Ints("x y")
-spec = z3.And(x > y, y > 5)
-z3.solve(spec)
+# x, y = z3.Ints("x y")
+# spec = z3.And(x > y, y > 5)
+# z3.solve(spec)
 
 """
 What operations are supported here?
@@ -650,12 +845,12 @@ on Z3 integers. BUT keep in mind it's not the same as Python
 integer arithmetic.
 """
 
-x + y # <- Z3 expression, NOT a Python integer
-print(x + y) # Prints as "x + y", not as some specific integer
+# x + y # <- Z3 expression, NOT a Python integer
+# print(x + y) # Prints as "x + y", not as some specific integer
 
 # Problem: find two integers whose sum and product is the same.
-print("Find two integers whose sum and product is equal:")
-z3.solve(x + y == x * y)
+# print("Find two integers whose sum and product is equal:")
+# z3.solve(x + y == x * y)
 
 # Operations we've seen so far: +, *, ==, <, all of these
 # work on Z3 integers.
@@ -703,9 +898,9 @@ def pythagorean_triple(a, b, c):
     # TL;DR Python boolean operators are weird, so be careful with them.
 
 # If we want an example:
-a, b, c = z3.Ints("a b c")
-print("Example pythagorean triple:")
-z3.solve(pythagorean_triple(a, b, c))
+# a, b, c = z3.Ints("a b c")
+# print("Example pythagorean triple:")
+# z3.solve(pythagorean_triple(a, b, c))
 
 """
 Q: what if we want more than one answer?
@@ -719,16 +914,16 @@ that answer is excluded.
 
 # First answer: a = 6, b = 8, c = 10
 # Second answer
-new_constraint = z3.Or(
-    z3.Not(a == 6),
-    z3.Not(b == 8),
-    z3.Not(c == 10),
-)
+# new_constraint = z3.Or(
+#     z3.Not(a == 6),
+#     z3.Not(b == 8),
+#     z3.Not(c == 10),
+# )
 # ^ Force the solver to give us a new answer.
-z3.solve(z3.And([
-    pythagorean_triple(a, b, c),
-    new_constraint,
-]))
+# z3.solve(z3.And([
+#     pythagorean_triple(a, b, c),
+#     new_constraint,
+# ]))
 
 # We can keep adding constraints for each new answer,
 # there is also a way to do this programmatically
@@ -746,16 +941,16 @@ Q: write a function to solve the formula
 x^2 + 5x + 6 = 0
 """
 
-x = z3.Int('x')
-print("Solution:")
-z3.solve(x * x + 5 * x + 6 == 0)
-# If we want the other answer?
-y = z3.Int('y')
-z3.solve(z3.And([
-    x * x + 5 * x + 6 == 0,
-    y * y + 5 * y + 6 == 0,
-    x != y,
-]))
+# x = z3.Int('x')
+# print("Solution:")
+# z3.solve(x * x + 5 * x + 6 == 0)
+# # If we want the other answer?
+# y = z3.Int('y')
+# z3.solve(z3.And([
+#     x * x + 5 * x + 6 == 0,
+#     y * y + 5 * y + 6 == 0,
+#     x != y,
+# ]))
 
 """
 === True Real Numbers ===
@@ -774,10 +969,10 @@ z3.Real
 z3.Reals
 """
 
-x = z3.Real('x')
-# what happens?
-print("Square root of two:")
-z3.solve(x * x == 2)
+# x = z3.Real('x')
+# # what happens?
+# print("Square root of two:")
+# z3.solve(x * x == 2)
 
 # Note: there is no floating point value x with x^2 = 2
 # It only exists as a true real number.

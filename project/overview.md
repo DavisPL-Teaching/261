@@ -2,7 +2,7 @@
 
 I encourage you to start thinking about your project now! Here are some guidelines:
 
-The goal of the project is to apply the tools used in this course to build a verified software project of your choice. Your project will have three components: First, the project proposal; second the project presentation; and third, the project report.
+The goal of the project is to apply the tools used in this course to build a small verified software project of your choice. Your project will have three components: First, the project proposal; second the project presentation; and third, the project report.
 
 ## Choosing a Project
 
@@ -25,9 +25,9 @@ In the early stages, I'd like for you to be thinking about what software domain 
 
 #### For example:
 
-- Operating systems: build a process traer, a file syncing utility, or a process scheduler
+- Operating systems: build a process tracer, a file syncing utility, or a process scheduler
 
-- Computer networks or distributed systems: build a simple a messaging chat, a server/client app, or an RPC
+- Computer networks or distributed systems: build a simple a messaging chat, a server/client app, an RPC protocol, a three-phase commit or Paxos implementations
 
 - Game development: build a text-based adventure game or a terminal Snake client
 
@@ -54,9 +54,9 @@ Estimating difficulty:
 
 - Formally verified software is much more difficult to develop than normal software! As a rule of thumb, expect to spend **approximately 10x** the time that you would normally spend on the project to get the software working. Please keep this in mind! For example, you shouldn't have an application with too many features; focus on the simplest possible version of your application or a "minimum working prototype" that will demonstrate the main ideas.
 
-- In my experience, most people tend to overestimate how much work a project will require, even for *unverified* software!
+- In my experience, most people tend to underestimate how much work a project will require, even for *unverified* software!
 
-- At the same time, I would much rather you work on a project that is related to your research interests even if it turns out to be difficult and you do not fully succeed, than you pick an "easy" project that isn't related to your interests.
+- At the same time, do be ambitious! I would much rather you work on a project that is related to your research interests even if it turns out to be difficult and you do not fully succeed, than you pick an "easy" project that isn't related to your interests.
 The purpose of the project proposal is to help gauge your project difficulty so that I can give you some feedback before you get started.
 
 Thinking about verification properties: what will you verify about your software?
@@ -64,8 +64,7 @@ Thinking about verification properties: what will you verify about your software
 - Start with functional correctness (baseline)
   Think of it as adding preconditions, postconditions (or assume/asserts) to your code
 
-- Then think about more interesting properties: are there any safety properties you are interested in?
-
+- Then think about more interesting properties: are there any safety properties or liveness properties you are interested in? Properties that require running the code multiple times?
 
 ### 2. Choosing a group
 
@@ -115,7 +114,7 @@ It should have the following sections:
 (2) Implementation plan
 (3) Collaboration plan
 (4) Conclusion
-See `1-proposal.md` for more details!
+See `proposal.md` for more details!
 
 ## Late-quarter: Presentation
 

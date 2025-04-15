@@ -8,6 +8,9 @@ Announcements:
 
 - My OH will be moved this week to Thursday (3-4pm), instead of Friday
 
+- I am aware of issues with undergraduate enrollment
+    + I'll post an update by end of day with the status
+
 Plan for today:
 move on to automated verification!
 
