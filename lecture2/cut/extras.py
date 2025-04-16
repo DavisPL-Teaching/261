@@ -12,6 +12,10 @@ Additional help:
 - The Z3 solver API
 """
 
+import pytest
+import z3
+from helper import prove, solve, SAT, UNSAT, UNKNOWN, PROVED, COUNTEREXAMPLE
+
 """
 Solve and prove
 
