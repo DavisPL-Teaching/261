@@ -23,3 +23,15 @@ move on to automated verification!
 - Theories of interest (integers, strings)
 
 - End of class today: Project details (see `project/overview.md`)
+
+## April 17
+
+Announcements:
+
+- HW1 deadline
+
+- OH today
+
+Plan:
+
+- More Z3 and satisfiability modulo theories
