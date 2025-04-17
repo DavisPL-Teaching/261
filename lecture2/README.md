@@ -28,9 +28,11 @@ move on to automated verification!
 
 Announcements:
 
-- HW1 deadline
+- HW1 deadline extend to Monday
 
-- OH today
+    + come to OH and Piazza!
+
+- OH today 3-4pm ASB 2085
 
 Plan:
 

@@ -412,22 +412,77 @@ where we are going next:
 ***** where we ended for today *****
 
 === April 17 ===
-.............................................
 
 Recall:
 - Boolean satisfiability problem: on input a Boolean formula, determine SAT or UNSAT
+    + Decidable
 - Integer satisfiability problem: on input a formula involving integer arithmetic expressions (*, +, -), determine SAT or UNSAT (see grammar above)
     + Undecidable
 
 Boolean Satisfiability is NP-complete
-    + Strong Exponential-Time Hypothesis: Likely impossible to solve in less than exponential time
+    + Strong Exponential-Time Hypothesis (SETH):
+      Likely impossible to solve in less than exponential time in the worst case.
 
 Integer satisfiability is also NP-hard
-    + Why?
+    + Reduce from Boolean sat
+        * idea: can we think of positive integers true and negative as being false?
+
+    + Q I am asking: how do we encode Boolean formulas as integer formulas?
+
+        Idea: use the integer variables, and use comparison to compare to zero
+
+        divide by the absolute value of integer?
+
+        most common:
+            True = 1
+            False = 0
+
+        Encode each boolean variable b as an integer variable that is between
+        0 and 1
+
+        add constraints that:
+        (0 <= n1 <= 1) for all variables n1, n2, ...
+
+        if I want to say a boolean variable is true I say
+            n1 == 1
+        and if I want to say it's false I say that
+            n1 == 0
+
+        Example:
+
+            (b1 ^ !b2) v (b3 ^ !b1) v True
+
+        Encoding returns:
+            (n1 >= 0) and (n1 <= 1) and
+            (n2 >= 0) and (n2 <= 1) and
+            (n3 >= 0) and (n3 <= 1) and
+            ((n1 == 1) and (n2 == 0))
+                or (n3 == 1) and (n1 == 0)
+
+        Would also work:
+            ((n1 != 0) and (n2 == 0))
+                or (n3 != 0) and (n1 == 0)
+
+Point being:
+    Integer satisfiability is also NP-hard (probably exp time)
+
+Recall:
+    φ is satisfiable if there exists an assignment to the variables
+        v: Var -> Bool
+        (or v: Var -> Integer)
+    such that the formula φ(v) evaluates to true.
+    "sometimes true"
 
 Also:
-- A formula is **valid** if...
+- A formula φ is **valid** if for all assignments to the variables
+        v: Var -> Bool
+        (or v: Var -> Integer)
+    the formula φ(v) evaluates to true.
+    "always true"
 
+Validity can be solved by reducing to satisfiability as follows:
+
+    If I want to know if φ is valid, check if !φ is satisfiable.
 """
 
 ####################
@@ -440,6 +495,12 @@ Is the following formula satisfiable, valid, neither, or both?
     (x > 100 and y <= 100)
     or
     (x <= 100 and y > 100)
+
+True/False:
+    All satisfiable formulas are valid
+    All valid formulas are satisfiable
+    All unsatisfiable formulas are valid
+    All valid formulas are unsatisfiable
 
 https://forms.gle/jPD3oRpGci3E4ikp9
 
@@ -475,8 +536,12 @@ def test_poll_output_1():
         z3.And(x > 100, y <= 100),
         z3.And(x <= 100, y > 100),
     )
-    prove(spec)
+    print("Is the formula satisfiable?")
     solve(spec)
+    print("Is the formula valid?")
+    prove(spec)
+
+test_poll_output_1()
 
 """
 Other examples in Z3:
@@ -506,7 +571,7 @@ Is it valid?
 Possible outputs of z3.solve:
     "unsatisfiable"
     "satisfiable" with a specific example (called a model)
-    "unknown"
+    "unknown" -- unable to resolve
 
 Possible outputs of z3.prove
     "proved"
@@ -562,6 +627,8 @@ Similar to our grammar above, we have
 
 Our examples from before:
 
+(Exercise - skip)
+
 (x > 0 ^ y > x) -> y > 0
 
         (x == y1 + y2 + y3 + y4)
@@ -575,16 +642,68 @@ Our examples from before:
 How does divide / work?
 """
 
+# x = z3.Int("x")
+# y = z3.Int("y")
+# z = z3.Int("z")
 
-# print("Output:")
-# test_poll_output_1()
+# Is the following satisfiable: x / y == z?
+# spec = (x / y == z)
+# solve(spec)
+
+# Probably beter:
+# spec = z3.And(x / y == z, y != 0)
+# solve(spec)
+
+# Instructive example:
+# spec = z3.And(x / y == z, y == 0, x == 1, z == 3)
+# solve(spec)
+
+# What's going on: shows the power of satisfiability as a concept
+# Z3 has a variable div0
+# def of division: x / y == (standard result) if y is not zero, else div0
+# Add a new variable to denote the undefined case.
+
+# Is Z3 using integer division?
+# spec = z3.And(x / y == z, y == 2, x == 3)
+# spec = z3.And(x / y == z, y == 2, x == 3, z != 1)
+# solve(spec1)
+# solve(spec2)
 
 """
 Basic data types: Bool, Int, Real
 
+Before we continue...
+let's reflect on where we're at here.
+
+- The methodology of automated verification was that we wanted to
+  encode our program and our spec as formulas, and then prove them by
+  searching for a proof automatically (i.e., checking validity)
+
+  Things look really grim at this point!
+  We saw that SAT is already NP-hard
+  We saw that even with the most simple data type, the problem is already
+  impossible!
+  AND we are only considering really simple formulas!
+        -> we haven't included quantifiers: forall and there exists
+        -> In order to encode all of mathematics and computer science
+            (and many properties of real programs), we need quantifiers.
+
+  But there is hope!
+  1. Properties that come up in practice - in the real world - are often
+     simple formulas, not complex formulas
+  2. We don't need to solve the problem in the worst case, only in the
+     case of real-world constraints
+  3. (Foreshadowing to later) It turns out that people typically only write
+     programs that they know are correct.
+
+Z3 and other SMT solvers are built to solve practical constraints, and for
+many practical applications they "just work" and come up with the right answer.
+
 === Real numbers ===
 
 Grammar for reals:
+
+
 
 
 Satisfiability problem?

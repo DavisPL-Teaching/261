@@ -28,3 +28,7 @@ A, C, E, F (assert True, assume True, assert P if it immediately follows assume 
 
 April 15 poll:
 A, B, C, and E
+
+April 17 poll:
+- Satisfiable only
+- B only (all valid formulas are satisfiable)
