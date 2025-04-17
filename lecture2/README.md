@@ -36,8 +36,16 @@ Announcements:
 
 Plan:
 
-- More theories: real numbers, strings; satisfiability modulo _theories_
+- Satisfiability, validity, and NP-hardness
 
 - Hands on programming challenges
 
-- If time / next: advanced issues (how Z3 works, quantifiers, undecidability, etc.)
+## April 22
+
+Plan:
+
+- Finish tour of Z3
+
+    + real numbers, strings, arrays, functions, quantifiers
+
+    + satisfiability modulo _theories_

@@ -541,7 +541,8 @@ def test_poll_output_1():
     print("Is the formula valid?")
     prove(spec)
 
-test_poll_output_1()
+# Uncomment to run
+# test_poll_output_1()
 
 """
 Other examples in Z3:
@@ -699,41 +700,301 @@ let's reflect on where we're at here.
 Z3 and other SMT solvers are built to solve practical constraints, and for
 many practical applications they "just work" and come up with the right answer.
 
+Programming exercises:
+    In problems/problems.md
+    We did the N queens puzzle (n-queens.py) in class.
+    There is also a Sudoku solver (sudoku.py) and a task scheduler (task-scheduler.py)
+    and a few other exercises to try out.
+
+***** where we left off for today *****
+
+=== April 22 ===
+
+We have seen that even though satisfiability is hard or undecdidable in general,
+Z3 can solve many practical problems.
+- n-queens.py
+- other examples in problems/ (sudoku.py, task-scheduler.py)
+
+[N queens solution demonstration
+How large can we take N up to before Z3 fails?]
+
+We don't have to be good in the worst case - we can just be good on "average" cases!
+And: we don't have to be good for "sufficiently large" inputs - solving on small inputs is both useful and interesting!
+
+How does Z3 do this? Common algorithms:
+- Common algorithms: DPLL, DPLL(T), CDCL, Nelson-Oppen.
+- More on this soon
+
+First:
+A tour of some of the remaining theories that Z3 supports
+that you will most often encounter / will be most useful
+(and corresponding Z3 syntax).
+
 === Real numbers ===
 
 Grammar for reals:
 
+Let's modify our grammar for integers below:
 
+        IntVar ::= n1, n2, n3, ...
 
+    Integer expressions
+    (let's not include division)
+    (other interesting operations -- % (modulo), ^ (exponentiation), ! (factorial))
 
-Satisfiability problem?
+        IntExpr ::=
+            IntExpr + IntExpr
+            | IntExpr - IntExpr
+            | IntExpr * IntExpr
+            | IntVar
+            | 0
+            | 1
 
+    Formula
+    We can compare two integers! (A relation)
+
+        Formula φ ::= φ v φ  |  φ ^ φ  |  !φ
+            | IntExpr == IntExpr
+            | IntExpr < IntExpr
+
+            (add if you like -- expressible using above)
+            | φ <-> φ
+            | φ  -> φ (if then)
+            | True
+            | False
+            | φ ⊕ φ (xor)
+            | IntExpr <= IntExpr
+            | IntExpr >= IntExpr
+            | IntExpr > IntExpr
+
+    Example?
+
+        (x > 0 ^ y > x) -> y > 0
+
+        (x == y1 + y2 + y3 + y4)
+            ^ (y1 == z1 * z1)
+            ^ (y2 == z2 * z2)
+            ^ (y3 == z3 * z3)
+            ^ (y4 == z4 * z4)
+
+            "x is expressible as the sum of four square numbers"
+
+Q: Is satisfiability for reals NP-hard?
+Q: Is satisfiability for reals decidable?
+
+=== More interesting data types ===
+
+Besides reals, the most interesting and commonly useful datatype in practice
+is strings.
+
+What are string constraints?
+This starts to look quite different:
+
+        StringVar ::= n1, n2, n3, ...
+
+    String expressions
+    What do strings support?
+
+        StrExpr ::= ...
+
+    Formula
+    Let's start with our previous grammar
+    Do we want to add any other relations?
+
+        Formula φ ::= φ v φ  |  φ ^ φ  |  !φ
+            | StrExpr == StrExpr
+
+            (add if you like -- expressible using above)
+            | φ <-> φ
+            | φ  -> φ (if then)
+            | True
+            | False
+            | φ ⊕ φ (xor)
+
+    Example:
+
+Q: Is satisfiability for strings NP-hard?
+Q: Is satisfiability for strings decidable?
+
+Z3 syntax:
+
+- z3.String(varname)
+- + for concatenation
+- z3.InRe(str, regex) for regular membership
+    --> see extras/regex_help.md for regular expression help
+- z3.IntToStr
+
+=== Some words on applications ===
+
+What are strings useful for?
+
+String data is a HUGE source of security vulnerabilities.
+Top 5 web application vulnerabilities:
+- Cross-site scripting (XSS):
+  https://owasp.org/www-community/attacks/xss/
+- Injection attacks:
+  https://owasp.org/www-community/Injection_Flaws
+
+String length issues are also a common problem:
+- Heartbleed: https://xkcd.com/1354/
+
+=== XSS attack example ===
+
+What is an XSS attack?
+Basically, an XSS attack is where we insert a malicious script
+to be executed on a page which was not intended to execute the
+script.
+
+A minimized model of XSS attacks:
+"""
+
+query = z3.String("query")
+query_html = (
+    z3.StringVal("<title>Search results for:") + query + z3.StringVal("</title>")
+)
+
+start = z3.String("start")
+malicious_query = z3.StringVal("<script>alert('Evil XSS Script')</script>")
+end = z3.String("end")
+
+# Make a variable for the entire contents of the HTML page.
+html = z3.String("html")
+
+xss_attack = z3.And(
+    html == query_html,
+    html == start + malicious_query + end
+)
+
+# Uncomment to run
+# z3.solve(xss_attack)
+
+"""
+Match a US phone number example:
+"""
+
+phone_number = z3.String("phone_number")
+number = z3.Range("0","9")
+hyphen = z3.Re("-")
+
+length_constraint = z3.Length(phone_number) >= 12
+
+# Start to concatenate them!
+# Note: 2 ways to do this, concat regexes, or concat strings
+# Leads to different encodings
+regex_constraint = z3.Concat(
+  number,
+  number,
+  number,
+  hyphen,
+  number,
+  number,
+  number,
+  hyphen,
+  number,
+  number,
+  number,
+  number,
+)
+
+# Uncomment to run
+# z3.solve(z3.InRe(phone_number, regex_constraint))
+
+"""
 === Combining multiple theories ===
 
 So far we have Booleans, Integers, and Reals.
 
 (In fact we don't really need booleans -- we can represent them as integers.)
 
-    ASIDE:
-    How to define a boolean using integers
-    b = z3.Int('b')
-    boolean_spec = z3.And(b >= 0, b <= 1)
-    z3.solve(boolean_spec)
-    If you wanted to do boolean operations,
-    and, or, implies, etc. you could define these on integers.
-
-    Take-away point here: if you have a less restrictive data
-    type than you want, you can add additional invariants
-    into your formula to encode whatever additional properties you
-    want.
-    Here: we wanted b to be between 0 and 1, so we simply added
-    0 <= b and b <= 1 into our spec.
-
 But we really then just have "Satisfiability Modulo Theory"
 
 What about combining multiple theories?
 
+It is easy to combine all the theories in a "trivial" way. How?
+
+Combining them in more interesting ways?
+
+=== Quantifiers ===
+
+Finally the last part of Z3 syntax is the most insidious and the most
+powerful - quantifiers.
+
+- z3.ForAll(var_or_list_of_vars, formula)
+
+- z3.Exists(var_or_list_of_vars, formula)
+
+The following example also uses the Z3 theory of arrays
+(very commonly combined with quantifiers)
+
+Underlying theory: theory of finite collections
+(basically, finite set theory)
 """
+
+# Try to prove that if the sum of an array is positive, then an array has
+# an element that is positive.
+
+# Define the array variable
+I = z3.IntSort()
+array = z3.Array('array', I, I)
+
+# First we have to express the sum of the array.
+# How do we do that?
+array_sum = z3.Function('array_sum', I, I)
+# The value array_sum(i) will represent the sum of the values
+# of the array up to index i.
+constraints = []
+
+# Base case
+constraints.append(array_sum(-1) == 0)
+
+# Inductive step -- using a ForAll constraint
+# See: https://stackoverflow.com/a/31119239/2038713
+i = z3.Int('i')
+constraints.append(z3.ForAll(i, z3.Implies(
+    z3.And(i >= 0),
+    array_sum(i) == array_sum(i - 1) + array[i]
+)))
+
+# Uncomment to run
+# solve(constraints)
+
+# A simpler example
+# A = z3.Array('A', I, I)
+# solve(A[0] + A[1] + A[2] >=0)
+# x = z3.Int('x')
+# print(A[x])
+# print(z3.Store(A, x, 10))
+
+"""
+Functions
+
+Underlying theory: "Theory of uninterpreted functions"
+"""
+
+# Ignore this for now
+I = z3.IntSort()
+
+# Function example
+x = z3.Int('x')
+y = z3.Int('y')
+f = z3.Function('f', I, I)
+constraints = [f(f(x)) == x, f(x) == y, x != y]
+# solve(z3.And(constraints))
+
+"""
+Custom datatypes
+
+Underlying theory?
+"""
+
+# TreeList = Datatype('TreeList')
+# Tree     = Datatype('Tree')
+# Tree.declare('leaf', ('val', IntSort()))
+# Tree.declare('node', ('left', TreeList), ('right', TreeList))
+# TreeList.declare('nil')
+# TreeList.declare('cons', ('car', Tree), ('cdr', TreeList))
+
+# Tree, TreeList = CreateDatatypes(Tree, TreeList)
 
 """
 ====== Some end notes ======
@@ -752,43 +1013,69 @@ Z3 is not just useful for proving properties of "mathematical" functions.
 - Recall slide from first lecture: all programs are secretly just
   math and logic
 
-- Compilers also work with a model of the program!
+- Compilers also work with a model of the program
     That is how they are able to optimize code prior to running it.
 
 - Many applications to real-world software, like cloud services,
     distributed systems, compilers, system implementations, etc.
-    (for example, teams at Amazon have spent millions of dollars on formal methods)
+    (for example, millions of $ at Amazon invested in formal methods)
 
-The key to applying Z3 in the real world is to define the right
+- You may choose to use Z3 for another domain-specific application for your final project
+
+The key to applying Z3 in the real world is often to define the right
 mathematical domain to map your programs to.
 
-=== Differences from Hypothesis? ===
+===== Z3 Review =====
 
-1. Random test case vs. proof
+Validity and satisfiability
 
-Hypothesis just runs random examples, Z3 thinks about the program
-mathematically and tries to analyze "all" examples.
+We saw that:
+Using the problem of satisfiability, we can:
+- solve() constraints
+- and we can prove() specifications.
 
-2. We had to rewrite the function using Z3!
+We should now be comfortable with using Z3 to set up a problem:
+1. Declare variables
+2. Declare constraints
+3. Ask Z3 to solve the constraints
 
-For absolute_value, it was just a standard Python function
-For Z3, we had to rewrite it as absolute_value_z3, using Z3 abstractions.
+Z3 has two "modes" that we have used: solve() and prove().
+- solve() to determine satisfiability
+- prove() to determine validity
 
-- Other differences? (We will see later)
+How do program specifications relate to Z3?
+(HW1 part2 has a question about this)
 
-==> we are testing a *model* of the program, not the program itself!
+    inputs = ... # Z3 variables
+    output = call_program(inputs)
+    precondition = ...
+    postcondition = ...
+    spec = z3.Implies(precondition, postcondition)
+    prove(spec)
 
-Why are we testing a model?
-Well, Z3 thinks about things formally and mathematically.
-So it needs a description of the program that is fully mathematical.
-- In principle, any program can be translated to the right model.
-- In principle, this is often possible to do automatically.
+We can also use Z3 more like Hypothesis to generate example inputs.
+How?
 
-Example: we have z3.If, so if your program has if statements,
-we can encode it in Z3.
-But the developers of Z3 may not have written equivalents for every
-Python funciton. (Ex.: files, print(), ...)
-And in those cases, you would need to write your own model.
+    inputs = ... # Z3 variables
+    precondition = ...
+    example = get_solution(precondition)
 
-Using a model is both a strength and a weakness.
+^^ This is basically how Hypothesis works!
+
+We saw that the main limitation of Hypothesis was?
+
+- It can find a bug, but it can never prove that there are no bugs!
+
+=== Main limitations of Z3 ===
+(There are two)
+
+1. We have to rewrite the program in Z3
+2. Z3 might hang or return unknown
+
+And that's where we are going next!
+
+With general program verification frameworks!
+
+The program and the proof will both be written in the same
+framework.
 """
