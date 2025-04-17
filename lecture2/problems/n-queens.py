@@ -26,7 +26,7 @@ an n x n grid where each cell is either " " or "Q".
 """
 
 import z3
-import pytest
+import sys
 from helper import solve, get_solution, SAT, UNSAT, UNKNOWN
 
 """
@@ -43,7 +43,12 @@ How to approach solving a problem in Z3?
 
 def get_input():
     # Placeholder
-    return 8
+    # return 8
+    args = sys.argv[1:]
+    if len(args) != 1:
+        print("Usage: python n-queens.py <n>")
+        return 8
+    return int(args[0])
 
 """
 Starting with step 1:
@@ -97,4 +102,20 @@ not_in_same_diag = [
 
 constraints = col_constraints + not_in_same_col + not_in_same_diag
 
-solve(constraints)
+result = solve(constraints)
+
+"""
+Pretty print the solution
+"""
+
+def pretty_print(model):
+    board = [["." for _ in range(n)] for _ in range(n)]
+    for i in range(n):
+        col = model[queens[i]].as_long()
+        board[i][col] = "Q"
+    for row in board:
+        print("".join(row))
+
+if result == SAT:
+    model = get_solution(constraints)
+    pretty_print(model)
