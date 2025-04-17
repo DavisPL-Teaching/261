@@ -82,7 +82,7 @@ col_constraints = [z3.And(queens[i] >= 0, queens[i] < n) for i in range(n)]
 not_in_same_col = [
     queens[i] != queens[j]
     for i in range(n)
-    for j in range(i, n)
+    for j in range(i + 1, n)
 ]
 
 def same_diag(i, j, queeni, queenj):
@@ -92,7 +92,7 @@ def same_diag(i, j, queeni, queenj):
 not_in_same_diag = [
     z3.Not(same_diag(i, j, queens[i], queens[j]))
     for i in range(n)
-    for j in range(i, n)
+    for j in range(i + 1, n)
 ]
 
 constraints = col_constraints + not_in_same_col + not_in_same_diag
