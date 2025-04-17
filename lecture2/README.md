@@ -34,4 +34,8 @@ Announcements:
 
 Plan:
 
-- More Z3 and satisfiability modulo theories
+- More theories: real numbers, strings; satisfiability modulo _theories_
+
+- Hands on programming challenges
+
+- If time / next: advanced issues (how Z3 works, quantifiers, undecidability, etc.)

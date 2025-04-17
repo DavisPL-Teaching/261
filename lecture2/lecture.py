@@ -416,16 +416,70 @@ where we are going next:
 
 Recall:
 - Boolean satisfiability problem: on input a Boolean formula, determine SAT or UNSAT
-    + NP-complete
-    + Strong Exponential-Time Hypothesis: Likely impossible to solve in less than exponential time
 - Integer satisfiability problem: on input a formula involving integer arithmetic expressions (*, +, -), determine SAT or UNSAT (see grammar above)
     + Undecidable
-    + Also NP-hard (why?)
+
+Boolean Satisfiability is NP-complete
+    + Strong Exponential-Time Hypothesis: Likely impossible to solve in less than exponential time
+
+Integer satisfiability is also NP-hard
+    + Why?
 
 Also:
 - A formula is **valid** if...
 
-Let's do a few examples in Z3.
+"""
+
+####################
+###     Poll     ###
+####################
+
+"""
+Is the following formula satisfiable, valid, neither, or both?
+
+    (x > 100 and y <= 100)
+    or
+    (x <= 100 and y > 100)
+
+https://forms.gle/jPD3oRpGci3E4ikp9
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+"""
+
+# In Z3:
+
+@pytest.mark.skip
+def test_poll_output_1():
+    x = z3.Int('x')
+    y = z3.Int('y')
+    spec = z3.Or(
+        z3.And(x > 100, y <= 100),
+        z3.And(x <= 100, y > 100),
+    )
+    prove(spec)
+    solve(spec)
+
+"""
+Other examples in Z3:
 
 Example from before:
 
@@ -448,6 +502,16 @@ Is it valid?
 - prove from helper
 - z3.prove
   (why prove? more on this soon)
+
+Possible outputs of z3.solve:
+    "unsatisfiable"
+    "satisfiable" with a specific example (called a model)
+    "unknown"
+
+Possible outputs of z3.prove
+    "proved"
+    "counterexample" with a counterexample
+    "failed to prove"
 """
 
 # TODO
@@ -511,34 +575,6 @@ Our examples from before:
 How does divide / work?
 """
 
-####################
-###     Poll     ###
-####################
-
-"""
-Recall: prove function returns one of three results:
-- proved (demonstrate that it's true for all inputs)
-- failed to prove (this basically means "I don't know")
-- counterexample (shows an input where the spec is not true)
-
-What would you guess is the output of the following Z3 code?
-"""
-
-@pytest.mark.skip
-def test_poll_output_1():
-    x = z3.Int('x')
-    y = z3.Int('y')
-    spec = z3.And(x > 100, y < 100)
-    prove(spec)
-
-"""
-A) "proved"
-B) "failed to prove"
-C) "counterexample" with no other text
-D) "counterexample" together with an example of x and y
-
-(Try running it)
-"""
 
 # print("Output:")
 # test_poll_output_1()
