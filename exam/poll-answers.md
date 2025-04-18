@@ -32,3 +32,6 @@ A, B, C, and E
 April 17 poll:
 - Satisfiable only
 - B only (all valid formulas are satisfiable)
+
+April 22 poll:
+- Yes to both: decidable and NP-hard.

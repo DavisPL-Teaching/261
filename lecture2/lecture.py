@@ -779,8 +779,14 @@ Let's modify our grammar for integers below:
 
             "x is expressible as the sum of four square numbers"
 
-Q: Is satisfiability for reals NP-hard?
+POLL:
+
+You can guess on these if you don't know!
+
 Q: Is satisfiability for reals decidable?
+Q: Is satisfiability for reals NP-hard?
+
+https://forms.gle/WBbgUvvYuGEdPmgB9
 
 === More interesting data types ===
 
@@ -813,8 +819,10 @@ This starts to look quite different:
 
     Example:
 
-Q: Is satisfiability for strings NP-hard?
+Once again going back to our question:
+
 Q: Is satisfiability for strings decidable?
+Q: Is satisfiability for strings NP-hard?
 
 Z3 syntax:
 
