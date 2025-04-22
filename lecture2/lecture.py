@@ -710,13 +710,15 @@ Programming exercises:
 
 === April 22 ===
 
-We have seen that even though satisfiability is hard or undecdidable in general,
+We have seen that even though satisfiability is hard or undecidable in general,
 Z3 can solve many practical problems.
 - n-queens.py
 - other examples in problems/ (sudoku.py, task-scheduler.py)
 
 [N queens solution demonstration
 How large can we take N up to before Z3 fails?]
+
+- Around 30-40 it starts to get a bit slower.
 
 Key points:
 - We don't have to be good in the worst case - we can just be good on "average" cases!
@@ -726,7 +728,32 @@ How does Z3 do this? Important algorithms: DPLL, DPLL(T), CDCL, Nelson-Oppen.
 
 - Still, some of you noticed that this fails sometimes. (More on this later)
 
-First:
+=== Why can Z3 fail? ===
+
+Z3 is a computer program. (It is equivalent to a Turing machine)
+
+We give Z3 some input formula φ. It could fail for two reasons:
+- Not computationally feasible?
+- Times out or returns unknown?
+- Solution space is too large -- too many inputs to consider
+
+1. No matter how much time is given, the algorithm used by Z3 does not resolve whether φ is satisfiable
+    --> there may be no such proof.
+    --> Decidability boundary
+    --> If a set of formulas L is undecidable, then Z3 is not special, for any TM M there exists
+        a formula φ in L such that M doesn't output whether φ is satisfiable (SAT or UNSAT)
+
+2. Z3 can decide that φ is satisfiable, but not in a "reasonable" amount of time.
+    --> proof does exist and just takes too long to find
+    --> Complexity boundary
+    --> If a set of formulas L is decidable, then we can try to come up with algorithms or heuristics
+        to return a result (SAT or UNSAT) more quickly on some inputs.
+
+Both of these depend on the actual alg. that Z3 is using.
+
+=== Z3 Tour ===
+
+Keeping this mind...
 A tour of some of the remaining theories that Z3 supports
 that you will most often encounter / will be most useful
 (and corresponding Z3 syntax).
@@ -737,17 +764,17 @@ Grammar for reals:
 
 Let's modify our grammar for integers below:
 
-        IntVar ::= n1, n2, n3, ...
+        RealVar ::= n1, n2, n3, ...
 
     Integer expressions
     (let's not include division)
     (other interesting operations -- % (modulo), ^ (exponentiation), ! (factorial))
 
         IntExpr ::=
-            IntExpr + IntExpr
-            | IntExpr - IntExpr
-            | IntExpr * IntExpr
-            | IntVar
+            RealExpr + RealExpr
+            | RealExpr - RealExpr
+            | RealExpr * RealExpr
+            | RealVar
             | 0
             | 1
 
@@ -755,8 +782,8 @@ Let's modify our grammar for integers below:
     We can compare two integers! (A relation)
 
         Formula φ ::= φ v φ  |  φ ^ φ  |  !φ
-            | IntExpr == IntExpr
-            | IntExpr < IntExpr
+            | RealExpr == RealExpr
+            | RealExpr < RealExpr
 
             (add if you like -- expressible using above)
             | φ <-> φ
@@ -764,9 +791,29 @@ Let's modify our grammar for integers below:
             | True
             | False
             | φ ⊕ φ (xor)
-            | IntExpr <= IntExpr
-            | IntExpr >= IntExpr
-            | IntExpr > IntExpr
+            | RealExpr <= RealExpr
+            | RealExpr >= RealExpr
+            | RealExpr > RealExpr
+
+    This is exactly the same grammar as over the integers --
+    the only thing different is the semantics, not the syntax.
+
+    Q: Do we need to include additional constants? Right now we only have 0 and 1
+    A: We could, but no matter what we include we won't get all real numbers
+        We would have to allow only, e.g. rational numbers, algebraic numbers, or computable numbers,
+        which get a bit more complicated to write down,
+        so let's just assume 0 and 1 for now.
+
+        We don't have 1/2, but we can say indirectly with 2 * x == 1
+        We don't have sqrt(2), but we can say indirectly with x * x == 2
+        ...
+
+        (Recall that: syntax vs. semantics?
+            Syntax == grammar above
+            Semantics: for any variable assignment v: RealVar -> Real
+                φ[v]
+            evaluates to true or false.
+        )
 
     Example?
 
@@ -785,6 +832,16 @@ POLL:
 You can guess on these if you don't know!
 
 Q: Is satisfiability for reals decidable?
+- Linear programming with real numbers is solvable in Ptime and linear programming with integers is NP-hard
+- Integers are kind of like real numbers with extra constraints
+-
+            ax^2 + bx + c == 0
+    has a solution over the reals iff
+            b^2 - 4ac >= 0
+            ^^^ discriminant
+
+    And it turns out you can generalize this to any polynomial.
+
 Q: Is satisfiability for reals NP-hard?
 
 https://forms.gle/WBbgUvvYuGEdPmgB9
@@ -797,12 +854,23 @@ is strings.
 What are string constraints?
 This starts to look quite different:
 
-        StringVar ::= n1, n2, n3, ...
+The theory of strings:
+    (Recipe to define any logic: Variables, Exprs (operations supported), Formulas (relations supported))
+
+        StringVar ::= s1, s2, s3, ...
 
     String expressions
     What do strings support?
 
-        StrExpr ::= ...
+        StrExpr ::= StringVar
+                    | Concat(StrExpr, StrExpr)
+                    | Character(sigma)       <--- sigma is from a finite alphabet Sigma
+                    | EmptyString
+
+                    Also could add:
+                    | CharAt(StrExpr, IntExpr)
+                    | Replace(...)
+                    | Substring(...)
 
     Formula
     Let's start with our previous grammar
@@ -810,6 +878,10 @@ This starts to look quite different:
 
         Formula φ ::= φ v φ  |  φ ^ φ  |  !φ
             | StrExpr == StrExpr
+            | Len(StrExpr) <= IntExpr <--- combining theories!
+                                        if you want, you can just add Len(StrExpr) to the IntExpr
+                                        grammar. Then we would have two mutually recursive grammars.
+            | StrInRegex(StrExpr, Regex)
 
             (add if you like -- expressible using above)
             | φ <-> φ
@@ -818,12 +890,33 @@ This starts to look quite different:
             | False
             | φ ⊕ φ (xor)
 
-    Example:
+        Regex grammar:
+            RegEx ::= Char(sigma) | Concat(Regex, Regex) | Union(Regex, Regex) | Star(Regex).
+            Full grammar in: extras/regex_help.md
+
+        Example:
+
+        Every character in the string is either a or b?
+        Withour regex - with CharAt?
+
+            forall i: 0 <= i < Len(s) ==> CharAt(s, i) == Char(a) v CharAt(s, i) == Char(b)
+            ^^^^^^ I used a quantifier
+                    we aren't allowing quantifiers yet.
+
+        With regex:
+
+            StrInRegex(s, Star(Union(Char(a), Char(b)))).
 
 Once again going back to our question:
 
-Q: Is satisfiability for strings decidable?
+Q: Is satisfiability for the theory of strings decidable?
+
+    --> Decidable with just string concat and regex
+    --> Open problem with including len()
+
 Q: Is satisfiability for strings NP-hard?
+
+    --> Yes again for the same reasons.
 
 Z3 syntax:
 
@@ -866,24 +959,23 @@ start = z3.String("start")
 malicious_query = z3.StringVal("<script>alert('Evil XSS Script')</script>")
 end = z3.String("end")
 
-# Make a variable for the entire contents of the HTML page.
-html = z3.String("html")
-
 xss_attack = z3.And(
-    html == query_html,
-    html == start + malicious_query + end
+    query_html == start + malicious_query + end
 )
 
 # Uncomment to run
 # z3.solve(xss_attack)
+
+# (We could also generalize this to require that the </title> tag is closed before the query,
+# or that the HTML matches a grammar, e.g. using regexes)
 
 """
 Match a US phone number example:
 """
 
 phone_number = z3.String("phone_number")
-number = z3.Range("0","9")
-hyphen = z3.Re("-")
+number = z3.Range("0","9") # Regex range -- matches a char from 0 to 9
+hyphen = z3.Re("-") # Regex string constant - matches only the string "-"
 
 length_constraint = z3.Length(phone_number) >= 12
 
@@ -906,23 +998,9 @@ regex_constraint = z3.Concat(
 )
 
 # Uncomment to run
-# z3.solve(z3.InRe(phone_number, regex_constraint))
+z3.solve(z3.InRe(phone_number, regex_constraint))
 
 """
-=== Combining multiple theories ===
-
-So far we have Booleans, Integers, and Reals.
-
-(In fact we don't really need booleans -- we can represent them as integers.)
-
-But we really then just have "Satisfiability Modulo Theory"
-
-What about combining multiple theories?
-
-It is easy to combine all the theories in a "trivial" way. How?
-
-Combining them in more interesting ways?
-
 === Quantifiers ===
 
 Finally the last part of Z3 syntax is the most insidious and the most
@@ -931,6 +1009,8 @@ powerful - quantifiers.
 - z3.ForAll(var_or_list_of_vars, formula)
 
 - z3.Exists(var_or_list_of_vars, formula)
+
+Z3 supports quantifiers, but not very well.
 
 The following example also uses the Z3 theory of arrays
 (very commonly combined with quantifiers)
@@ -988,7 +1068,7 @@ x = z3.Int('x')
 y = z3.Int('y')
 f = z3.Function('f', I, I)
 constraints = [f(f(x)) == x, f(x) == y, x != y]
-# solve(z3.And(constraints))
+solve(z3.And(constraints))
 
 """
 Custom datatypes
@@ -1005,37 +1085,93 @@ Underlying theory?
 
 # Tree, TreeList = CreateDatatypes(Tree, TreeList)
 
-
 """
 ===== Z3 internals =====
 
-So how does Z3 work anyway?
-Z3 is known as an "SMT solver": Satisfiability Modulo Theories.
+How SMT solvers work:
 
-- We know what "satisfiability" means
+1. Algorithms for Boolean satisfiability
+2. Decision procedure for specific theories.
 
-  We saw this in a previous lecture
+Part 1: Boolean SAT:
 
 Example:
-Boolean satisfiability:
 
-(p or q or r) and (~p or ~q or ~s) and (s)
+    (p or q or r) and (~p or ~q or ~s) and (s)
 
-We said it's "satisfiable" if there exists some values of the input
-variables such that the formula is true.
+What should I do to solve?
 
-The traditional problem of satisfiability, or SAT, is with boolean
-variables -- if you've taken a CS theory class, you may have seen
-that this is a famous example of an NP-hard problem. What that maens
-is roughly that it's impossible to solve efficiently in general, in
-general you would need exponential time to solve the problem.
+First, s is alone, so we know s has to be true!
 
-A traditional Satisfiability solver (SAT solver) just deals with boolean
-variables. So the second part is:
+    ===== DPLL Algorithm =====
 
-- The "theories" part is the fact that it can handle different data types:
-  each data type, like integers, Reals, and Strings, comes with its own
-  *theory* of how to process constraints on that data type.
+    Key Idea #1: Unit Propagation.
+
+    Assume the input is in conjuctive normal form: conjunction of disjuncts
+        (... or ... or ...) and (... or ...) and ...
+        ^^^^^^^^^^^^^^^^^^^ clause
+                                ^^^^^^^^^^^^ clause
+        where the ... can be literals or negated literals.
+
+    Visit all clauses. If there are any clauses with only a single literal (or negated literal),
+    mark that literal true (or false).
+
+    (p or q or r) and (~p or ~q or ~true) and true
+    (p or q or r) and (~p or ~q or false)
+    (p or q or r) and (~p or ~q)
+
+    Ideas:
+    - Second clause into not (p and q) ?
+    - Try all possibilities (yes - but here we can do something smarter)
+
+    Set r to true!
+    --> ~r never appears!
+    --> WLOG just assume r is true. We get:
+        (~p or ~q)
+    --> Apply this again with ~p, we get True and the formula is SAT.
+
+    Key Idea #2: Pure Literal Elimination
+
+    Visit all clauses. If there are any variables which only ever appear in one polarity
+    e.g., r only (respectively, ~r only), just assume that it is true (respectively, false)
+
+    Key Idea #3: If both of the above fail, then pick a random variable, try setting it to true or false,
+    and recurse.
+        --> if we find SAT, great! we're done
+        --> if we find UNSAT, backtrack and try the other way.
+
+    That's it! That's the DPLL algorithm.
+
+    Algorithm pseudocode
+        1. Write the formula in CNF
+        2. While the formula is nonempty:
+            2.0. If any clauses are empty, return UNSAT. If there are no clauses left, return SAT.
+            2.1. Try unit propagation: look for any clauses with a single variable, mark them true.
+            2.2. Try pure literal elimination: look for any variables in one polarity, mark them.
+            2.3. If both of the above fail, guess a random variable and recurse.
+
+    Theorem:
+        1. DPLL is correct: if the formula is SAT, it will return SAT, if UNSAT, it will return UNSAT.
+        2. DPLL is exponential time in the worst case.
+
+Recap:
+- We saw a tour of some of the remaining theories that Z3 has to offer
+- We saw the DPLL algorithm
+    Extensions of DPLL: DPLL(T) -- how to handle theories, CDCL.
+
+******** Where we left off for today **********
+
+=== April 24 ===
+
+Last time: we saw the basic algorithm for SAT, DPLL.
+Our roadmap:
+1. Solve SAT - DPLL
+2. Solve the theory part - DPLL(T)
+3. Solve multilple theories - Nelson-Oppen
+
+What about theories?
+
+=== DPLL(T) ===
 
 Example:
   x = z3.Int("x")
@@ -1047,72 +1183,67 @@ p, q, r, and s with facts about our integer data type:
 Z3 will assign boolean variables:
 
   p = "x < 2"
-  q = "x > 2"
+  q = "x == 2"
+  r = "x > 2"
+  s = "x + y > 5"
 
 Then it will apply a solver for boolean satisfiability.
 
-How do we solve boolean satisfiability?
-
-  (p or q or r) and (~p or ~q or ~s) and (s)
-
-Simplest idea: try values of the variables.
-First try p = True, then try p = False.
-
-But that's not very clever.
-Anything we could do better?
-- Suggestion to: look at s!
-- s has to be true! So let's just plug in s = True.
-
-  (p or q or r) and (~p or ~q or False) and (True)
-
-simplifies to:
-  (p or q or r) and (~p or ~q)
-
-What else should we look at?
-- Suggestion 2: look at r!
-- Just pick r = True, because if it's satisfiable, it might
-  as well be satisfiable with r = True.
-
-  (p or q or True) and (~p or ~q)
-  True and (~p or ~q)
-  ~p or ~q
-
-Repeat.
---> set p to False
-  True or ~q
-  True
-and we're done. Return satisfiable.
-
-That's the rough idea behind basic satisfiability solving (SAT)
+What happens when we try the DPLL algorithm on the above?
 
 Remember that Z3 works with arbitrary data types.
 There's one last step! Write out what we have:
   s = True
   r = True
   p = False
-And we use a theory-specific solver to determine
-whether these are a satisfiable set of formulas for the particular
-data type we are using such as z3.Int.
-E.g.: if
-  s = x > 0
-  r = x < 0
-then we would find that this is not satisfiable, and we have to go
-back and try again.
 
-Discussion:
-we just solved boolean satisfiability, suppoesdly an NP-complete
-problem, extremely efficiently!
-How is that possible?
+What happens?
 
-The entire philosophy behind Z3: satisfiability is only NP complete
-in the **worst case.**
-In average cases, or practical examples that come up in the real world,
-it's probably not too computationally difficult to solve them.
+=== Nelson-Oppen ===
 
-There are two algorithms,
+The above only works for a single decidable theory! (Why?)
+So we really just have "Satisfiability Modulo Theory"
+
+    Recall: some constraints combine multiple theories
+
+        Len(StrExpr) <= IntExpr
+
+Q: Is it always the case that if
+
+    φ1 is satisfiable over theory T1 and
+    φ2 is satisfiable over theory T2
+
+then
+    φ1 ^ φ2 is satisfiable?
+
+A:
+
+=== Another generalization: CDCL ==
+
+Modern SAT solvers are primarily based on a generalization of DPLL called CDCL.
+
+CDCL basically adds just one additional core idea to DPLL, conflict resolution:
+
+- We maintain an implication graph during unit propagation that indicates
+  which choices have affected which other forced choices
+
+- If we explore down a path that doesn't work, we learn a new clause:
+  one of the choices we made must have been false!
+
+In our example?
+
+
+=== References ===
+
 - DPLL: Davis-Putnam-Logemann-Loveland
   https://en.wikipedia.org/wiki/DPLL_algorithm
   That's the one that we just showed above
+
+- DPLL(T):
+  https://en.wikipedia.org/wiki/DPLL(T)
+
+- Nelson-Oppen:
+  https://web.stanford.edu/class/cs357/lecture11.pdf
 
 - CDCL: Conflict-Driven Clause Learning
   https://en.wikipedia.org/wiki/Conflict-driven_clause_learning
@@ -1120,7 +1251,9 @@ There are two algorithms,
 """
 
 """
-=== Generalizing theories ===
+====== Some end notes ======
+
+=== Other theories ===
 
 We have seen many specific theories that Z3 supports.
 
@@ -1128,8 +1261,6 @@ There are others, too: lists, bitvectors, strings, floating point, etc.
 
 - What is the general form of a theory?
 - How can we understand what theories Z3 is good at, vs. ones it is bad at?
-
-====== Some end notes ======
 
 === Applications of Z3 ===
 
@@ -1176,6 +1307,16 @@ How do program specifications relate to Z3?
     spec = z3.Implies(precondition, postcondition)
     prove(spec)
 
+=== A "Big Question" ===
+
+What is the boundary between problems that Z3 can solve and problems that it cannot?
+
+-> I.e.: What is the boundary between logics that are tractable and those that are not?
+
+-> One way to study this: which sub-logics are decidable or not?
+
+=== Using Z3 for program testing & counterexample finding ===
+
 We can also use Z3 more like Hypothesis to generate example inputs.
 How?
 
@@ -1184,10 +1325,6 @@ How?
     example = get_solution(precondition)
 
 ^^ This is basically how Hypothesis works!
-
-We saw that the main limitation of Hypothesis was?
-
-- It can find a bug, but it can never prove that there are no bugs!
 
 === Main limitations of Z3 ===
 (There are two)
@@ -1200,15 +1337,4 @@ And that's where we are going next!
 With general program verification frameworks!
 
 The program and the proof will both be written in the same framework.
-
-=== The "Big Question" ===
-
-What is the boundary between problems that Z3 can solve and problems that it cannot?
-
--> I.e.: What is the boundary between logics that are tractable and those that are not?
-
--> One way to study this: which sub-logics are decidable or not?
-
-This topic will lead us into the next lecture.
-
 """

@@ -54,10 +54,12 @@ Announcements:
 
 Plan:
 
+- Why can Z3 fail? (Two reasons)
+
 - Finish tour of Z3
 
     + real numbers, strings, arrays, functions, quantifiers
 
-- The DPLL Algorithm
+- Z3 internals: the DPLL and DPLL(T) algorithms
 
-- Z3 Endnotes
+- Z3 endnotes
