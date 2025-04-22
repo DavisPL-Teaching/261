@@ -42,10 +42,22 @@ Plan:
 
 ## April 22
 
+Announcements:
+
+- Project proposal due: next Friday, May 2
+
+    + See `project/proposal.md`
+
+    + Addressing some questions I got on the project proposal
+
+- My office hours moved to Thursdays 3-4pm going forward
+
 Plan:
 
 - Finish tour of Z3
 
     + real numbers, strings, arrays, functions, quantifiers
 
-    + satisfiability modulo _theories_
+- The DPLL Algorithm
+
+- Z3 Endnotes
