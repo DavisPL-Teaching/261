@@ -63,3 +63,13 @@ Plan:
 - Z3 internals: the DPLL and DPLL(T) algorithms
 
 - Z3 endnotes
+
+## April 22
+
+- DPLL generalizations: DPLL(T), Nelson-Oppen, and CDCL
+
+- The boundary of decidability
+
+- Z3 endnotes
+
+- Crash course in first-order logic.

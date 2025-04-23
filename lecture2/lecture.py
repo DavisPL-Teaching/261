@@ -1143,7 +1143,7 @@ First, s is alone, so we know s has to be true!
     That's it! That's the DPLL algorithm.
 
     Algorithm pseudocode
-        1. Write the formula in CNF
+        1. Rewrite the formula in CNF
         2. While the formula is nonempty:
             2.0. If any clauses are empty, return UNSAT. If there are no clauses left, return SAT.
             2.1. Try unit propagation: look for any clauses with a single variable, mark them true.
@@ -1248,6 +1248,38 @@ In our example?
 - CDCL: Conflict-Driven Clause Learning
   https://en.wikipedia.org/wiki/Conflict-driven_clause_learning
   Optimized/better version
+"""
+
+"""
+====== The boundary of decidability ======
+
+Just to show one example of how the boundary of decidability can be surprising.
+
+Definitions:
+Let F be a set of function symbols (each has an arity n >= N) each corresponding to a function on the natural numbers,
+and R is a set of relation symbols (each has an arity n >= N) each corresponding to a relation on the natural numbers.
+We define the quantifier-free theory QF(F, R) coresponding to F and R consists of all formulas which can be formed using
+symbols in F and R, as follows:
+    IntVar
+    IntExpr ::= IntVar | op(IntExpr, ..., IntExpr) (with n coordinates if arity is n)
+    Formula φ ::= IntExpr == IntExpr | φ v φ | φ ^ φ | ~φ
+                | rel(IntExpr, ..., IntExpr) (with n coordinates if arity is n)
+
+Recall:
+Theorem 1. (Hilbert's 10th) The theory QF({+,*},{}) is undecidable.
+Proof Omitted (hard).
+
+Theorem 2. The theory QF({+,gcd},{}) is decidable.
+Theorem 3. The theory QF({+,lcm},{}) is undecidable.
+
+Proof 2.
+
+Proof 3.
+
+General theorem. If a function or relation has both an existential and a universal definition,
+then it can be eliminated: satisfiability can be reduced back to the base theory.
+That is, decidability for QF(F U {f}, R) reduces to decidability for QF(F, R).
+
 """
 
 """
