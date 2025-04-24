@@ -15,7 +15,7 @@ Here are a few of the key regular expression operators that you will need:
 - `z3.Re`: this turns a string into a regular expression.
     For example, `z3.Re("cat")` matches the string "cat".
 
-- `z3.Length`: this creates an integer variable for the length
+- `z3.Length`: this creates an integer expression for the length
     of a string `s`. For example, if `s` is "cat", then
     `z3.Length(s)` will be a `z3.Int` that would be equal to 3.
 
@@ -62,3 +62,11 @@ Here are a few of the key regular expression operators that you will need:
     character code. If you use this, you will need to refer to
     the ASCII table to see full list of codes. The codes for the
     numbers "0" through "9" are 48 through 57.
+
+- `z3.Intersect`: similar to `z3.Union` but for "and" instead of "or",
+    this creates a regular expression that matches a string iff it matches
+    all of the regexes in the list. For example, `z3.Intersect(z3.Re("a"), z3.Re("b"), z3.Re("c"))` means
+    a regular expression for strings matching `a` and `b` and `c` (there are no such strings).
+
+- `z3.Complement`: creates a regular expression that matches a string iff it does not match
+   the base regex. For example `z3.Complement(z3.Re("a"))` matches any string except "a".
