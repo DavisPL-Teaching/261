@@ -66,6 +66,16 @@ Plan:
 
 ## April 24
 
+- HW2 available - due Monday, May 5
+
+    + This HW is a problem set.
+
+    + [Link](https://github.com/DavisPL-Teaching/261-hw2)
+
+- Project proposal due Friday, May 2
+
+Plan:
+
 - Poll
 
 - DPLL generalizations: DPLL(T), Nelson-Oppen, and CDCL
@@ -74,4 +84,4 @@ Plan:
 
 - Z3 endnotes
 
-- Crash course in first-order logic.
+- Crash course in first-order logic (time permitting)
