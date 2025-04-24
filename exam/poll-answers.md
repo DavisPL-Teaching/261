@@ -35,3 +35,6 @@ April 17 poll:
 
 April 22 poll:
 - Yes to both: decidable and NP-hard.
+
+April 24:
+- C, D, E, and F.

@@ -85,3 +85,4 @@ Plan:
 - Z3 endnotes
 
 - Crash course in first-order logic (time permitting)
+  (move to Dafny)

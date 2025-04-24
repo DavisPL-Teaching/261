@@ -1163,6 +1163,8 @@ Recap:
 
 === April 24 ===
 
+Last time: we saw the basic algorithm for SAT, DPLL.
+
 === Poll ===
 
 Which of the following is a most likely reason that DPLL works well in practice?
@@ -1171,26 +1173,32 @@ https://forms.gle/QBp2N4E39BCQcU3f9
 
 =====
 
-Last time: we saw the basic algorithm for SAT, DPLL.
-Our roadmap:
+Aside: SAT competition:
+https://satcompetition.github.io/2024/
+
+=====
+
+Our roadmap to solve SMT (Satisfiability Modulo Theories):
+
 1. Solve SAT - DPLL
 2. Solve the theory part - DPLL(T)
 3. Solve multilple theories - Nelson-Oppen
 
-What about theories?
-
 === DPLL(T) ===
+
+    (p or q or r) and (~p or ~q or ~s) and (s)
 
 Example:
   x = z3.Int("x")
-  x < 2 and x > 2
+  p and s
+  (x < 2) and (x > 2)
 
 We have the exact same thing as before, but we've replaced
 p, q, r, and s with facts about our integer data type:
 "x < 2" and "x > 2" are the new p, q, r, s:
 Z3 will assign boolean variables:
 
-  p = "x < 2"
+  p = "x >= 2"
   q = "x == 2"
   r = "x > 2"
   s = "x + y > 5"
@@ -1199,13 +1207,96 @@ Then it will apply a solver for boolean satisfiability.
 
 What happens when we try the DPLL algorithm on the above?
 
+    UP: s = True
+    PLE: r = True
+    PLE: ~p = True i.e. p = False
+
 Remember that Z3 works with arbitrary data types.
 There's one last step! Write out what we have:
   s = True
   r = True
   p = False
 
-What happens?
+What happens? We add one step at the end:
+check whether the theory constraints are satisfiable.
+In this case, we have:
+
+    x + y > 5 and x > 2 and ~(x >= 2)
+    x + y > 5 and (x > 2) and (x < 2)
+
+We query a theory-specific solver based on the form of the
+constraints:
+    -> in this case, we see that all the constraints are
+    integer constraints
+    -> and moreover they are all linear (never have two
+       variables multiplied together)
+    -> This is essentially Integer Linear Programming (ILP)
+    -> Basically solve the linear equations the way you
+       would have done in a linear algebra class
+
+- If theory-specific solver says SAT, return SAT
+- What happens if the theory-specific solver comes back and
+  says UNSAT?
+  (let's change our example so that p = "x >= 2")
+    + Try another satisfying assignment?
+    There's a problem with this, what is it?
+    One of UP or PLE is suspect, which one?
+    + Go back and backtrack on PLE constraints also?
+    + This is very inefficient though...
+        we just tried s = true, r = true, p = false
+        we may end up trying the same assignment later with
+        a different value for q.
+
+Turns out to be a better idea:
+    "learning" (in the traditional deductive sense)
+    Add a constraint for what we learned.
+
+    We learned: ~(s and r and ~p)
+
+    This is a clause!
+
+    ==> (~s or ~r or p)
+
+Add it into the formula and continue with backtracking.
+
+(We also have to backtrack through PLE)
+
+When does this terminate?
+
+Theorem: If all constraints are over a decidable theory
+       or a decidable fragment (e.g. in our case, everything
+       was linear constraints over the integers)
+       then this procedure is guaranteed to terminate and returns
+       SAT if the formula is SAT, UNSAT if the formula is UNSAT.
+
+example: suppose our formula is
+    (p or q or s or t)
+and they all happen to be unsat theory-specific constraints
+(e.g. p = "x == x + 1", q = "y == y + 1", etc.)
+
+    try p?
+    (p or q or s or t) and (~p)
+    UP:
+    (q or s or t)
+    try q?
+    (q or s or t) and (~q)
+    UP:
+    (s or t)
+    try s?
+    (s or t) and ~s
+    UP:
+    t
+    try t?
+    t and ~t
+    DPLL returns UNSAT.
+
+Note this could fail if the underlying theory is not decidable
+or not decidable in a reasonable amount of time.
+
+One takeaway from this is that adding clauses is often useful
+to help the SAT solver -- this is the idea behind CDCL,
+an extension of DPLL, which we will mention briefly below.
+CDCL is actually how most modern SMT/SAT solvers work.
 
 === Nelson-Oppen ===
 
@@ -1224,11 +1315,90 @@ Q: Is it always the case that if
 then
     φ1 ^ φ2 is satisfiable?
 
-A:
+A: No, let's try to construct a counterexample
 
-=== Another generalization: CDCL ==
+    Satisfiable over strings:
+    Let's have two string variables s1, s2
+        len(s1) <= x and
+        len(s2) > y and
+        s1 == s2 and
+        x <= y
+
+    Purely looking at the string constraints:
+    len(s1) <= x and len(s2) > y and s1 == s2
+    SAT!
+    Purely looking at the integer constraints:
+    x <= y
+    also SAT!
+
+    But they are not jointly satisfiable.
+
+How do we solve this?
+(I will only cover at a high level)
+
+    - Introduce new (fresh) variables for any expressions that
+      occur in constraints of both theories
+
+      ls1 <--- len(s1)
+      ls2 <--- len(s2)
+
+      Integer part:
+      ls1 <= x
+      ls2 > y
+      x <= y
+      String part:
+      len(s1) == ls1
+      len(s2) == ls2
+      s1 == s2
+
+      Idea: ask each solver to solve the constraints separately,
+      then ask if they agree on which of the shared variables
+      are equal to which others.
+
+      Shared variables in this example: ls1, ls2
+
+      String solver should come back with an assignment
+      such that ls1 == ls2
+        (e.g., ls1 == 5, ls2 == 5)
+      Integer solver should come back with something where
+        ls1 <= x <= y < ls2
+      it should come back with a variable assignment that
+      has ls1 < ls2
+        (e.g., ls1 == 2, ls2 == 4)
+      in particular ls1 != ls2,
+      so the two variable assignments do not agree.
+      If they don't agree, we add another constraint
+
+      ((ls1 == ls2) or (ls1 != ls2))
+
+      Isn't this a tautology so it's useless to add?
+
+      p or ~p
+
+It turns out for many (not all) theories we can prove
+that if
+    φ1 is satisfiable over theory T1
+and
+    φ2 is satisfiable over theory T2
+and
+    there exists a satisfying assignment v1 for T1
+    and v2 for T2 such that the two agree on which shared
+    variables are equal to one another
+then
+    φ1 ^ φ2 is satisfiable over the combined theory T1 U T2.
+
+=== Another generalization of DPLL: CDCL ==
+
+CDCL = Conflict-Driven Clause Learning
 
 Modern SAT solvers are primarily based on a generalization of DPLL called CDCL.
+
+Failure case of DPLL:
+
+    Early on we make a decision for one or more variables
+        say p,
+        or say, (s and r)
+    that turns out to be wrong.
 
 CDCL basically adds just one additional core idea to DPLL, conflict resolution:
 
@@ -1240,31 +1410,47 @@ CDCL basically adds just one additional core idea to DPLL, conflict resolution:
 
 In our example?
 
+    Suppose I decide s, then r, then ~p then ~q
+    Spupose we learn that s and ~p leads to a conflict
+    Rather than just backtracking and trying p and continuing,
+    add a clause that s and ~p is unsat
+
+        ~s or p
+
+    and backtrack to the latest decision point that lead to
+    the conflict.
 
 === References ===
 
 - DPLL: Davis-Putnam-Logemann-Loveland
+  SAT
   https://en.wikipedia.org/wiki/DPLL_algorithm
-  That's the one that we just showed above
 
 - DPLL(T):
+  SAT modulo theory
   https://en.wikipedia.org/wiki/DPLL(T)
 
 - Nelson-Oppen:
+  SAT modulo theorieS
   https://web.stanford.edu/class/cs357/lecture11.pdf
 
 - CDCL: Conflict-Driven Clause Learning
+  extension of SAT that explores decisions after a conflict
+  more efficiently.
   https://en.wikipedia.org/wiki/Conflict-driven_clause_learning
   Optimized/better version
 """
 
 """
 ====== The boundary of decidability ======
+(Cover very briefly for time)
 
 Just to show one example of how the boundary of decidability can be surprising.
 
 Definitions:
-Let F be a set of function symbols (each has an arity n >= N) each corresponding to a function on the natural numbers,
+Let F be a set of function symbols (each has an arity n >= N,
+    arity == the number of arguments it takes
+) each corresponding to a function on the natural numbers,
 and R is a set of relation symbols (each has an arity n >= N) each corresponding to a relation on the natural numbers.
 We define the quantifier-free theory QF(F, R) coresponding to F and R consists of all formulas which can be formed using
 symbols in F and R, as follows:
@@ -1281,10 +1467,24 @@ Theorem 2. The theory QF({+,gcd},{}) is decidable.
 Theorem 3. The theory QF({+,lcm},{}) is undecidable.
 
 Proof 2.
+(Omitted)
 
-Proof 3.
+Proof 3. (Sketch)
+Suppose x is even, then
+    lcm(x - 1, x + 1) = x^2 - 1
+Suppose x is odd. Then
+    lcm(x - 1, x + 1) = (x^2 - 1) / 2
+So using lcm, we can get x^2.
+Using squares you can get multiplication:
 
-General theorem. If a function or relation has both an existential and a universal definition,
+    (x + y)^2 = x^2 + 2 * x * y + y^2
+    2 * x * y = (x + y)^2 - x^2 - y^2
+
+Therefore if I have lcm I can get multiplication,
+and by Hilbert 10th this is undecidable. □
+
+General theorem.
+If a function or relation has both an existential and a universal definition,
 then it can be eliminated: satisfiability can be reduced back to the base theory.
 That is, decidability for QF(F U {f}, R) reduces to decidability for QF(F, R).
 
