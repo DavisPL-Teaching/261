@@ -64,7 +64,9 @@ Plan:
 
 - Z3 endnotes
 
-## April 22
+## April 24
+
+- Poll
 
 - DPLL generalizations: DPLL(T), Nelson-Oppen, and CDCL
 

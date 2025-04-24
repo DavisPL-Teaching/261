@@ -1163,6 +1163,14 @@ Recap:
 
 === April 24 ===
 
+=== Poll ===
+
+Which of the following is a most likely reason that DPLL works well in practice?
+
+https://forms.gle/QBp2N4E39BCQcU3f9
+
+=====
+
 Last time: we saw the basic algorithm for SAT, DPLL.
 Our roadmap:
 1. Solve SAT - DPLL
