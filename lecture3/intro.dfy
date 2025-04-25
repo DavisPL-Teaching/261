@@ -1,9 +1,66 @@
 /*
     Intro to first-order logic in Dafny.
+
+    ===== A note on industry and applications =====
+
+    Goals:
+    - to understand how verification works
+    - to apply verification to real-word projects
+
+    The methodology of verification:
+
+    1. We encode the problem we are considering
+      (based on real software, in a real industry application)
+      including preconditions and postconditions or other
+      domain-specific constraints
+      in an appropriate verification framework.
+      We can translate formulas and program behavior to Z3,
+      or rewrite all of the code in a dedicated verification language like Dafny (, Coq/Rocq, Agda, Lean ...)
+      or use a language-specific verification
+      tool to verify code natively (e.g., CBMC for C, Flux or Verus for Rust, etc.).
+
+    2. We use the tool to prove the property, thus proving the code 100% free from bugs.
+
+    This methodology has been really used in practice.
+    Amazon, Microsoft, etc. have invested millions into verification project sin practice.
+
+    - Amazon: verifying low-level cryptographic libraries using tools
+      like Dafny and CBMC, verifying domain-specific security constraints
+      (e.g., your cloud data cannot be accessed by untrusted users)
+
+    - At large industry scale, security bugs cost a LOT of money. Higher-ups will throw money at
+      any technique which has a chance of preventing large-scale security risks, willing to invest.
+
+    - The argument is that despite a much greater effort, we also get a greater payoff.
+      Verify your library ==> greater assurance against threats, more people want to use it,
+      maintain the verification conditions on all future software updates
+
+    - Larger-scale realistic software projects built in industry:
+        CompCert: a verified optimizing C compiler
+        CertiKOS: a verified operating system kernel
+        Increasing interest from the systems community and more work every year on building
+        bigger verified file systems, network controllers, etc.
+
+    But writing these verified applications is really hard!
+    (Often: a PhD project or an entire team of researchers)
+    I find that you will need a strong foundation in logic to use and understand
+    these tools, so I need to cover the logic foundations first.
+
+    In short, we are covering the theory so as to give you the foundation I believe
+    you need to really apply these tools to real-world software projects.
+
+    ===== Poll =====
+
+    https://forms.gle/uXELPFiRY85kb97Y6
 */
 
 /*
-    First-order logic generalizes the concept of satisfiability and validity from last time.
+    ===== First-order logic =====
+
+    First-order logic generalizes the grammars we have seen so far by adding quantifiers:
+    forall x. φ
+    and
+    exists x. φ.
 
     Z3 can take as input formulas in first-order logic, but it often isn't very good about solving them!
     (Why?)

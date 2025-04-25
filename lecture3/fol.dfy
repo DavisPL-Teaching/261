@@ -1,6 +1,12 @@
 /*
     First-order logic (FOL)
 
+    ===== Syntax and semantics =====
+
+    Let's start from the beginning.
+    This time, we don't prove anything without checking in Dafny.
+    So we can be assured we aren't making any mistakes.
+
     Difference between syntax and semantics.
 
     SYNTAX
