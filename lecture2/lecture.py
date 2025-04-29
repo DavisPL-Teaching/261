@@ -201,7 +201,7 @@ Z3 is interpreting the spec as a mathematical statement,
 and trying to come up with either a proof that it's always true
 or a counterexample.
 
-"Mathematical statement" = statement is some logic.
+"Mathematical statement" = statement in some logic.
 
 In order to understand how Z3 works, we need to understand
 logical formulas and satisfiability.
@@ -504,26 +504,6 @@ True/False:
 
 https://forms.gle/jPD3oRpGci3E4ikp9
 
-.
-.
-.
-.
-.
-.
-.
-.
-.
-.
-.
-.
-.
-.
-.
-.
-.
-.
-.
-.
 """
 
 # In Z3:
@@ -1474,19 +1454,33 @@ Suppose x is even, then
     lcm(x - 1, x + 1) = x^2 - 1
 Suppose x is odd. Then
     lcm(x - 1, x + 1) = (x^2 - 1) / 2
-So using lcm, we can get x^2.
-Using squares you can get multiplication:
+So using lcm, we can get x^2:
+Introduce two new variables y and x' and constraints:
+
+    (x == x' + x' and y == lcm(x - 1, x + 1))
+    or
+    (x == x' + x' + 1 and y == lcm(x - 1, x + 1) + lcm(x - 1, x + 1))
+
+Similarly using squares we can get multiplication:
 
     (x + y)^2 = x^2 + 2 * x * y + y^2
     2 * x * y = (x + y)^2 - x^2 - y^2
 
-Therefore if I have lcm I can get multiplication,
+Therefore if we have lcm we can get multiplication,
 and by Hilbert 10th this is undecidable. □
 
 General theorem.
 If a function or relation has both an existential and a universal definition,
 then it can be eliminated: satisfiability can be reduced back to the base theory.
 That is, decidability for QF(F U {f}, R) reduces to decidability for QF(F, R).
+
+=== A "Big Research Question" ===
+
+What is the boundary between problems that Z3 can solve and problems that it cannot?
+
+-> I.e.: What is the boundary between logics that are tractable and those that are not?
+
+-> One way to study this: which sub-logics are decidable or not?
 
 """
 
@@ -1546,14 +1540,6 @@ How do program specifications relate to Z3?
     postcondition = ...
     spec = z3.Implies(precondition, postcondition)
     prove(spec)
-
-=== A "Big Question" ===
-
-What is the boundary between problems that Z3 can solve and problems that it cannot?
-
--> I.e.: What is the boundary between logics that are tractable and those that are not?
-
--> One way to study this: which sub-logics are decidable or not?
 
 === Using Z3 for program testing & counterexample finding ===
 

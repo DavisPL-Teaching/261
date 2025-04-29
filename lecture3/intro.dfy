@@ -1,9 +1,9 @@
 /*
     Intro to first-order logic in Dafny.
 
-    ===== A note on industry and applications =====
+    ===== A note on industry applications =====
 
-    Goals:
+    Course goals:
     - to understand how verification works
     - to apply verification to real-word projects
 
@@ -11,48 +11,107 @@
 
     1. We encode the problem we are considering
       (based on real software, in a real industry application)
-      including preconditions and postconditions or other
-      domain-specific constraints
+      in preconditions, postconditions, and other domain-specific constraints
       in an appropriate verification framework.
-      We can translate formulas and program behavior to Z3,
-      or rewrite all of the code in a dedicated verification language like Dafny (, Coq/Rocq, Agda, Lean ...)
+
+      We can encode program behavior as Z3 formulas,
+      rewrite all of the code in a dedicated verification language (Dafny, Coq/Rocq, Agda, Lean ...)
       or use a language-specific verification
       tool to verify code natively (e.g., CBMC for C, Flux or Verus for Rust, etc.).
 
     2. We use the tool to prove the property, thus proving the code 100% free from bugs.
 
-    This methodology has been really used in practice.
-    Amazon, Microsoft, etc. have invested millions into verification project sin practice.
+    When is this methodology useful in practice?
+    Not always! But often in cases where correctness, safey, or security is critical
+    to system functioning.
+    Investment examples:
 
     - Amazon: verifying low-level cryptographic libraries using tools
       like Dafny and CBMC, verifying domain-specific security constraints
       (e.g., your cloud data cannot be accessed by untrusted users)
 
-    - At large industry scale, security bugs cost a LOT of money. Higher-ups will throw money at
-      any technique which has a chance of preventing large-scale security risks, willing to invest.
+    - Microsoft: many applications of Z3 and other techniques internally, verifying network code,
+      device and kernel drivers, etc.
 
-    - The argument is that despite a much greater effort, we also get a greater payoff.
-      Verify your library ==> greater assurance against threats, more people want to use it,
-      maintain the verification conditions on all future software updates
+    - Hardware bugs & hardware verification:
 
-    - Larger-scale realistic software projects built in industry:
+        Pentium FDIV bug: affected Intel Pentium processors in 1994.
+        recall of all defective Intel processors at the time
+        $475 million in losses!
+
+    - Signal messaging app: verification effort for core messaging protocol going back to 2017
+
+    - Larger-scale realistic software projects coming from academia:
         CompCert: a verified optimizing C compiler
         CertiKOS: a verified operating system kernel
         Increasing interest from the systems community and more work every year on building
         bigger verified file systems, network controllers, etc.
 
-    But writing these verified applications is really hard!
-    (Often: a PhD project or an entire team of researchers)
+    - More generally, at large industry scale, security bugs cost a LOT of money.
+      Higher-ups will throw money at any technique which even has a chance of preventing large-scale
+      security risks (willing to invest).
+
+    - The argument is that despite a much greater effort, we also get a greater payoff.
+      Verify your library ==> greater assurance against threats, more people want to use it,
+      maintain the verification conditions on all future software updates
+
+    Why cover theory?
+
+    Basically because writing these verified applications is really hard!
     I find that you will need a strong foundation in logic to use and understand
-    these tools, so I need to cover the logic foundations first.
-
-    In short, we are covering the theory so as to give you the foundation I believe
-    you need to really apply these tools to real-world software projects.
-
-    ===== Poll =====
-
-    https://forms.gle/uXELPFiRY85kb97Y6
+    these tools. In short, we are covering the theory so as to give you the foundation
+    I believe you need to really apply these tools to real-world software projects.
 */
+
+/*
+    ===== What is Dafny? =====
+
+    Dafny is a verification-aware programming language.
+    (A program verification framework.)
+
+    It allows us to develop a program and its proof together / in tandem.
+
+    Dafny is widely used in industry applications of verification
+    (perhaps seeing a bit more use than tools like Coq/Rocq or Agda, Isabelle, Idris, Lean)
+    because it supports transpilation:
+
+    --> Transpile your Dafny code to Python, C#, Java, JavaScript, Go, ...
+    --> Interact with external libraries written in those languages
+    --> Thus you only have to write and verify the code once, then you can integrate it
+        into your project.
+
+    https://dafny.org/
+
+    Reminder/summary: Dafny advantages over Z3:
+    1.
+    2.
+
+    Example: here's our abs function from before.
+*/
+
+function abs(x: int): int {
+    if x > 0 then x else -x
+}
+
+lemma AbsCorrect(x: int) {
+    assert abs(x) >= 0;
+    // Try uncommenting
+    // assert abs(x) == x;
+    // assert abs(x) == x || abs(x) == -x;
+}
+
+// Another way of writing...
+lemma AbsCorrectQuantifiers() {
+    assert forall x:: abs(x) >= 0;
+    assert forall x:: abs(x) == x || abs(x) == -x;
+    // ^^ quantifiers!
+    //    this takes us to first-order logic.
+    // Try modifying this.
+
+    // What about this?
+    // assert exists x:: abs(x) == 1;
+    // No proof! More on this soon.
+}
 
 /*
     ===== First-order logic =====
@@ -62,19 +121,14 @@
     and
     exists x. φ.
 
-    Z3 can take as input formulas in first-order logic, but it often isn't very good about solving them!
-    (Why?)
-
-    So, for general program verification, we often resort to more powerful techniques where we actually
-    work with the tools to help prove the property we have in mind. This is called "interactive verification" or "interactive theorem proving".
-*/
-
-/*
     Example.
     Why do we need quantifiers?
 
     We saw an example with the pigenohole principle where it was most natural
     to express using quantifiers.
+
+    Z3 can take as input formulas with quantifiers, but often isn't very good
+    at solving them.
 
     Example using abs():
     Suppose we want to show that abs() is increasing:
@@ -84,24 +138,7 @@
     Only forall statements in front! So we can do this with a validity check:
 */
 
-function abs(x: int): int {
-    if x > 0 then x else -x
-}
-
-// Note: more common to see it as a method.
-// We will start with functions, more on methods later
-// method AbsMethod(x: int) returns (y: int)
-//     ensures y >= 0
-//     ensures y == x || y == -x
-// {
-//     if x > 0 {
-//         y := x;
-//     } else {
-//         y := -x;
-//     }
-// }
-
-lemma AbsCorrect()
+lemma AbsCorrect2()
 ensures forall x :: abs(x) >= x
 ensures forall x :: abs(x) == x || abs(x) == -x
 {}
@@ -175,3 +212,16 @@ ensures
     - What is a proof?
     - What is a program?
 */
+
+// Note: alternate way of writing Abs as a method.
+// We will start with functions, more on methods later
+// method AbsMethod(x: int) returns (y: int)
+//     ensures y >= 0
+//     ensures y == x || y == -x
+// {
+//     if x > 0 {
+//         y := x;
+//     } else {
+//         y := -x;
+//     }
+// }

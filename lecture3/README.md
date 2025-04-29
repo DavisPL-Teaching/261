@@ -1,22 +1,37 @@
-# Lecture 3: First-order logic
+# Lecture 3: Interactive verification
 
-A crash course in first-order logic.
-We are working in Dafny.
+Introduction to interactive verification in Dafny.
+We will start with examples, then first-order logic, then get into program logics.
 
 ## Tuesday, April 29
 
 Announcements:
 
-- Mid-quarter survey:
+- Mid-quarter survey is out:
   https://forms.gle/hNz9c6jXkcSXUqXH7
 
-- Some help on the project:
-  runtime vs. at compile time
+  Please fill it out! I really value your feedback!
 
-- Reminders: proposal due Friday, HW2 due Monday
+  More theory vs. more practice vote: currently at 2 votes vs. 3 votes
+
+Upcoming deadlines:
+
+- Due Friday: Mid-quarter survey, Project proposal
+
+- Due Monday: Hw2
 
 Plan:
 
-- A note on industry and applications
+- A problem from last time that will be helpful on the homework
 
-- First-order logic
+- Start with some slides
+
+- Intro to interactive verification in Dafny
+  starting with some examples, then first-order logic, then program logic.
+
+Also covered on slides:
+
+- A note on industry applications
+
+- Some help on the project:
+  think about what you want to verify at runtime vs. at compile time.
