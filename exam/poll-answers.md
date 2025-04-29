@@ -38,3 +38,7 @@ April 22 poll:
 
 April 24:
 - C, D, E, and F.
+
+April 29:
+- B, C, and F
+  (A and G are limitations of Dafny.)

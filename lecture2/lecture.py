@@ -1446,8 +1446,76 @@ Proof Omitted (hard).
 Theorem 2. The theory QF({+,gcd},{}) is decidable.
 Theorem 3. The theory QF({+,lcm},{}) is undecidable.
 
+We're going to use the following result without proof:
+let | be the "divides" relation symbol: a | b if b is a multiple of a
+    QF({+},{divides}) is decidable.
+
 Proof 2.
-(Omitted)
+The Q: how do we get rid of gcd?
+We want to express gcd using the divides symbol
+gcd has a somewhat obvious definition in terms of divides:
+    a = gcd(b, c) iff for any integer x that divides b and c, x <= a
+                    also, a divides b and c
+        (a | b) and (a | c) and (forall x: x | b and x | c ==> x <= a).
+
+    We can't use forall :(
+    can we do it with there exists?
+
+        (a | b) and (a | c) and (not (exists x: not (x | b and x | c ==> x <= a))).
+
+    But the exists is hiding behind a "not", so it doesn't reduce to satisfiability.
+
+    It turns out that
+        a = gcd(b, c) iff
+        exists x exists y: (a = bx + cy) and a | b and a | c.
+        getting rid of the multiplication: let x' = bx, y' = cy
+        exists x' exists y':
+            b | x' and c | y' and (a = x' + y') and a | b and a | c.
+
+        (This is from Euclid's algorithm.)
+
+    This is a exists statement! So we can use it to rewrite gcd() with only divides and +.
+
+    Are we done? We are not done
+
+    Think about how we actually translate a formula over +, gcd to one over +, |
+    Input to us is given a formula which is
+        --> Or, and, and not of integer constraints.
+    We can start by assuming the formula is in CNF or DNF, let's use DNF:
+        ((...) and (...) and (...))
+        or ((...) and (...) and (...))
+        or ...
+
+        where eacch ... is either some equality expr1 == expr2 or a relation rel(expr1, expr2)
+        OR a negation of these.
+
+        In our case: expr1 == expr2 and NOT (expr1 == expr2)
+
+        We have to handle both cases.
+
+        gcd could occur in expr1 or expr2, and we need to get rid of it.
+
+        if we have gcd(b, c) == expr2, we can apply our reduction to get rid of the gcd.
+
+        What do we do for NOT (a == gcd(b, c)) -- we need a separate reduction!
+
+        For this we use:
+            (a | b) and (a | c) and (forall x: x | b and x | c ==> x <= a).
+
+        NOT (a == gcd(b, c))
+        becomes
+        NOT ((a | b) and (a | c) and (forall x: x | b and x | c ==> x <= a))
+        which becomes
+        (NOT a | b) or (NOT a | c) or (NOT forall x: x | b and ...)
+        (NOT a | b) or (NOT a | c) or (exists x: NOT x | b and ...)
+        exists x: (NOT a | b) or (NOT a | c) or (NOT x | b and ...)
+
+        and this is equisatisfiable with:
+
+        (NOT a | b) or (NOT a | c) or (NOT x | b and ...)
+
+We're left with a formula over only + and |, so we apply the result that this
+theory is decidable. □
 
 Proof 3. (Sketch)
 Suppose x is even, then
@@ -1469,7 +1537,7 @@ Similarly using squares we can get multiplication:
 Therefore if we have lcm we can get multiplication,
 and by Hilbert 10th this is undecidable. □
 
-General theorem.
+General theorem:
 If a function or relation has both an existential and a universal definition,
 then it can be eliminated: satisfiability can be reduced back to the base theory.
 That is, decidability for QF(F U {f}, R) reduces to decidability for QF(F, R).

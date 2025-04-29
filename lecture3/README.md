@@ -1,7 +1,6 @@
 # Lecture 3: Interactive verification
 
 Introduction to interactive verification in Dafny.
-We will start with examples, then first-order logic, then get into program logics.
 
 ## Tuesday, April 29
 
@@ -18,7 +17,7 @@ Upcoming deadlines:
 
 - Due Friday: Mid-quarter survey, Project proposal
 
-- Due Monday: Hw2
+- Due Monday: HW2
 
 Plan:
 
@@ -27,7 +26,7 @@ Plan:
 - Start with some slides
 
 - Intro to interactive verification in Dafny
-  starting with some examples, then first-order logic, then program logic.
+  starting with some examples, then first-order logic, then program logics.
 
 Also covered on slides:
 

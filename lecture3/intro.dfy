@@ -67,7 +67,7 @@
     ===== What is Dafny? =====
 
     Dafny is a verification-aware programming language.
-    (A program verification framework.)
+    (An interactive program verification framework.)
 
     It allows us to develop a program and its proof together / in tandem.
 
@@ -82,22 +82,29 @@
 
     https://dafny.org/
 
-    Reminder/summary: Dafny advantages over Z3:
-    1.
-    2.
+    Reminder/summary: Dafny advantages over Z3: see slides.
 
     Example: here's our abs function from before.
+
+    In Z3 remember we had to write Abs using Z3 formulas: something like
+        z3.If(x > 0, x, -x).
+        ^^ mathematical formula
+
+    This was sort of annoying, and also wouldn't work for more complex software
+    (think about loops.)
 */
 
+// This function is executable! (like a Python function)
+// This function is mathematically understandable! (like a Z3 formula)
 function abs(x: int): int {
     if x > 0 then x else -x
 }
 
 lemma AbsCorrect(x: int) {
     assert abs(x) >= 0;
+    assert abs(x) == x || abs(x) == -x;
     // Try uncommenting
     // assert abs(x) == x;
-    // assert abs(x) == x || abs(x) == -x;
 }
 
 // Another way of writing...
@@ -105,26 +112,39 @@ lemma AbsCorrectQuantifiers() {
     assert forall x:: abs(x) >= 0;
     assert forall x:: abs(x) == x || abs(x) == -x;
     // ^^ quantifiers!
-    //    this takes us to first-order logic.
+    //    this takes us away from quantifier-free logics to "first-order logic" (FOL).
     // Try modifying this.
 
     // What about this?
     // assert exists x:: abs(x) == 1;
     // No proof! More on this soon.
+
+    // Sadly quantifiers are hard! So we have to help Dafny out sometimes.
+    // We will need to get our hands dirty with the proofs.
 }
+
+// Another way of writing the correctness spec for Abs
+lemma AbsCorrect2()
+// ensures = a postcondition
+ensures forall x :: abs(x) >= x
+ensures forall x :: abs(x) == x || abs(x) == -x
+{}
 
 /*
     ===== First-order logic =====
 
     First-order logic generalizes the grammars we have seen so far by adding quantifiers:
-    forall x. φ
+    recall:
+        φ ::= φ ^ φ | φ v φ | !φ | Expr == Expr | rel(Expr, Expr, ..., Expr)
+    Now we have:
+        | forall x. φ
     and
-    exists x. φ.
+        | exists x. φ.
 
     Example.
     Why do we need quantifiers?
 
-    We saw an example with the pigenohole principle where it was most natural
+    We saw an example on HW1 with the pigenohole principle where it was most natural
     to express using quantifiers.
 
     Z3 can take as input formulas with quantifiers, but often isn't very good
@@ -138,15 +158,12 @@ lemma AbsCorrectQuantifiers() {
     Only forall statements in front! So we can do this with a validity check:
 */
 
-lemma AbsCorrect2()
-ensures forall x :: abs(x) >= x
-ensures forall x :: abs(x) == x || abs(x) == -x
-{}
-
 lemma AbsIncreasing()
 ensures
     forall x :: forall y :: 0 <= x < y ==> abs(x) <= abs(y)
-{}
+{
+    // Proof goes through - QED
+}
 
 /*
 So far, we could do all of this with just validity. (Why?)
@@ -156,15 +173,17 @@ Are there things we can't express using only validity?
 Yes: for example, abs() is surjective onto nonnegative integers:
 */
 
-predicate is_positive(y: int) {
+predicate is_nonnegative(y: int) {
     y >= 0
 }
 
 lemma AbsSurjective()
-ensures forall y: int :: is_positive(y) ==> exists x :: abs(x) == y
+ensures forall y: int :: is_nonnegative(y) ==> exists x :: abs(x) == y
 {
     // Some odd syntax
-    forall y: int | is_positive(y)
+    // Commenting the below out - Dafny cannot prove this
+    // We need to help Dafny out by providing the proof.
+    forall y: int | is_nonnegative(y)
     ensures exists x :: abs(x) == y
     {
         AbsSurjectiveFor(y);
