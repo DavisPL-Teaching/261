@@ -1,5 +1,5 @@
 /*
-    Intro to first-order logic in Dafny.
+    Intro to Dafny and first-order logic.
 
     ===== A note on industry applications =====
 
@@ -166,9 +166,28 @@ ensures
 }
 
 /*
+***** Where we ended on Tuesday *****
+
+=== May 1 ===
+
+Poll:
+Which of the following are most likely to be useful steps for verification of a real-world software project?
+
+https://forms.gle/fHwrbRw6JGfscLab9
+
+=== Recap ===
+
+Last time, we saw some examples of writing
+functions, assertions, lemmas, and postconditions in Dafny.
+(The postconditions are the "ensures" statements.)
+We also saw examples of quantifiers.
+
+    forall x :: formula
+    exists x :: formula
+
 So far, we could do all of this with just validity. (Why?)
 
-Are there things we can't express using only validity?
+Q: Are there things we can't express using only validity?
 
 Yes: for example, abs() is surjective onto nonnegative integers:
 */
@@ -216,6 +235,9 @@ ensures
 {
     var sum: nat := 0;
     for j := 0 to |l|
+        // Unfamiliar concept: loop invariant
+        // Think of this as pre and postconditions on the loop. We will
+        // see more on this later.
         invariant j <= |l|
         invariant forall i :: 0 <= i < j ==> sum >= abs(l[i])
     {
@@ -227,7 +249,10 @@ ensures
 /*
     Above: we have a program and we have proved it correct!
 
-    But let's go deeper to understand on a fundamental level:
+    Let's see how this is accomplished by starting with a simple
+    verified project.
+
+    After this I want to go deeper to understand on a fundamental level:
     - What is a proof?
     - What is a program?
 */
