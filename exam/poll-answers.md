@@ -42,3 +42,6 @@ April 24:
 April 29:
 - B, C, and F
   (A and G are limitations of Dafny.)
+
+May 1:
+- All answers (A, B, C, D, E, F). (F optional)

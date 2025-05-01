@@ -39,14 +39,14 @@ Also covered on slides:
 
 Announcements:
 
+- I am moving the project proposal deadline back 1 week to Friday, May 9.
+  And we will spend the first part of today doing some mini verification exercises in Dafny
+  to give you a better sense of how that works.
+
 - Last chance to fill out mid-quarter survey by tomorrow!
   https://forms.gle/hNz9c6jXkcSXUqXH7
 
   Current vote: 5 for more tools, 4 for more theory
-
-- I am moving the project proposal deadline back 1 week to Friday, May 9.
-  And we will spend the first part of today doing some mini verification exercises in Dafny
-  to give you a better sense of how that works.
 
 - HW2 is still due Monday.
 
@@ -54,8 +54,6 @@ Plan:
 
 - Start with the poll
 
-- Dafny examples
-
-- Mini verification exercises in Dafny
+- Dafny examples and mini verification exercise
 
 - How Dafny works: starting with first-order logic proof rules.

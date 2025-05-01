@@ -109,14 +109,14 @@ lemma AbsCorrect(x: int) {
 
 // Another way of writing...
 lemma AbsCorrectQuantifiers() {
-    assert forall x:: abs(x) >= 0;
-    assert forall x:: abs(x) == x || abs(x) == -x;
+    assert forall x :: abs(x) >= 0;
+    assert forall x :: abs(x) == x || abs(x) == -x;
     // ^^ quantifiers!
     //    this takes us away from quantifier-free logics to "first-order logic" (FOL).
     // Try modifying this.
 
     // What about this?
-    // assert exists x:: abs(x) == 1;
+    // assert exists x :: abs(x) == 1;
     // No proof! More on this soon.
 
     // Sadly quantifiers are hard! So we have to help Dafny out sometimes.
@@ -168,13 +168,6 @@ ensures
 /*
 ***** Where we ended on Tuesday *****
 
-=== May 1 ===
-
-Poll:
-Which of the following are most likely to be useful steps for verification of a real-world software project?
-
-https://forms.gle/fHwrbRw6JGfscLab9
-
 === Recap ===
 
 Last time, we saw some examples of writing
@@ -184,6 +177,15 @@ We also saw examples of quantifiers.
 
     forall x :: formula
     exists x :: formula
+
+=== May 1 ===
+
+Poll:
+Which of the following are most likely to be useful steps for verification of a real-world software project?
+
+https://forms.gle/fHwrbRw6JGfscLab9
+
+=====
 
 So far, we could do all of this with just validity. (Why?)
 
@@ -214,6 +216,7 @@ requires y >= 0
 ensures exists x :: abs(x) == y
 {
     assert abs(y) == y;
+    // asserts abs(-y) == y; // also works
 }
 
 /*
@@ -229,7 +232,7 @@ ensures exists x :: abs(x) == y
     The spec here says that AbsSum is an upper bound on all individual elements of the list.
 */
 
-method AbsSum(l: seq<nat>) returns (result: nat)
+method AbsSum(l: seq<int>) returns (result: int)
 ensures
     forall i :: 0 <= i < |l| ==> result >= abs(l[i])
 {
@@ -244,13 +247,15 @@ ensures
         sum := sum + abs(l[j]);
     }
     result := sum;
+    // equiv. syntax:
+    // return sum;
 }
 
 /*
     Above: we have a program and we have proved it correct!
 
-    Let's see how this is accomplished by starting with a simple
-    verified project.
+    Let's see how this is accomplished by starting with some mini verification
+    exercises.
 
     After this I want to go deeper to understand on a fundamental level:
     - What is a proof?
@@ -258,14 +263,18 @@ ensures
 */
 
 // Note: alternate way of writing Abs as a method.
-// We will start with functions, more on methods later
-// method AbsMethod(x: int) returns (y: int)
-//     ensures y >= 0
-//     ensures y == x || y == -x
-// {
-//     if x > 0 {
-//         y := x;
-//     } else {
-//         y := -x;
-//     }
-// }
+// The main difference between methods and functions is that
+// methods need pre/postconditions to work, functions don't need
+// pre/postconditions and are purely mathematical functions.
+//    function = mathematical function
+//    method = imperative code, i.e. Python/C/C++ function
+method AbsMethod(x: int) returns (y: int)
+    ensures y >= 0
+    ensures y == x || y == -x
+{
+    if x > 0 {
+        y := x;
+    } else {
+        y := -x;
+    }
+}
