@@ -57,3 +57,19 @@ Plan:
 - Dafny examples and mini verification exercise
 
 - How Dafny works: starting with first-order logic proof rules.
+
+## Tuesday, May 6
+
+- Proposal due this Friday, May 9
+
+- HW3
+
+- Midterm date: Tuesday, May 20
+
+Plan:
+
+- Start with the poll
+
+- Continue Dafny exercises
+
+- How Dafny works: starting with first-order logic proof rules.

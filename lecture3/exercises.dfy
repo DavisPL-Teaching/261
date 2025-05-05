@@ -145,19 +145,60 @@ method TestArgMin() {
     Iterate through the array, update the min when a smaller value is encountered
 */
 
-method MinList(a: array<int>) returns (result: int)
-requires a.Length >= 1
-{
-    var min := a[0];
-    for i := 0 to a.Length {
-        if a[i] < min {
-            min := a[i];
-        }
-    }
-    return min;
-}
-
 // ***** Where we ended for today *****
+
+/*
+=== May 6 ===
+
+Recap from last time:
+We saw:
+- How to write Dafny code with preconditions and postconditions
+- Writing assertions, lemmas, and unit tests
+- Function/method distinction
+
+The MinFour and ArgMinFour were a bit artificial as they only work with integers.
+It would be nice to generalize our functions to work with lists!
+Can we?
+This requires: loop invariants!
+
+Continuing the 3-step process:
+1. Decide on an implementaiton (or port an existing one); write in Dafny
+2. Decide on a spec; write pre/postconditions
+3. Help Dafny with the proof (as needed)
+
+We did step 1, now step 2:
+
+=== Poll ===
+
+What is a good precondition and postcondition for MinList
+that matches what we had for MinFour?
+
+https://forms.gle/eMc6TRonvMUUHXDc9
+*/
+
+// method MinList(a: array<int>) returns (result: int)
+// {
+//     var min := a[0];
+//     for i := 0 to a.Length
+//     {
+//         if a[i] < min {
+//             min := a[i];
+//         }
+//     }
+//     return min;
+// }
+
+/*
+=== What is a loop invariant? ===
+
+A loop invariant is like a pre/postcondition for the loop body.
+
+A loop invariant must satisfy the following 3 conditions:
+1.
+2.
+3.
+
+*/
 
 method ArgMinList(a: array<int>) returns (result: int)
 requires false
@@ -166,14 +207,41 @@ requires false
 }
 
 /*
+    Additional practice with loop invariants:
+
     Exercise 5:
     Write a function to compute the gcd of two integers.
 */
 
 /*
-    Exercise 6:
-    Let's try to write the four-numbers problem solver from HW1.
+    Exercise 6
+    Write a unit test for the ArgMinList and MinList functions.
 
-    Note: I didn't have a chance to try this offline!
-    So it may or may not be easy.
+    What happens?
+    This will lead to a topic that we will discuss next.
+*/
+
+
+// method TestMinList() {
+//     var a0 := new int[][1];
+//     var y0 := MinList(a0);
+//     assert ...
+//     var a1 := new int[][1, 1, 0];
+//     var y1 := MinList(a1);
+//     assert ...
+//     var a2 := new int[][5, 4, 3, 2, 1];
+//     var y2 := MinList(a2);
+//     assert ...
+// }
+
+/*
+    Additional exercises
+    (Optional or skip for time)
+
+    Exercise 7
+    Let's try to write a verified version of the
+    four-numbers problem solver from HW1.
+
+    Full disclosure: I didn't have a chance to try this offline.
+    It is possible, but may be fairly difficult.
 */

@@ -238,13 +238,20 @@ ensures
 {
     var sum: nat := 0;
     for j := 0 to |l|
+    // While loop version:
+    // var j := 0;
+    // while j < |l|
         // Unfamiliar concept: loop invariant
         // Think of this as pre and postconditions on the loop. We will
         // see more on this later.
-        invariant j <= |l|
+        // Note: the following line would be needed for a while loop,
+        // added implicitly for a for loop.
+        // invariant j <= |l|
         invariant forall i :: 0 <= i < j ==> sum >= abs(l[i])
     {
         sum := sum + abs(l[j]);
+        // While loop version:
+        // j := j + 1;
     }
     result := sum;
     // equiv. syntax:

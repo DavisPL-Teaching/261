@@ -1,12 +1,18 @@
 /*
     First-order logic (FOL)
 
+    Sometimes, when working with Dafny, Dafny gets stuck and we need to help
+    out. We saw examples of this with some of the unit testsing.
+
+    To do so, it is crucial to understand the logic behind how
+    Dafny works and what steps are needed to get from
+        point A = what Dafny knows
+    to
+        point B = what we want to show.
+
     ===== Syntax and semantics =====
 
-    Let's start from the beginning.
-    This time, we don't prove anything without checking in Dafny.
-    So we can be assured we aren't making any mistakes.
-
+    Let's start from the beginning:
     Difference between syntax and semantics.
 
     SYNTAX
@@ -30,18 +36,57 @@
     A "well-formed formula" is any formula created using the above rules --
     i.e. a sequence fo symbols from the above grammar (with parentheses to disambiguate as required).
 
+    Examples in Dafny:
+*/
+
+method FormulaExamples() {
+    assert 1 + 1 == 2;
+    // assert exists x : nat :: x + x == 2;
+    // assert forall x : nat :: x + x == 2;
+    // assert 1 + 1 + 1 == 2;
+    // var x;
+    // assert x + 1 == 2;
+
+    // NOT well-formed-formulas:
+    // assert + 1 1 == 2;
+    // assert exists x : bool :: x + x == 2;
+    // etc.
+}
+
+/*
     SEMANTICS:
 
+    For our purposes, we think of semantics as providing a particular meaning to each
+    of the expressions, functions, and relations.
+
+    Formally:
     A **structure** is a set X together with operations over the functions and relation symbols.
     Example: natural numbers, real numbers, ...
 
-    A formula is *true* if... (special case of satisfiable and valid)
+    A formula is *true* for a variable assignment v if...
     Defined inductively:
 
         ...
 
+    True is a special case of satisfiable and valid (why)?
+
+    Typically we only consider truth for "closed formulas",
+    which are formulas where all variables are quantified.
+
+    Examples:
+    which of the well-formed formulas from before are true?
+*/
+
+/*
     PROOFS:
     What about proofs?
+
+    A proof is an argument via a sequence of lines that convinces the reader a
+    statement is true.
+    It is what Dafny uses to prove programs.
+
+    === ASIDE: proof vs. semantic implication ===
+
     Traditionally in logic, after we define syntax and semantics
     we wish to define two notions:
 
@@ -58,7 +103,9 @@
     We are interested in provability (because we want to know what we can prove about programs), so we focus
     on syntactic implication.
 
-    For this we have "introduction" and "elimination" rules for each type of operator in our grammar.
+    === Proof Rules ===
+
+    We have "introduction" and "elimination" rules for each type of operator in our grammar.
 
     True introduction:
         Γ ⊢ True.
@@ -67,9 +114,6 @@
         Γ ⊢ False
     Then:
         Γ ⊢ φ.
-
-    ***** Wait a second!!!!! *****
-    Ugh, this is just math! I thought we were going to use computers to write and check proofs for us!
 
     From this point, let's start writing the rules in Dafny.
 */
@@ -301,6 +345,8 @@ ensures p_of_x(y)
 /*
     We are done!
 
+    === Implications ===
+
     Why do we care about first-order logic?
 
     -> All verification is built on the base logic.
@@ -313,11 +359,23 @@ ensures p_of_x(y)
             your favorite computer program :)
         )
 
-    Are there things that are true that we can't prove in FOL?
+    === Some provocative questions ===
 
-    Yes and No:
+    Q: Is FOL sufficient to prove all true statements that come in practice?
+
+    Arguments for:
+
+        Argument from set theory:
+
+        The argument from "code that is actually written":
 
         Godel's completeness theorem:
+
+    Arguments against:
+
+        Fitch's paradox:
+        If all truths are knowable, then all truth's are known.
+        https://en.wikipedia.org/wiki/Fitch%27s_paradox_of_knowability
 
         Godel's incompleteness theorem:
 
