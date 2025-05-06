@@ -170,8 +170,10 @@ We did step 1, now step 2:
 
 === Poll ===
 
-What is a good precondition and postcondition for MinList
-that matches what we had for MinFour?
+Write a precondition and postcondition for MinList
+that matches what we had for MinFour.
+(Your pre and postcondition don't have to be valid Dafny, but they should be
+ correct logically)
 
 https://forms.gle/eMc6TRonvMUUHXDc9
 */

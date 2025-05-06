@@ -62,7 +62,8 @@ Plan:
 
 - Proposal due this Friday, May 9
 
-- HW3
+- HW3 released - due Friday, May 16
+  https://github.com/DavisPL-Teaching/261-hw3
 
 - Midterm date: Tuesday, May 20
 
