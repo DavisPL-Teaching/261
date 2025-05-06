@@ -60,6 +60,10 @@ Plan:
 
 ## Tuesday, May 6
 
+Announcement:
+
+- HW2 deadline extended to EOD today
+
 - Proposal due this Friday, May 9
 
 - HW3 released - due Friday, May 16
@@ -72,5 +76,7 @@ Plan:
 - Start with the poll
 
 - Continue Dafny exercises
+
+- Loop invariants
 
 - How Dafny works: starting with first-order logic proof rules.

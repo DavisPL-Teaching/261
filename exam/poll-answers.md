@@ -45,3 +45,13 @@ April 29:
 
 May 1:
 - All answers (A, B, C, D, E, F). (F optional)
+
+May 6:
+(Your answers do not have to be valid Dafny syntax, but the Dafny syntax version is below)
+Precondition:
+1. a.Length >= 1
+Postconditions:
+1. exists i :: 0 <= i < a.Length && a[i] == result
+2. forall i :: 0 <= i < a.Length ==> a[i] >= result
+
+May 8:
