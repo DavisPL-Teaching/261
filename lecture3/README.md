@@ -60,7 +60,7 @@ Plan:
 
 ## Tuesday, May 6
 
-Announcement:
+Announcements:
 
 - HW2 deadline extended to EOD today
 
@@ -80,3 +80,22 @@ Plan:
 - Loop invariants
 
 - How Dafny works: starting with first-order logic proof rules.
+
+## Thursday, May 8
+
+Reminders:
+
+- Proposal due tomorrow, Friday, May 9
+
+- HW3 due Friday, May 16
+  https://github.com/DavisPL-Teaching/261-hw3
+
+- Midterm date: Tuesday, May 20
+
+Plan:
+
+- Poll
+
+- Behind how Dafny works: starting with first-order logic.
+
+- Hoare logic and dynamic logic.

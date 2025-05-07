@@ -1,19 +1,28 @@
 /*
     First-order logic (FOL)
 
-    Sometimes, when working with Dafny, Dafny gets stuck and we need to help
-    out. We saw examples of this with some of the unit testsing.
+    At this point, we have seen some practice with how Dafny works
+    (writing and proving pre/postconditions and assertions).
+    We have seen that sometimes, Dafny gets stuck
+    and we need to help out. We saw examples of this with the unit tests.
 
-    To do so, it is crucial to understand the logic behind how
+    To do so, I find that it is crucial to understand the logic behind how
     Dafny works and what steps are needed to get from
         point A = what Dafny knows
     to
         point B = what we want to show.
 
+    That is:
+    We must know how to do the proof ourselves, so that we can walk through
+    the steps in case it is needed.
+
+    More succinctly:
+    We should be the expert, Dafny is the assistant.
+
     ===== Syntax and semantics =====
 
-    Let's start from the beginning:
-    Difference between syntax and semantics.
+    Let's start with the difference between syntax and semantics.
+    We saw a bit of this in Lecture 2.
 
     SYNTAX
 
@@ -50,6 +59,7 @@ method FormulaExamples() {
     // NOT well-formed-formulas:
     // assert + 1 1 == 2;
     // assert exists x : bool :: x + x == 2;
+    // assert MethodName(x) == 3 // MethodName is a method, not a mathematical function
     // etc.
 }
 
@@ -79,11 +89,12 @@ method FormulaExamples() {
 
 /*
     PROOFS:
-    What about proofs?
 
     A proof is an argument via a sequence of lines that convinces the reader a
     statement is true.
-    It is what Dafny uses to prove programs.
+
+    Dafny is a proof assistant. It works together with us to come up with the
+    proof.
 
     === ASIDE: proof vs. semantic implication ===
 
@@ -105,7 +116,12 @@ method FormulaExamples() {
 
     === Proof Rules ===
 
-    We have "introduction" and "elimination" rules for each type of operator in our grammar.
+    What are the rules of proof?
+
+    For each type of logical construct, we have to give a way to prove that construct --
+    an "introduction rule" --
+    and a way to use that construct to prove other things --
+    an "elimination rule".
 
     True introduction:
         Γ ⊢ True.
@@ -345,7 +361,7 @@ ensures p_of_x(y)
 /*
     We are done!
 
-    === Implications ===
+    === Philosophical discussion ===
 
     Why do we care about first-order logic?
 

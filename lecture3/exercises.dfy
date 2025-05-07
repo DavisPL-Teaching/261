@@ -320,3 +320,31 @@ method TestMinList() {
     Full disclosure: I didn't have a chance to try this offline.
     It is possible, but may be fairly difficult.
 */
+
+/*
+=== Poll (to wrap up this section) ===
+
+Consider the following snippet of a program:
+
+assert P;
+assert Q;
+
+Suppose that P implies Q (logically) but Dafny verification passes only for P, and not Q. Which of the following is a possible reason for this? (Select all that apply)
+
+https://forms.gle/d4fSLLh3JUaXWpgk9
+
+=== End notes ===
+
+What are the limitations of Dafny?
+
+1. High effort to write and verify real-world software
+2. Q is true, but not provable from P?
+
+(1) is true, but not fundamental.
+(2) is actually possible and is more fundamental.
+
+To understand the more fundamental limits of Dafny,
+then, we need to go back to the logics on which Dafny is built,
+and in particular to first-order logic (FOL).
+See the file fol.dfy.
+*/
