@@ -335,7 +335,7 @@ https://forms.gle/d4fSLLh3JUaXWpgk9
 
 === End notes ===
 
-What are the limitations of Dafny?
+What are the main limitations of Dafny?
 
 1. High effort to write and verify real-world software
 2. Q is true, but not provable from P?

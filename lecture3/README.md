@@ -98,4 +98,4 @@ Plan:
 
 - Behind how Dafny works: starting with first-order logic.
 
-- Hoare logic and dynamic logic.
+- (If time) Move on to Lecture 4, Hoare logic and dynamic logic.

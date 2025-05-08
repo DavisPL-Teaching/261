@@ -1,12 +1,10 @@
 /*
     First-order logic (FOL)
 
-    At this point, we have seen some practice with how Dafny works
-    (writing and proving pre/postconditions and assertions).
-    We have seen that sometimes, Dafny gets stuck
-    and we need to help out. We saw examples of this with the unit tests.
+    Sometimes, Dafny gets stuck and we need to help out.
+    We saw examples of this with the unit tests.
 
-    To do so, I find that it is crucial to understand the logic behind how
+    To do so, I find that it will help you be successful to understand the logic behind how
     Dafny works and what steps are needed to get from
         point A = what Dafny knows
     to
@@ -16,8 +14,13 @@
     We must know how to do the proof ourselves, so that we can walk through
     the steps in case it is needed.
 
-    More succinctly:
+    Basically:
     We should be the expert, Dafny is the assistant.
+
+    This part of the lecture (and the following one) will get a bit more into how Dafny
+    works "under the hood".
+    The concepts covered will be more general than just Dafny, and would be applicable to any other
+    modern proof assistant (Coq/Rocq, Lean, Isabelle, Idris, Agda, etc.)
 
     ===== Syntax and semantics =====
 
@@ -71,17 +74,19 @@ method FormulaExamples() {
 
     Formally:
     A **structure** is a set X together with operations over the functions and relation symbols.
-    Example: natural numbers, real numbers, ...
+    Example:
+    - X = set of natural numbers
+    - operations = ...
 
     A formula is *true* for a variable assignment v if...
     Defined inductively:
 
         ...
 
-    True is a special case of satisfiable and valid (why)?
-
     Typically we only consider truth for "closed formulas",
     which are formulas where all variables are quantified.
+
+    True is a special case of satisfiable and valid (why)?
 
     Examples:
     which of the well-formed formulas from before are true?
@@ -262,8 +267,7 @@ ensures p()
 
     No: we have no rules for expressions and relations.
 
-    We also have no theory-specific rules, but this is OK - for theories we rely
-    on axioms for the base theory.
+    We also have no theory-specific rules...
 */
 
 // Some integer variables
@@ -298,6 +302,72 @@ requires p_of_x(x)
 requires x == y
 ensures p_of_x(y)
 {}
+
+/*
+    Theory-specific rules:
+    For theories we rely on axioms for the base theory.
+
+    Axiom = unproven assumption
+
+    Related to the assume keyword (see lecture 1)
+*/
+
+// Useful when modeling external/foreign functions or libraries (why?)...
+
+// example
+method{:axiom} SysInfo() returns (s: string)
+ensures s == "macOS" || s == "windows" || s == "linux"
+
+// another example
+method{:axiom} DisplayPixels(
+    window_width: nat,
+    window_height: nat,
+    x: nat,
+    y: nat,
+    w: nat,
+    h: nat
+) returns (success: bool)
+requires x + w <= window_width
+requires y + h <= window_height
+ensures success
+
+// Assume keyword
+
+method TestAssume(x: nat) returns (result: nat)
+ensures
+    result == x + 1
+{
+    result := x;
+    if x == 0 {
+        result := 1;
+    } else {
+        // some proof case I am stuck on - skip for now
+        result := result + 1;
+        assume{:axiom} result == x + 1;
+    }
+}
+
+/*
+    Axioms are very powerful but be especially careful!
+    What can go wrong?
+*/
+
+method TestAssume2(x: nat) returns (y: nat)
+ensures
+    y == x
+{
+    // oops...
+    assume{:axiom} x == 5;
+    y := 5;
+}
+
+// lemma{:axiom} AssumeFalse()
+// ensures false
+
+// lemma YourProgramIsCorrect()
+// ensures 1 + 1 == 3 {
+//     AssumeFalse();
+// }
 
 /*
     Finally, quantifiers
