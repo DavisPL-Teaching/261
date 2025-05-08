@@ -30,28 +30,29 @@ April 15 poll:
 A, B, C, and E
 
 April 17 poll:
-- Satisfiable only
-- B only (all valid formulas are satisfiable)
+1. Satisfiable only
+2. B only (all valid formulas are satisfiable)
 
 April 22 poll:
-- Yes to both: decidable and NP-hard.
+Yes to both: decidable and NP-hard.
 
 April 24:
-- C, D, E, and F.
+C, D, E, and F.
 
 April 29:
-- B, C, and F
-  (A and G are limitations of Dafny.)
+B, C, and F.
+(A and G are limitations of Dafny.)
 
 May 1:
-- All answers (A, B, C, D, E, F). (F optional)
+All answers (A, B, C, D, E, F). (F optional)
 
 May 6:
 (Your answers do not have to be valid Dafny syntax, but the Dafny syntax version is below)
-Precondition:
-1. a.Length >= 1
-Postconditions:
-1. exists i :: 0 <= i < a.Length && a[i] == result
-2. forall i :: 0 <= i < a.Length ==> a[i] >= result
+1. Precondition:
+    a.Length >= 1
+2. Postconditions:
+    exists i :: 0 <= i < a.Length && a[i] == result
+    forall i :: 0 <= i < a.Length ==> a[i] >= result
 
 May 8:
+D, E, F, and H.

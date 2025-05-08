@@ -345,6 +345,6 @@ What are the main limitations of Dafny?
 
 To understand the more fundamental limits of Dafny,
 then, we need to go back to the logics on which Dafny is built,
-and in particular to first-order logic (FOL).
+and in particular to proofs in first-order logic (FOL).
 See the file fol.dfy.
 */

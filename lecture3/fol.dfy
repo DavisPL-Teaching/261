@@ -1,6 +1,11 @@
 /*
     First-order logic (FOL)
 
+    We've been talking a lot about proofs.
+    What is a proof?
+
+    === Why learn about proofs? ===
+
     Sometimes, Dafny gets stuck and we need to help out.
     We saw examples of this with the unit tests.
 
@@ -22,6 +27,10 @@
     The concepts covered will be more general than just Dafny, and would be applicable to any other
     modern proof assistant (Coq/Rocq, Lean, Isabelle, Idris, Agda, etc.)
 
+    Important concepts:
+    - Syntax vs. semantics distinction.
+    - True vs. provability distinction.
+
     ===== Syntax and semantics =====
 
     Let's start with the difference between syntax and semantics.
@@ -34,7 +43,9 @@
     A logic consists of
     - A set of variables
     - A set of function symbols (combine these to form expressions)
+        // ex. function symbols: +, *, -
     - A set of relation symbols (combine these to form formulas, along with AND, OR, NOT, and equality)
+        // ex. relation symbols: <, InRe, PrefixOf
     - Quantifiers forall and exists
 
     And a formal grammar for each of the above:
@@ -42,8 +53,21 @@
         Var ::= Var1 | Var2 | Var3 | ...
         Expr ::= FnSymbol(Expr, ..., Expr)
         Formula φ ::= φ ^ φ | φ v φ | !φ | Expr == Expr | RelSymbol(Expr, ..., Expr)
+            | True
+            | False
             | forall Var φ
             | exists Var φ.
+
+    Examples we saw:
+        natural number arithmetic
+        real number arithmetic
+        theory of strings and regular expressions
+        etc.
+        (any other data type you might be interested in)
+
+    Emphasize:
+        A formula is just symbols! (syntax)
+        We can *evaluate* a formula by plugging in a variable assigment (semantics)
 
     A "well-formed formula" is any formula created using the above rules --
     i.e. a sequence fo symbols from the above grammar (with parentheses to disambiguate as required).
@@ -51,75 +75,138 @@
     Examples in Dafny:
 */
 
+method MethodName(x: int) returns (y: int)
+
 method FormulaExamples() {
-    assert 1 + 1 == 2;
+    // assert 1 + 1 == 2;
     // assert exists x : nat :: x + x == 2;
     // assert forall x : nat :: x + x == 2;
-    // assert 1 + 1 + 1 == 2;
+    // assert 1 + 1 == 3;
     // var x;
     // assert x + 1 == 2;
 
     // NOT well-formed-formulas:
     // assert + 1 1 == 2;
     // assert exists x : bool :: x + x == 2;
-    // assert MethodName(x) == 3 // MethodName is a method, not a mathematical function
+    // assert MethodName(x) == 3; // MethodName is a method, not a mathematical function
     // etc.
+
+    // Think of: well-formed formula == valid Dafny syntax for an expression.
+    // Expressions can be created from functions, but not methods.
 }
 
 /*
     SEMANTICS:
 
+    Syntax is just symbols; it doesn't say anything about what the symbols mean.
+    Semantics is how we plug in values and evaluate the symbols as real operations on
+    a data type.
+
     For our purposes, we think of semantics as providing a particular meaning to each
     of the expressions, functions, and relations.
 
+    A data type is defined by its function and relation symbols.
+
     Formally:
-    A **structure** is a set X together with operations over the functions and relation symbols.
+    A **structure** (think of: data type)
+    is a set X together with operations for each function symbol and relation symbol.
     Example:
-    - X = set of natural numbers
-    - operations = ...
+    - X := set of integers
+    - operations:
+        + := addition on integers
+        * := multiplication on integers
+        - := subtraction on integers.
+        < := comparison on integers
+
+    We have to define what it means to plug in (or evaluate)
+    a variable assignment on a formula.
 
     A formula is *true* for a variable assignment v if...
+
+    A variable assignment is a map:
+        v: Var -> X
+
     Defined inductively:
 
-        ...
+        - for any expression e, e[v] evaluates to an element of X
+          inductive case: if we encounter
+          f(e_1, ..., e_n)
+          we evaluate each of e_1, ..., e_n, then we apply the semantics for symbol f.
 
-    Typically we only consider truth for "closed formulas",
-    which are formulas where all variables are quantified.
+        - for a formula phi:
+
+            (phi1 ^ phi2)[v] evaluates to (phi1[v]) and (phi2[v])
+            (phi1 v phi2)[v] evaluates to (phi1[v]) or (phi2[v])
+
+            (forall x: phi)[v] evaluates to?
+                for any natural number n, we can modify v by adding x maps to n
+
+            + true if phi[v[x ↦ n]] is true for *every* n
+            + false if phi[v[x ↦ n]] is false for *some* n.
+
+            (Note that if X is an infinite domain or infinite data type,
+             this evaluation works over infinitely many n, so this is not
+             evaluation in a strictly computable sense.)
+
+    E.x. 1:
+
+        (x + 3 == y + 4) ^ (x + 3 != y + 3) (evaluate at x = 1, y = 2)
+
+        evaluates to false
+
+    plug in and evaluate as we are used to.
+
+    E.x. 2:
+
+        for all x, there exists y such that y == x + 1
+
+        evaluates to true because for any intenger literal n, if we map x ↦ n
+        we get
+            there exists y such that y == n + 1
+        and from there we can plug in the integer literal n + 1 to get
+            n + 1 == n + 1
+        which is true.
+
+    A *closed formula* is one in which all variables are bound by quantifiers.
+    Typically we only consider truth for closed formulas.
+
+    For a closed formula, the variable assignment v doesn't actually matter.
+
+    So we can say that a closed formuila phi is true if phi[v]
+    is true for any variable assigments v
+    (or equivalently, if it is true for all variable assignments v).
 
     True is a special case of satisfiable and valid (why)?
+    - Every true closed formula is satisfiable
+    - Every true closed formula is valid
+    - A formula phi with free variables x, y, z is satisfiable just means
 
-    Examples:
-    which of the well-formed formulas from before are true?
+        exists x: exists y: exists z: phi
+
+    is true, and valid means
+
+        forall x: forall y: forall z: phi
+
+    is true.
 */
 
 /*
+    Dafny is a a proof assistant: it allows us to write proofs about
+    formulas and programs.
+
     PROOFS:
 
     A proof is an argument via a sequence of lines that convinces the reader a
     statement is true.
 
-    Dafny is a proof assistant. It works together with us to come up with the
-    proof.
-
-    === ASIDE: proof vs. semantic implication ===
-
-    Traditionally in logic, after we define syntax and semantics
-    we wish to define two notions:
-
-    Syntactic implication:
-
-        Gamma ⊢ φ
-
-    where Gamma is a set of formulas (axioms) and φ is the implied formula, and semantic implication:
-
-        Gamma ⊨ φ
-
-    where Gamma is a set of formulas and φ is the implied formula.
-
-    We are interested in provability (because we want to know what we can prove about programs), so we focus
-    on syntactic implication.
+    (We will see provability and truth are different.)
 
     === Proof Rules ===
+
+    Syntax:
+        "Γ ⊢ φ"
+    means that φ is provable from the set of formulas Γ.
+    (Think of Γ as the preconditions and φ as the postcondition or assertion we want to show.)
 
     What are the rules of proof?
 
@@ -130,6 +217,7 @@ method FormulaExamples() {
 
     True introduction:
         Γ ⊢ True.
+
     False elimination:
     If
         Γ ⊢ False
@@ -154,6 +242,8 @@ lemma FalseElim()
 requires false
 ensures p()
 {
+    // sometimes known as: "Ex falso quodlibet"
+    // or the "rule of explosion"
 }
 
 /*
@@ -175,6 +265,7 @@ ensures p()
 */
 
 predicate q()
+// function q() returns (y: bool)
 
 lemma AndIntro()
 requires p()
@@ -227,12 +318,16 @@ ensures r()
     It has to do with the difference between classical logic and "constructive" logic,
     where the latter is more useful for capturing the rules of proofs, because proofs have to
     be constructive.
+
     (I cannot claim I have a proof, without actually showing one)
     (take a class in proof theory if interested
     some video lectures:
     https://www.youtube.com/watch?v=YRu7Xi-mNK8
     https://www.youtube.com/watch?v=grjMRgmjddE
     )
+
+    Dafny works in classical logic.
+    Some proof assistants work in constructive logic (Coq/Rocq)
 
     Not introduction:
 
@@ -260,9 +355,14 @@ ensures false
 lemma NotElim2()
 requires !!p()
 ensures p()
-{}
+{
+    // The fact that this rule passes, means that Dafny is using classical logic,
+    // not constructive logic.
+}
 
 /*
+    At this point, I've given enough information that we could prove any Boolean formula.
+
     Have we covered everything?
 
     No: we have no rules for expressions and relations.
@@ -297,6 +397,7 @@ predicate p_of_x(x: int)
 
 predicate q_of_x(x: int)
 
+// Intuition: if x == y, we can substitute y for x.
 lemma EqElim()
 requires p_of_x(x)
 requires x == y
@@ -307,10 +408,23 @@ ensures p_of_x(y)
     Theory-specific rules:
     For theories we rely on axioms for the base theory.
 
+    If we're doing proofs, we formalize the data type we have in mind via
+    a set of axioms.
+
     Axiom = unproven assumption
 
     Related to the assume keyword (see lecture 1)
+
+    For integers: most commonly axiomatized via "Peano arithmetic"
 */
+
+// example
+method IntegerSuccesor(n: nat)
+ensures n + 1 != n
+{
+    // This is not provable using any of the rules so far!
+    // So it requires an axiom that explains what + is and what it does.
+}
 
 // Useful when modeling external/foreign functions or libraries (why?)...
 
@@ -330,6 +444,8 @@ method{:axiom} DisplayPixels(
 requires x + w <= window_width
 requires y + h <= window_height
 ensures success
+
+// - After compiling the code, Dafny will then link it with the external method at runtime.
 
 // Assume keyword
 
@@ -360,6 +476,12 @@ ensures
     assume{:axiom} x == 5;
     y := 5;
 }
+
+// Has global implications: one assume statement somewhere in the code,
+// if it assumes something false,
+// can invalidate the entire verification of the entire code base.
+
+// ********** Where we left off for today **********
 
 // lemma{:axiom} AssumeFalse()
 // ensures false

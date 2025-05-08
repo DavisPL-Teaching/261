@@ -96,6 +96,8 @@ Plan:
 
 - Poll
 
-- Behind how Dafny works: starting with first-order logic.
+- Some of the theory behind how Dafny works
 
-- (If time) Move on to Lecture 4, Hoare logic and dynamic logic.
+  + Starting with proofs in first-order logic.
+
+  + (If time) Move on to Lecture 4, Hoare logic and dynamic logic.
