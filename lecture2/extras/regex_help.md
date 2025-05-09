@@ -10,7 +10,14 @@ Here are a few of the key regular expression operators that you will need:
     This is how you get a (boolean) formula out of a regular expression.
 
 - `z3.Full`: matches any character.
-    For technical reasons, it has to be passed a single argument, which is the "sort" (or type) of the characters that it matches. For this reason we provide a helper funcion ReFull which does this for you.
+    For technical reasons, it has to be passed a single argument, which is the "sort" (or type) of the characters that it matches. Here is a helper function ReFull which does this for you:
+    ```
+    def ReFull():
+        """
+        Returns a Z3 regex that matches all strings.
+        """
+        return z3.Full(z3.ReSort(z3.StringSort()))
+    ```
 
 - `z3.Re`: this turns a string into a regular expression.
     For example, `z3.Re("cat")` matches the string "cat".
