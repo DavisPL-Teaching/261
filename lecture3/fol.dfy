@@ -483,6 +483,29 @@ ensures
 
 // ********** Where we left off for today **********
 
+/*
+    === May 12 ===
+
+    Recap from last time:
+
+    * Truth vs. provability distinction
+
+
+
+    * This connects back to some questions from HW2!
+    Remember problem 2 about integers vs. reals. vs. truncated integers?
+
+
+    * Axioms, assume statements (and their purpose)
+
+      (See examples above and below for good usage & what can go wrong)
+
+    * External methods
+
+      Something to demonstrate: `dafny build --target:py exercises.dfy
+
+*/
+
 // lemma{:axiom} AssumeFalse()
 // ensures false
 
