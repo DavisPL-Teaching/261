@@ -1,14 +1,67 @@
 /*
-    Hoare logic.
+    === May 12 ===
+
+    === Poll ===
+
+    Poll: some review and practice with loop invariants.
+
+    https://forms.gle/1qEvaDUcmPjhxFg49
+
+    Example program:
+
+    Assume that the syntax s * n works as in Python
+    (multiply a string by an integer to repeat it n times).
+*/
+
+method HelloNTimes(n: nat) returns (result: string)
+// requires n > 0
+// ensures result == ("Hello " * (n - 1)) + ("Hello")
+{
+    result := "Hello";
+    var i := 1;
+    while (i < n) {
+        result := result + " Hello";
+        i := i + 1;
+    }
+    return result;
+}
+
+/*
+    For each of the following, which of the conditions of a loop invariant are satisfied?
+    ((i), (ii), and (iii))?
+
+    - result == "Hello"
+    - exists m: result == ("Hello " * (n - 1)) + ("Hello")
+    - 0 <= i < n
+    - 1 <= i <= n
+    - result == ("Hello " * (i - 1)) + "Hello"
+
+    === Truth vs. provability in first-order logic ===
+
+    Finishing up and recap from last time:
+    see fol.dfy.
+
+    === Connection between proofs and programs? ===
+
+    The connection between proofs and programs is demonstrated in a formalism
+    known as Hoare logic.
+
+    Tony Hoare:
+    - https://en.wikipedia.org/wiki/Tony_Hoare
+    - also known as: C. A. R. Hoare
+    - British computer scientist
+    - Born 1934 (still alive!)
+    - Won the Turing award in 1980 (45 years ago now)
+    - Also famous for: inventing the null reference (calling it his "billion-dollar mistake")
 
     Probably the most foundational paper in program verification:
 
     - An Axiomatic Basis for Computer Programming. C A R (Tony) Hoare, 1969.
       https://dl.acm.org/doi/pdf/10.1145/363235.363259
 
-    The question is what it means to prove a program correct.
-    Hoare showed that programs can be proven via a small set of
-    simple rules.
+    The question is what it means to prove a program correct?
+
+    Hoare showed that programs can be proven via a small set of simple rules.
 
     === Q: What is a program? ===
 
