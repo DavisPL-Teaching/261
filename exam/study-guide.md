@@ -1,6 +1,6 @@
 # Study guide
 
-**Midterm date:** In class, May 20, 2025.
+**Midterm date:** In class, Tuesday, May 20, 2025 (10:30-11:50am)
 
 ## Specifications
 
@@ -37,7 +37,7 @@
 ## Remaining topics
 
 There will be 1-2 questions on the exam about the following topics.
-We will cover these today:
+These will be covered in class this week:
 
 Dafny internals:
 - Hoare triples
@@ -45,5 +45,10 @@ Dafny internals:
 - Relative completeness of Hoare logic
 - Strongest postconditions and weakest preconditions
 
-I will hope to cover the following in class, but will NOT include a question on the exam:
-- Dynamic logic.
+Additional topics will be covered in class (time permitting), but will NOT apepar on the exam.
+
+## Practice exam
+
+I have posted a practice exam on Piazza (this was the final exam for ECS 189C last year, and will be useful to help you study). It does not 100% overlap, but it contains much of the same material and the format of the midterm this year for ECS 261 will be similar. (Please do not share the exam or post it online!)
+
+Please note that in addition to multiple choice and short answer questions, unlike the practice exam, there will be 1-2 longer form problems which may involve a proof or explanations (worth approximately 10-20% of the points). These problems will be similar to HW2.
