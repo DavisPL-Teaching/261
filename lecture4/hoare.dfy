@@ -1,5 +1,5 @@
 /*
-    === May 12 ===
+    === May 13 ===
 
     === Poll ===
 
@@ -31,7 +31,7 @@ method HelloNTimes(n: nat) returns (result: string)
     ((i), (ii), and (iii))?
 
     - result == "Hello"
-    - exists m: result == ("Hello " * (n - 1)) + ("Hello")
+    - exists m: result == ("Hello " * (m - 1)) + ("Hello")
     - 0 <= i < n
     - 1 <= i <= n
     - result == ("Hello " * (i - 1)) + "Hello"
@@ -40,6 +40,34 @@ method HelloNTimes(n: nat) returns (result: string)
 
     Finishing up and recap from last time:
     see fol.dfy.
+
+    Summarize key points from fol.dfy:
+
+    + Truth vs. provability distinction: remember we defined what it means
+        for a formula to be true in a structure (like the natural numbers or real
+        numbers) - this was a recursive/inductive definition.
+
+        A statement is provable though if it can be deduced by a finite sequence
+        of allowed rules (in FOL),
+        including from axioms.
+
+        Incompleteness theorem (Godel):
+            Not all true statements are provable.
+            Formally: For any finite system of axioms A, such that
+            every axiom in A is true (in the natural numbers N),
+            there is a formula
+            phi such that phi is true (in the natural numbers N), but
+            phi is not provable in FOL from the axioms.
+
+    + Axioms and assume: are used for:
+
+        - statements about the base theory (nat, real numbers, strings)
+
+        - external functions
+
+        - you can't figure a certain case, add
+
+            assume{:axiom} false;
 
     === Connection between proofs and programs? ===
 
@@ -65,17 +93,98 @@ method HelloNTimes(n: nat) returns (result: string)
 
     === Q: What is a program? ===
 
+    We have a grammar for formulas, but not programs...
+
     Suggestions?
 
-    Answer:
+    - A Turing machine with input and output
+
+    - Structured programs:
+        Assignments for variables, conditionals (if-then-else) and loops
+        and...?
+        input?
+        output?
+        data types or numbers?
+        expressions or operations?
+        Sequencing: C1; C2
+
+    This is correct:
+    To write arbitrary programs, we just need constructs for
+    variable assignment, some construct for conditional branching,
+    loops, and sequencing.
+
+    How is the program executed? (Program semantics - we will assume
+    the intuitive semantics we have in mind for the above is correct.)
+
+    Is a program with a syntax error a program?
+    Let's say no.
+
+    So let's give a grammar:
+
+    Expr ::= 0 | 1 | Var | Expr + Expr | Expr * Expr | Expr - Expr
+
+    (same as formulas, but no quantifiers)
+    BoolExpr ::= True | False | BoolExpr ^ BoolExpr | BoolExpr v BoolExpr
+        | !BoolExpr | Expr < Expr | Expr == Expr
+
+    Prog ::=
+        Var := Expr
+        | if BoolExpr then Prog else Prog end
+        | while BoolExpr do Prog end
+        | Prog ; Prog
 
     === Hoare triples ===
 
-    Definition.
+    Definition. The Hoare triple
+
+        { P } C { Q }
+
+    where P is a precondition, C is a program, and Q is a postcondition.
+        - precondition is a formula (can have quantifiers)
+        - program is a Prog (above grammar)
+        - postcondition is a formula (can have quantifiers)
+
+    To write proofs about programs, we just need rules for how we can deduce
+    the statement
+
+        { P } C { Q }
 */
 
 /*
     1. The sequencing rule
+
+    Suppose we want to show
+
+        { P } C1 ; C2 { Q }
+
+    We show this by proving, for some intermediate condition R, that
+    { P } C1 { R } and  { R } C2 { Q }.
+
+    Thinking of this as an "introduction rule"
+
+    From:
+
+        { P } C1 { R }
+        { R } C2 { Q }.
+
+    We can deduce:
+
+        { P } C1 ; C2 { Q }.
+
+    Recap:
+
+        - Hoare logic is an axiom system for writing proofs
+          about programs (via a finite number of possible rules)
+
+        - All programs are just assignments, conditionals, sequencing, and loops
+
+        - The Hoare triple { P } C { Q } means that C is correct with precond
+          P and postcond Q
+
+        - For each program syntax constructor, we are going to give a Hoare logic
+          rule for deducing (proving) the triple { P } C { Q }.
+
+    ***** Where we ended for today. *****
 */
 
 

@@ -6,7 +6,7 @@
 
 - Definition of specifications
 - Stronger and weaker specs
-- Types of specs (functional correctness, safety, and liveness)
+- Types of specs (functional correctness, full functional correctness, safety, and liveness)
 - Preconditions and postconditions
 - Assume and assert
 - Difference between testing and verification
@@ -17,18 +17,20 @@
 - Theories for integers, real numbers, and strings (you do not need to know the specific grammar by heart, but should be familiar with the concepts)
 - Definition of satisfiability and validity
 - Translation of programs to (Z3) formulas
-- Satisfiability algorithms: DPLL (unit propagation, pure literal elimination), DPLL(T), Nelson-Oppen and CDCL (basic overview only)
+- Satisfiability algorithms: DPLL (unit propagation, pure literal elimination)
+    + DPLL(T), Nelson-Oppen and CDCL (basic overview only)
 - Decidability of theories; boundary of decidability and expressiveness (an example problem might be a reduction like the PrefixOf problem or the fixed-width integer theory problem you saw on HW2)
 - Limitations of Z3
 
 ## Interactive verification
 
-- Verification methodology; industry applications and determining impact
+- Verification methodology; 3-step process
+    + industry applications and determining impact
 - First-order logic: extending formulas with quantifiers
 - Assertions and pre/postconditions (revisited)
 - Lemmas and unit tests
 - Function/method distinction - "methods are opaque"
-- Loop invariants (definition, purpose, and application - an example problem is, here is a program, come up with a loop invariant that can be used to verify it)
+- Loop invariants (3 conditions (i), (ii), (iii). Definition, purpose, and application - an example problem is, here is a program, come up with a loop invariant that can be used to verify it)
 - Dafny as a computationally bounded verifier
 - Difference between truth and provability
 - Axioms and assume statements; external methods

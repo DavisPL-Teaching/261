@@ -58,5 +58,10 @@ May 8:
 D, E, F, and H.
 
 May 13:
+1. (i) only
+2. (i) and (ii) only
+3. None (1 <= i <= n would be (ii) only)
+4. (i) and (ii) only
+5. (i) and (ii) only
 
 May 15:

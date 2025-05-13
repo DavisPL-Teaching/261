@@ -19,7 +19,7 @@ However, I will ensure that it is always at least 5 and no more than 10 minutes,
 
 If you are in a group, each person should present part of your project (aim for roughly equal speaking time per participant).
 
-You may choose from the following options: prepare slides, show a demo, or walk us through your report (@23):
+You may choose from the following options: prepare slides, show a demo, or walk us through your report:
 
 **Slides:** Plan for 10 slides, plus 10 slides of Q+A. Include some examples and questions interspersed with your slides to get the audience engaged! Focus on your key findings, and the comparison between the papers that you did. Don't aim to explain each paper in detail (which you probably won't have time to do in 10 minutes!)
 

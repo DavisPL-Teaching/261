@@ -16,13 +16,13 @@ Several announcements:
 
 - Midterm & study guide:
 
+  + Midterm is in class 1 week from today: Tuesday, May 20
+
   + `exam/poll-answers.md`
 
   + `exam/study-guide.md`
 
   + practice exam has been posted on Piazza
-
-  + Midterm is in class 1 week from today: Tuesday, May 20
 
 - I will give feedback on proposals soon, by the end of this week!
 
@@ -33,13 +33,13 @@ Several announcements:
   + Feel free to review the above for now, I will go over these in class on Thursday.
     And I will post a similar document about the final project report.
 
-Plan for this week:
+Plan for today:
 
 - Poll (practice with loop invariants)
 
 - Cover some things from lecture3/fol.dfy & summary of main takeaways
 
-- Introduction to Hoare logic.
+- Introduction to Hoare logic: proofs about programs.
 
 - Go back and cover the rest of fol.dfy, if time.
 
@@ -58,8 +58,10 @@ But we have not seen:
 - How does Dafny determine whether a program is correct behind the scenes?
 
 We will cover Hoare logic first.
-If time, we will cover: dynamic logic, and the Curry-Howard correspondence.
 
 A good understanding of these topics (like the first-order logic material) is useful!
 It will help you understand why verification in Dafny works,
 when it doesn't, and how to go about fixing it.
+
+Advanced topics (will not appear on exam):
+If time, we will cover: dynamic logic, and the Curry-Howard correspondence.
