@@ -64,4 +64,10 @@ May 13:
 4. (i) and (ii) only
 5. (i) and (ii) only
 
-May 15:
+May 15.
+1:
+    1. (i) and (ii) only, not (iii).
+    2. (iii) only, not (i) and (ii).
+    3. (iii) only, not (i) and (ii).
+
+2: All of the above (A, B, C, and D).

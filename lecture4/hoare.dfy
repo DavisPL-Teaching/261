@@ -53,11 +53,14 @@ method HelloNTimes(n: nat) returns (result: string)
 
         Incompleteness theorem (Godel):
             Not all true statements are provable.
-            Formally: For any finite system of axioms A, such that
+            Formally: For any finite set of axioms A, such that
             every axiom in A is true (in the natural numbers N),
-            there is a formula
-            phi such that phi is true (in the natural numbers N), but
-            phi is not provable in FOL from the axioms.
+            there is a formula φ such that
+            - φ is true (in the natural numbers N), but
+            - φ is not provable in FOL from the set of axioms A.
+
+            (More generally: this is true if A is a recursively enumerable set of axioms,
+             not just finite.)
 
     + Axioms and assume: are used for:
 
@@ -68,6 +71,8 @@ method HelloNTimes(n: nat) returns (result: string)
         - you can't figure a certain case, add
 
             assume{:axiom} false;
+
+          as a temporary case, come back to it later!
 
     === Connection between proofs and programs? ===
 
@@ -173,7 +178,7 @@ method HelloNTimes(n: nat) returns (result: string)
 
     Recap:
 
-        - Hoare logic is an axiom system for writing proofs
+        - Hoare logic is an axiomatic system for writing proofs
           about programs (via a finite number of possible rules)
 
         - All programs are just assignments, conditionals, sequencing, and loops
@@ -185,19 +190,157 @@ method HelloNTimes(n: nat) returns (result: string)
           rule for deducing (proving) the triple { P } C { Q }.
 
     ***** Where we ended for today. *****
+
+    === May 15 ===
+
+    Poll:
+    https://forms.gle/mZhY57M6o5PKecbB6
+
+    1. A few more loop invariants about HelloNTimes
+
+    2. Which of the following is true about the relationship between Dafny and logic? (select all that apply)
+
+    A. Everything provable in first-order logic is provable in Dafny.
+    B. Everything provable in Hoare logic is provable in Dafny.
+    C. Everything provable in Dafny is provable in Hoare logic.
+    D. Everything provable in Dafny is provable in first-order logic.
+
+    === Resuming from last time: the sequencing rule ===
+
+    Recall sequencing rule above. What does this look like in Dafny?
+
+    Example:
 */
 
+method Prog1(x: nat) returns (y: nat)
+requires x >= 1
+ensures y >= 2
+{
+    y := x + 1;
+}
+
+method Prog2(x: nat) returns (y: nat)
+requires x >= 2
+ensures y >= 4
+{
+    y := 2 * x;
+}
+
+method Prog(x: nat) returns (y: nat)
+requires x >= 1
+ensures y >= 4
+{
+    y := Prog1(x);
+    var z := Prog2(y);
+    return z;
+}
+
+// Or as a single inline program:
+
+method ProgInline(x: nat) returns (y: nat)
+requires x >= 1
+ensures y >= 4
+{
+    y := x + 1;
+    // ***
+    // Dafny implicitly figures out the intermediate condition required here!
+    // How to check?
+    // assert y >= 2;
+    // Why don't we have to write this explicitly?
+    // (More on this soon)
+    // ***
+    var z := 2 * y;
+    return z;
+}
 
 /*
     2. The conditional rule
+
+    How do we prove an if statement?
+
+        if cond then C1 else C2 end
+
+    ...
+
+    From:
+
+        { P ^ cond } C1 { Q }
+        { !P ^ cond } C2 { Q }
+
+    Deduce:
+
+        { P } if cond then C1 else C2 end { Q }.
+
+    Examples:
 */
+
+method ProgIf(x: nat) {
+    var x := x;
+    if x == 1 {
+        x := Prog1(x);
+    } else if x >= 2 {
+        x := Prog2(x);
+    } else {
+        // Do something else
+    }
+}
+
 
 /*
     3. The assignment rule
+
+    Assignment is the most interesting and surprising
+    of the Hoare logic rules. (Even more counterintuitive than loop invariants?)
+    It's the backbone of how Hoare logic works:
+
+    Amazingly, it turns out that to prove a program about assignment, it suffices
+    to evaluate the program "in reverse", in the following sense:
+
+    Program we are given:
+
+        x := E
+
+    The Hoare rule:
+
+        { Q[x := E] } x := E { Q }.
+
+    Examples:
 */
+
+
+method Prog1Revisited(x: nat) returns (y: nat)
+requires x >= 1
+ensures y >= 2
+{
+    y := x + 1;
+}
+
+method Prog2Revisited(x: nat) returns (y: nat)
+requires x >= 2
+ensures y >= 4
+{
+    y := 2 * x;
+}
 
 /*
     4. Weakening and strengthening
+
+    So far our rules are self-contained and don't relate to the underlying
+    first-order logic for formulas.
+
+    This rule changes this:
+*/
+
+method UseProg1(x: nat) returns (y: nat)
+requires x == 10
+ensures y >= 3
+{
+    y := Prog1(x); // how are we allowed to do this?
+    y := y + 1;
+}
+
+/*
+    The rule:
 */
 
 /*
