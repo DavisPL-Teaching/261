@@ -71,6 +71,22 @@ If time, we will cover: dynamic logic, and the Curry-Howard correspondence.
 
 Announcements:
 
+- Project Proposals have been graded!
+  Some comment things:
+
+  + Many of you said things like, we will implement this in Python and then verify it in Dafny.
+    Don't do this!
+    Dafny can compile to Python! (Or Java, C#, or Go) This will save many of you a lot of time.
+    Demo to demonstrate:
+    ```
+    `dafny build --target:py exercises.dfy
+    ```
+
+  + Z3 vs Dafny (pick one)
+
+  + Identify a "minimum skeleton" as a checkpoint (set a deadline: 1 week in) that will help
+    assess project size and scope.
+
 - HW3 due Friday
 
 - HW4 (optional) due May 30
@@ -79,6 +95,14 @@ Announcements:
 
 - Project presentations starting May 27
 
-  + Sign-up:
+  + Sign-up sheet:
+
+    Please stick to the time you signed up for! You can change, but *only* if you can convince
+    another group to switch with you. Please do not discuss with me, just directly switch
+    your times on the sheet.
 
   + Final report:
+
+Plan for today:
+
+- Finish Hoare logic.

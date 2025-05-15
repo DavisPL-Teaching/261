@@ -3,12 +3,17 @@
 For the project proposal, you should provide a 5-10 page report (not including references).
 I recommend (but do not require) that the report be written in LaTeX.
 
-Your report should expand on your proposal, especially, to include results! (And to speak about what you did, instead of what you will do, as described below.)
+Your report may adapt the same document from your proposal, but it should be modified based on the following outline to include your results and conclusions.
+Please address at least the following sections
+(these are required, but not exhaustive, that is, you may also add additional subsections if you like).
 Please also address any feedback from your project proposal, for example, if there were any suggestions for things you should fix or describe.
 
-Your report may adapt the same document from your proposal, but it should be modified based on the following outline.
-You should address at least the following sections
-(these are required, but not exhaustive, that is, you may also add additional subsections if you like):
+**Page limit:**
+For the final report, the 10-page limit is strict!
+If you have over 10 pages, you may include an "Appendix" after the references, this
+may contain additional details but may not be used during grading (at our discretion).
+Don't change the font, margins or do other spacing tricks to fit within 10 pages.
+The 5-page minimum is also strict (it should be 5 full pages, not including references).
 
 ## 1. Introduction, problem selection, and goals
 
@@ -69,4 +74,4 @@ Please summarize your honest experience! The above are some of the questions to 
 
 Include any papers or websites related to what your project is going to do and citations at the bottom of your document.
 This can be the same list of references from your proposal, or it can include additional references.
-Please include at least 2-3 citations at a minimum.
+Please include at least 3-5 citations for your final report.
