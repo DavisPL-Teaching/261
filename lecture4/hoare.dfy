@@ -198,7 +198,10 @@ method HelloNTimes(n: nat) returns (result: string)
 
     1. A few more loop invariants about HelloNTimes
 
-    2. Which of the following is true about the relationship between Dafny and logic? (select all that apply)
+    2. Which of the following is true about the relationship between Dafny and logic?
+    (select all that apply)
+
+    Assume we are just working with programs that operate over integers (with axioms over the integers), and that there are no other axioms/assume or external functions.
 
     A. Everything provable in first-order logic is provable in Dafny.
     B. Everything provable in Hoare logic is provable in Dafny.
@@ -207,7 +210,18 @@ method HelloNTimes(n: nat) returns (result: string)
 
     === Resuming from last time: the sequencing rule ===
 
-    Recall sequencing rule above. What does this look like in Dafny?
+    Recall sequencing rule above. As a deduction rule:
+
+    From:
+
+        { P } C1 { R }
+        { R } C2 { Q }.
+
+    We can deduce:
+
+        { P } C1 ; C2 { Q }.
+
+    What does this look like in Dafny?
 
     Example:
 */
@@ -226,22 +240,22 @@ ensures y >= 4
     y := 2 * x;
 }
 
-method Prog(x: nat) returns (y: nat)
+method Prog(x: nat) returns (z: nat)
 requires x >= 1
-ensures y >= 4
+ensures z >= 4
 {
-    y := Prog1(x);
-    var z := Prog2(y);
+    var y := Prog1(x);
+    z := Prog2(y);
     return z;
 }
 
 // Or as a single inline program:
 
-method ProgInline(x: nat) returns (y: nat)
+method ProgInline(x: nat) returns (z: nat)
 requires x >= 1
-ensures y >= 4
+ensures z >= 4
 {
-    y := x + 1;
+    var y := x + 1;
     // ***
     // Dafny implicitly figures out the intermediate condition required here!
     // How to check?
@@ -249,9 +263,54 @@ ensures y >= 4
     // Why don't we have to write this explicitly?
     // (More on this soon)
     // ***
-    var z := 2 * y;
-    return z;
+    z := 2 * y;
+    // return z;
 }
+
+/*
+    **Aside:**
+    Automating verification with weakest preconditions and strongest postconditions
+
+    Definition:
+
+    Let φ be a formula and C be a program.
+
+    - The **weakest precondition** of C is the weakest possible statement ψ
+      such that
+
+        { ψ } C { φ }
+
+      is true.
+      (I haven't proven that such a weakest statement exists, but it always
+       does, at least for loop-free programs.)
+
+    - The **strongest postcondition** of C is the strongest possible statement
+      Ψ such that
+
+        { φ } C { ψ }
+
+      is true.
+
+    Examples:
+
+    - Weakest precondition of x := x + 1 with respect to x == 2?
+
+        Weakest possible precondition is?
+        x == 1.
+
+    - Strongest postcondition of y := x with respect to x >= 4?
+
+        Strongest possible postcondition is?
+        x >= 4 && y >= 4 && x == y
+
+    Both weakest precondition and strongest postcondition are defined up to
+    formula equivalence, i.e., weakest/strongest possible formula (up to equivalence)
+    such that ...
+
+    We will see that weakest preconditions and strongest postconditions can be
+    computed automatically for any loop-free program.
+    This means taht all of the rules for Hoare logic can be automated, aside from the loop rule.
+*/
 
 /*
     2. The conditional rule
@@ -265,7 +324,7 @@ ensures y >= 4
     From:
 
         { P ^ cond } C1 { Q }
-        { !P ^ cond } C2 { Q }
+        { P ^ !cond } C2 { Q }
 
     Deduce:
 
@@ -274,17 +333,26 @@ ensures y >= 4
     Examples:
 */
 
-method ProgIf(x: nat) {
+method ProgIf(x: nat) returns (y: nat)
+requires 1 <= x <= 2
+ensures (y == 2) || (y == 4)
+{
     var x := x;
     if x == 1 {
-        x := Prog1(x);
+        // assert (1 <= x <= 2) && (x == 1);
+        x := x + 1;
+        // x := Prog1(x);
+        // assert (x == 2 || x == 4);
     } else if x >= 2 {
-        x := Prog2(x);
+        // assert (1 <= x <= 2) && (x >= 2);
+        x := 2 * x;
+        // x := Prog2(x);
+        // assert (x == 2 || x == 4);
     } else {
         // Do something else
     }
+    y := x;
 }
-
 
 /*
     3. The assignment rule
@@ -301,25 +369,30 @@ method ProgIf(x: nat) {
         x := E
 
     The Hoare rule:
+    We may deduce:
 
-        { Q[x := E] } x := E { Q }.
+        { Q[substitute x := E] } x := E { Q }.
 
     Examples:
 */
-
 
 method Prog1Revisited(x: nat) returns (y: nat)
 requires x >= 1
 ensures y >= 2
 {
+    // what should be true here?
+    // (x + 1) >= 2
     y := x + 1;
+    // we want y >= 2
 }
 
 method Prog2Revisited(x: nat) returns (y: nat)
 requires x >= 2
 ensures y >= 4
 {
+    // need: (2 * x) >= 4
     y := 2 * x;
+    // want: y >= 4
 }
 
 /*
@@ -340,32 +413,54 @@ ensures y >= 3
 }
 
 /*
-    The rule:
+    Deduction rule:
+
+    From:
+
+        P ==> P'
+        { P' } C { Q' }
+        Q' ==> Q
+
+    Then I can deduce:
+
+        { P } C { Q }.
 */
 
 /*
     5. Rules for assume and assert
+
+    Early on in the class, we saw about assume and assert.
+    We can also give Hoare rules for these, and they are quite interesting.
+
+    What's the Hoare rule for assume?
+
+        { ? } assume φ; { Q }
+
+    What's the Hoare rule for assert?
+
+        { ? } assert φ; { Q }
+
 */
 
 /*
     6. The loop rule.
-*/
 
-/*
-    === Automating verification ===
+    It just is loop invariants.
 
-    As we have previously hinted,
-    all of the above rules can be automated, aside from the loop rule.
+    We need to invent a loop invariant (cleverly, from scratch)
+    to prove the loop correct. Call this invariant I
 
-    === Weakest preconditions and strongest postconditions ===
+    From:
 
-    Definition:
+        (i) P ==> I
+        (ii) { I ^ cond } C { I }
+        (iii) I ^ !cond ==> Q
 
-    Given a precondition
+    We can deduce:
 
-    - A **weakest precondition**
+        { P } while cond do C end { Q }
 
-    Examples:
+    Loops are the cases where we have to go in and help.
 */
 
 /*

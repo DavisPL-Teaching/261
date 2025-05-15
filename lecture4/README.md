@@ -71,15 +71,15 @@ If time, we will cover: dynamic logic, and the Curry-Howard correspondence.
 
 Announcements:
 
-- Project Proposals have been graded!
-  Some comment things:
+- Project Proposals have been graded and I have provided feedback in Gradescope!
+  A few things that were common to multiple submissions:
 
   + Many of you said things like, we will implement this in Python and then verify it in Dafny.
     Don't do this!
     Dafny can compile to Python! (Or Java, C#, or Go) This will save many of you a lot of time.
     Demo to demonstrate:
     ```
-    `dafny build --target:py exercises.dfy
+    dafny build --target:py exercises.dfy
     ```
 
   + Z3 vs Dafny (pick one)
@@ -87,21 +87,27 @@ Announcements:
   + Identify a "minimum skeleton" as a checkpoint (set a deadline: 1 week in) that will help
     assess project size and scope.
 
-- HW3 due Friday
+- Project presentations and final report
 
-- HW4 (optional) due May 30
+  + Sign-up sheet: see Piazza, sign up by Friday, May 23.
+
+    Please plan to stick to the time you signed up for!
+    You can edit the schedule, but only if you can agree with another group to switch.
+    No changes will be possible within 24 hours before the presentation.
+
+  + Presentation changes: see `presentation.md`
+
+  + Final report: see `report.md`
+
+Upcoming deadlines:
 
 - Midterm is on Tuesday (May 20) - see study resources pinned on Piazza and `exam/` folder
 
-- Project presentations starting May 27
+- Thursday (May 22) is an optional bonus lecture (Dynamic Logic), for those interested.
 
-  + Sign-up sheet:
+- HW3 due tomorrow (Friday)
 
-    Please stick to the time you signed up for! You can change, but *only* if you can convince
-    another group to switch with you. Please do not discuss with me, just directly switch
-    your times on the sheet.
-
-  + Final report:
+- HW4 (optional) due May 30
 
 Plan for today:
 
