@@ -477,11 +477,32 @@ ensures y >= 3
     Formal theorem statements:
 
     **Theorem 1.**
-    Hoare logic is sound. That is ...
+    Hoare logic is sound. That is:
+        For all programs C and preconditions P and postconditions Q,
+        if { P } C { Q } is provable in Hoare logic, then it is true:
+        C satisfies the spec with precondition P and postcondition Q.
 
     **Theorem 2.**
-    Hoare logic is not complete. That is: ...
+    Hoare logic is not complete. That is: There is some program C,
+    precondition P, and postcondition Q such that
+        { P } C { Q }
+    is true, but not provable in Hoare logic. In fact, we can just
+    take C to be the empty program, and P to be true, and Q to be
+    any statement not provable in FOL. Any optional problem on HW4
+    explores this a little more with more complex programs.
+
+    Even though Hoare logic is not complete, we have:
 
     **Theorem 3.**
-    Hoare logic is relatively complete. That is: ...
+    Hoare logic is relatively complete. That is:
+    For all preconds P, programs C, and postconds Q, if the fact
+        "{ P } C { Q } is true"
+    is provable *in an appropriate encoding using natural numbers in
+    first-order logic*, then
+        { P } C { Q }
+    is provable in Hoare logic.
+    Intuitively: we can prove in Hoare logic exactly what we can prove
+    in FOL, it does not fundamentally increase expressiveness beyond
+    FOL. It just introduces new syntax that is useful for verifying
+    programs.
 */

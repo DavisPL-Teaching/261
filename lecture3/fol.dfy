@@ -592,15 +592,25 @@ ensures p_of_x(y)
 
     === Some provocative questions ===
 
-    Q: Is FOL sufficient to prove all true statements that come in practice?
+    Q: Is Dafny and its FOL base
+       sufficient to prove all true statements that come in practice?
 
     Arguments for:
+    (These are just included as curiosities, we did not cover this in class)
 
         Argument from set theory:
+        All of computer science can be formalized in mathematics,
+        and all of known mathematics can be formalized in set theory
+        (most commonly a set theory known as ZFC).
+        Set theory is a theory of axioms in first-order logic,
+        so first-order logic is enough.
 
         The argument from "code that is actually written":
+        People don't write code that they don't know why is true!
 
         Godel's completeness theorem:
+        Godel showed that FOL formulas are provable if and only if
+        they are true in *every* structure satisfying the axioms.
 
     Arguments against:
 
@@ -609,8 +619,13 @@ ensures p_of_x(y)
         https://en.wikipedia.org/wiki/Fitch%27s_paradox_of_knowability
 
         Godel's incompleteness theorem:
+        Shows that not all statements that are true are provable.
 
     Q: why is it called first-order logic?
 
-    A:
+    A: Variables (x, y, z) range over elements of some structure
+       (natural numbers, reals, etc.), so called "first-order" quantification.
+       Second-order quantification involves quantifying over sets of elements,
+       not single elements. (Like sets of natural numbers, or even
+       relations between natural numbers.)
 */

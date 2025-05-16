@@ -68,6 +68,6 @@ May 15.
 1:
     1. (i) and (ii) only, not (iii).
     2. (iii) only, not (i) and (ii).
-    3. (iii) only, not (i) and (ii).
+    3. (ii) and (iii) only, not (i).
 
 2: All of the above (A, B, C, and D).
