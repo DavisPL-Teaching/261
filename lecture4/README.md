@@ -112,3 +112,28 @@ Upcoming deadlines:
 Plan for today:
 
 - Finish Hoare logic.
+
+## Thursday, May 22
+
+This is the last (instructor-led) lecture of the quarter!
+
+Announcements/reminders:
+
+- The last two weeks of class are your project presentations.
+  Please sign up for a slot if you have not yet by tommorrow EOD.
+  If you are the first person, please arrive early (and please see the post on Piazza for other details and announcements).
+
+- OH for the remainder of the quarter: see https://piazza.com/class/m8t4cwl1qsm6yw/post/118
+  I will hold office hours this Friday 11am-12pm.
+
+- HW4 (optional) is due Friday, May 30.
+
+Plan:
+
+- Questions on the midterm
+
+  See `midterm-example.dfy`
+
+- Some help & pointers for your presentations
+
+- Dynamic logic.
