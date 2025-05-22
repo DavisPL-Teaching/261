@@ -117,11 +117,12 @@ Plan for today:
 
 This is the last (instructor-led) lecture of the quarter!
 
-Announcements/reminders:
+Reminders:
 
 - The last two weeks of class are your project presentations.
   Please sign up for a slot if you have not yet by tommorrow EOD.
   If you are the first person, please arrive early (and please see the post on Piazza for other details and announcements).
+  Make sure you bring a laptop that can plug in to usb-c, and give everyone in the group a chance to present during your presentation.
 
 - OH for the remainder of the quarter: see https://piazza.com/class/m8t4cwl1qsm6yw/post/118
   I will hold office hours this Friday 11am-12pm.
@@ -130,7 +131,7 @@ Announcements/reminders:
 
 Plan:
 
-- Questions on the midterm
+- Go over midterm questions
 
   See `midterm-example.dfy`
 
