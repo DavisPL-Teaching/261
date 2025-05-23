@@ -12,9 +12,8 @@ predicate invariant_cond_post(n: int, x: int, y: int) {
 
 lemma LemmaOne(x: int, y: int)
 requires x == y
-ensures exists n :: invariant_cond(n, x, y);
+ensures exists n :: invariant_cond(n, x, y)
 {
-    // assert invariant_cond(0, x, y);
     // TODO: come back and prove
     assume{:axiom} false;
 }
