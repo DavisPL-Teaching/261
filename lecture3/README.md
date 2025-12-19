@@ -1,5 +1,7 @@
 # Lecture 3: Interactive verification
 
+**Please note: This lecture has not yet been updated for winter quarter 2026.**
+
 Introduction to interactive verification in Dafny.
 
 ## Tuesday, April 29

@@ -1,5 +1,7 @@
 # Lecture 1: Program Specifications
 
+**Please note: This lecture has not yet been updated for winter quarter 2026.**
+
 ## Following along
 
 You can follow along with the lectures!

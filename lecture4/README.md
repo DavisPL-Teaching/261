@@ -1,5 +1,7 @@
 # Lecture 4: Proofs and programs
 
+**Please note: This lecture has not yet been updated for winter quarter 2026.**
+
 ## Tuesday, May 13
 
 Several announcements:
