@@ -1,5 +1,7 @@
 # Tentative Schedule
 
+**TBD: The schedule has not yet been updated for winter quarter 2026.**
+
 **This schedule is tentative and subject to change.**
 For the latest information and homework deadlines, please see Piazza.
 
