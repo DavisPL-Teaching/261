@@ -1,3 +1,4 @@
 # Lecture 0: Introduction to the course
 
-**Please note: This lecture has not yet been updated for winter quarter 2026.**
+Please see the PDF in this folder for the slides for the first day of lecture.
+We will cover the demos at the start of class next time!
