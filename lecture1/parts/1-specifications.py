@@ -6,9 +6,11 @@ Part 1: Writing Specifications
 
 === Program specifications ===
 
-A specification is any true or false property about a program.
+A specification (or a "spec") is any true or false property about a program.
 
-- By "program", at this stage, just think of this as any function in Python.
+- By "program", at this stage, just think of this as any function in Python
+
+    (or your favorite programming language)
 
 Any given program
 - "satisfies" the specification if the property is true for that program
@@ -33,7 +35,7 @@ def is_even(x):
         return False
 
 """
-=== Discussion Question and Poll ===
+=== Poll ===
 
 Which of the following is NOT a specification for the is_even function, according to the above definition?
 Select all that apply.
@@ -124,7 +126,9 @@ import pytest
 
 # Unit test
 # Comment out to run
-@pytest.mark.skip
+# @pytest.mark.skip
+# @pytest.mark.skip
+@pytest.mark.xfail
 def test_is_even():
     # This is a specification!!
     assert is_even(4)
@@ -149,10 +153,22 @@ Unit testing can be considered a form of writing specifications.
 
 However, what is the problem with unit tests?
 
+- Unit test could be wrong!
+
+  It could pass the unit test, but I failed to check what we actually
+  wanted to be true about the program
+
+- Humans write them - so they miss edge cases
+
+- You can only ever check finitely many cases!
+
 .
 .
 .
 """
+
+def average(xs):
+    return sum(xs) / len(xs)
 
 # Common experience unit testing:
 @pytest.mark.skip
@@ -170,11 +186,42 @@ def test_average_function():
 
 Can we test the program on ALL inputs, rather than just some?
 
+example sketch:
+
+
+"""
+
+def average(xs):
+    return sum(xs) / len(xs)
+
+# known "correct" average function
+def average_gold(xs):
+    # eg. a builtin:
+    # return math.avg(xs)
+    raise NotImplementedError
+
+# Write a little contract:
+# "On all inputs (of type ...), the output does (...)"
+
+# We could even a little test harness to test this!
+
+def my_test_harness(xs):
+    avg1 = average(xs)
+    avg2 = average_gold(xs)
+    assert avg1 == avg2
+
+"""
 One idea: random testing/fuzzing.
 
 Def. Random testing:
+    Given a program and a spec that is executable (say,
+    written as a test harness as above),
+    automatically generate many inputs and try them.
 
 Def. Fuzzing:
+    Random testing against the spec "program does not crash"
+
+This works pretty well!
 
 Does this solve our problem?
 
@@ -210,17 +257,17 @@ def average(l):
 # The unit test will: run a bunch of random inputs, try running the program,
 # and raise an error if any assertions are violated.
 # ===== Version 1 =====
-@given(st.lists(st.floats(allow_nan=False, allow_infinity=False), min_size=1))
+# @given(st.lists(st.floats(allow_nan=False, allow_infinity=False), min_size=1))
 # ===== Version 2 =====
-# @given(st.lists(st.floats(allow_nan=False, min_value=0, max_value=100, allow_infinity=False), min_size=1))
-@pytest.mark.skip
+@given(st.lists(st.floats(allow_nan=False, min_value=0, max_value=100, allow_infinity=False), min_size=1))
+# @pytest.mark.skip
 # @settings(verbosity=3)
 def test_average(xs):
     # ===== Version 1 =====
-    assert min(xs) <= average(xs) <= max(xs)
+    # assert min(xs) <= average(xs) <= max(xs)
     # ===== Version 2 =====
-    # EPSILON = .00000001
-    # assert min(xs) - EPSILON <= average(xs) <= max(xs) + EPSILON
+    EPSILON = .00000001
+    assert min(xs) - EPSILON <= average(xs) <= max(xs) + EPSILON
 
 """
 This is better! Why?
@@ -231,10 +278,88 @@ This is better! Why?
 
 - The checking is still limited!
 
+Problem is, even if I generate 100s of examples, I'm still only testing
+the function on finitely many inputs.
+
+--> not truly proving -- or *verifying* the spec.
+
 (more on this shortly)
 """
 
 """
+===== The problem with testing =====
+
+Consider the following program
+
+(This is derived from a program we came up with last year in ECS 261):
+"""
+
+def prog_ex(x):
+    # Program returning 9 if the input is 100, otherwise returning 11
+    if x == 1000:
+        return 9
+    else:
+        return 11
+
+"""
+Here is an example:
+Write a test which states that:
+For all integer inputs x, if x > 100, the output is 11.
+"""
+
+@given(st.integers(min_value=0, max_value=10_000))
+# Comment out to run
+# @pytest.mark.skip
+def test_prog_ex_spec_6(x):
+    y = prog_ex(x)
+    if x > 100:
+        assert y == 11
+
+"""
+The program passes!
+
+This reveals a problem with testing!
+Our testing tool (Hypothesis)
+tries random inputs, but in this case, it failed to try
+the input 1000, so it failed to find the input which falsifies specification 7.
+
+There are ways to fix this by:
+
+- generating more inputs
+
+- specifying the input manually
+
+But it isn't very satisfying.
+"""
+
+"""
+=== Testing vs. verification ===
+
+The above illustrates a fundamental problem.
+
+Testing is the gold standard in industry!
+
+BUT:
+
+    Q: If we can't find a counterexample to the specification for a program,
+    does that mean the program satisfies the specification?
+
+    A:
+        If we test **all possible inputs**, then yes!
+        If we only test **some** possible inputs, then no.
+
+    This is what makes Hypothesis a **testing** tool, rather than **verification.**
+
+***** where we ended for today *****
+"""
+
+"""
+Clarifying from last time:
+
+- Specification vs. verification
+
+- Verification vs. testing
+
 === Formal Definition of Specifications ===
 
 The above motivates that we want specifications which:
@@ -283,74 +408,6 @@ A: Yes, that's a valid spec but probably not one we're interested in.
 
 Thinking about a spec as its "set of possible programs" is often useful!
 (More on this in the next lecture part.)
-"""
-
-"""
-===== The problem with testing =====
-
-Consider the following program
-
-(This is derived from a program we came up with last year in ECS 261):
-"""
-
-def prog_ex(x):
-    # Program returning 9 if the input is 100, otherwise returning 11
-    if x == 1000:
-        return 9
-    else:
-        return 11
-
-"""
-Here is an example:
-
-Write a test which states that:
-
-For all integer inputs x, if x > 100, the output is 11.
-
-"""
-
-@given(st.integers(min_value=0, max_value=10_000))
-# Comment out to run
-@pytest.mark.skip
-def test_prog_ex_spec_6(x):
-    y = prog_ex(x)
-    if x > 100:
-        assert y == 11
-
-"""
-The program passes!
-
-This reveals a problem with testing!
-Our testing tool (Hypothesis)
-tries random inputs, but in this case, it failed to try
-the input 1000, so it failed to find the input which falsifies specification 7.
-
-There are ways to fix this by:
-
-- generating more inputs
-
-- specifying the input manually
-
-But it isn't very satisfying.
-"""
-
-"""
-=== Testing vs. verification ===
-
-The above illustrates a fundamental problem.
-
-Testing is the gold standard in industry!
-
-BUT:
-
-    Q: If we can't find a counterexample to the specification for a program,
-    does that mean the program satisfies the specification?
-
-    A:
-        If we test **all possible inputs**, then yes!
-        If we only test **some** possible inputs, then no.
-
-    This is what makes Hypothesis a **testing** tool, rather than **verification.**
 """
 
 """

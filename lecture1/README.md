@@ -22,7 +22,7 @@ Plan:
 
 - Introduction to program specifications
 
-- We will begin by seeing specifications in Python, then move to Z3/Dafny.
+- We will begin by seeing specifications and testing in Python, then move to Z3/Dafny.
 
 ## Following along
 
