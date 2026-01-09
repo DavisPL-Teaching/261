@@ -1,6 +1,30 @@
 # Lecture 1: Program Specifications
 
-**Please note: This lecture has not yet been updated for winter quarter 2026.**
+## Thursday, January 8
+
+
+Most lectures going forward will be live coding!
+
+Announcements:
+
+- HW0 is out, due Tuesday 11:59pm
+
+    + Installation help on Monday 5pm!
+
+    + We are happy to help with installation issues! Please post errors to Piazza.
+
+    + We need to get all installation issues resolved by the HW0 deadline.
+
+Plan:
+
+- Demos from last time `lecture0/demos`
+
+- Poll
+
+- Introduction to program specifications
+
+- We will begin by seeing specifications in Python, then move to Dafny.
+
 
 ## Following along
 
