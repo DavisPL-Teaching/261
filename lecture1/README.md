@@ -46,6 +46,8 @@ Announcements:
 
   For the written part - please type! (LaTeX is recommended - you can use our template)
 
+  due Wednesday, Jan 21
+
 - HW0 due today
 
 Plan:

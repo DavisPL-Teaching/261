@@ -16,6 +16,8 @@ Recap from last time:
 
 - Difference between testing & verification.
 
+    + verification will be exhaustive.
+
 Today:
 
 - Practice with writing specs
@@ -46,13 +48,23 @@ Methodology of program specification:
 
 === "Test harness" approach ===
 
+(We will see that this approach is equivalent to writing "preconditions" and "postconditions")
+
 For steps 2 and 3:
 
     To specify the behavior on multiple inputs, we saw that we could write specs
     using a "test harness" approach:
     like this:
 
+    If you want to verify a program of the form
+
+    def foo(arg1, arg2, ...):
+        # ...
+
+    We can write a test harness like:
+
     def spec_foo(arg1, arg2, ...):
+        result = foo(arg1, ...)
         # do some checks, make some python assertions
 
     followed by a test like
@@ -60,6 +72,12 @@ For steps 2 and 3:
     def test_foo():
         for arg1, arg2, in ...
             spec_foo(arg1, arg2)
+
+With this approach:
+
+    - I have a general def of correctness on any input (the spec)
+
+    - I have a particular test that runs some particular inputs.
 """
 
 # Imports
@@ -92,17 +110,28 @@ def integer_sqrt(n):
 
 # 2. Write the specification - first in English
 # What does it mean for this program to be correct?
-
 # Ideas?
-# TODO
+# - For any given nonnegative integer, if y = integer_sqrt(n) then the square
+#   y * y should be less than or equal to n and
+#   (y + 1) * (y + 1) is greater than n.
+# - y should be integer
+
+# Edge case we may not have thought of - calling with a negative integer or
+# zero (could choose to include or not in the spec)
+# ex.: - on negative integers, the program should crash
+# let's just ignore negative integers for now.
 
 def spec_integer_sqrt(n):
-    # TODO
-    raise NotImplementedError
+    y = integer_sqrt(n)
+    assert type(y) is int
+    assert y * y <= n
+    assert (y + 1) * (y + 1) > n
+
+# now we have an executable spec in Python! (test harness)
 
 # For now: test the behavior on inputs 0 to 1000
 # Comment out to run
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_integer_sqrt():
     for n in range(1000):
         spec_integer_sqrt(n)
@@ -132,6 +161,11 @@ Which of the following additional specifications does integer_sqrt satisfy?
 7. If the input is greater than or equal to 100, then the output is greater than or equal to 10.
 
 Answers:
+
+Correct answers:
+first 2 questions:
+True, False
+3rd question: 1, 2, 3, 5, and 7
 
 .
 .
@@ -173,9 +207,14 @@ Q: are properties about the syntax or lines of code considered specifications?
     E.g.: the function must have at least 10 Lines of code
     A: Yes, that's a valid spec but probably not one we're interested in.
 
+Many specs are possible, some are more useful than others.
+
 === The verification approach ===
 
 Verification instead of testing:
+
+Verification: prove the behavior of the program on
+  all inputs, not just some inputs
 
 Because Z3 lives in a separate world from Python,
 we have to "translate" the Python program into Z3 formulas.
@@ -199,8 +238,7 @@ def abs_z3(x):
 # Normal spec:
 def spec_abs(x):
     y = abs(x)
-    assert x >= 0
-    assert x == y or x == -y
+    assert y >= 0 and (y == x or y == -x)
 
 # Z3 spec:
 def spec_abs_z3(x):
@@ -213,13 +251,15 @@ def spec_abs_z3(x):
 from helper import prove, PROVED
 
 # Comment out to run
-@pytest.mark.skip
+# @pytest.mark.skip
 def test_prove_z3():
     # prove the spec on all inputs!
     x = z3.Int("x")
     spec = spec_abs_z3(x)
 
     assert prove(spec) == PROVED
+
+    # Z3 proves the spec holds for ALL inputs
 
     # Note: Try replacing Int with Real!
 
