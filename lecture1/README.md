@@ -33,3 +33,28 @@ You can follow along with the lectures!
   (Every week to get the latest changes: `git stash` then `git pull`)
 - Also allows you to access the poll link we do in lecture.
 - You will need to complete HW0 to be able to run the code successfully.
+
+## Tuesday, January 13
+
+Announcements:
+
+- HW1 is out!
+  https://github.com/DavisPL-Teaching/261-hw1
+
+  This is a problem set with 5 problems
+  (1, 3, 5 coding questions; 2, 4 written/proofs)
+
+  For the written part - please type! (LaTeX is recommended - you can use our template)
+
+- HW0 due today
+
+Plan:
+
+- Part 2: Methodology of writing specs
+  + Poll
+
+- Time permitting: Part 3: Stronger and weaker specifications
+
+To follow along: do a `git stash; git pull`
+
+Questions?

@@ -15,10 +15,17 @@ this is very useful! But it is also not very specific.
 In practice, we need our specification to be understandable to the tool we are using...
     i.e.: written in a more specific grammar
 
-- Hypothesis only understands specs using @given annotations on pytests (+ assert and assume)
+- example: Python only understands tests which use assert and Python Booleans
 
 - Verification tools like Z3 and Dafny only understand specs written in formal logic
   (typically, first-order logic)
+
+===== Expressibility of specs =====
+
+Can all specs be expressed as executable Python tests
+
+... No
+... Even on a bounded set of inputs?
 
 Here are some examples (some previous and some new ones) on integer_sqrt:
 
@@ -51,17 +58,17 @@ Here are some examples (some previous and some new ones) on integer_sqrt:
     Check the journal log of the computer?
     We would need some way to log all of the function calls
     (in this case sytem calls) that are made by f when it executes.
-    This would be somewhat difficult to do in Hypothesis alone.
 
 6. The program executes in constant time
 7. The program always terminates
 
-You could try to write these in Hypothesis...
-... but you would soon run into trouble.
+You could try to write these as Python tests...
+...but you would soon run into trouble.
 """
 
-@pytest.mark.skip
-def test_int_sqrt_always_terminates(x):
+import pytest
+
+def spec_int_sqrt_always_terminates(x):
     y = integer_sqrt(x)
     # assert type(y) == int ?
     # assert True ?
@@ -70,7 +77,17 @@ def test_int_sqrt_always_terminates(x):
     raise NotImplementedError
 
 @pytest.mark.skip
-def test_int_sqrt_never_opens_a_file(x):
+def test_int_sqrt_always_terminates():
+    # TODO
+    raise NotImplementedError
+
+@pytest.mark.skip
+def spec_int_sqrt_never_opens_a_file(x):
+    # TODO
+    raise NotImplementedError
+
+@pytest.mark.skip
+def test_int_sqrt_never_opens_a_file():
     # TODO
     raise NotImplementedError
 
@@ -80,7 +97,7 @@ Try translating them to logical statements about a program f.
 
 Some questions:
 
-- Are all of these specifications expressible as Hypothesis tests?
+- Are all of these specifications expressible as Python tests?
 
     No - some are, some aren't
 
@@ -89,12 +106,12 @@ Some questions:
     No - some are, some aren't
 
 Other examples?
-    (see cut/other-specs.md)
+    (see exras/other-specs.md)
 
 === Classes of specifications ===
 
-The discussion about which are testable using Hypothesis might leave
-you wondering what properties exactly *can* be tested using Hypothesis
+The discussion about which are testable using Python might leave
+you wondering what properties exactly *can* be tested using Python
 (or easily tested in general)?
 
 This raises an important distinction:
@@ -104,12 +121,15 @@ This raises an important distinction:
     (like f(x) = x^2, f(x) = e^x, etc.)
     only defined by its input-output behavior.
 
+===== Functional correctness =====
+
+Functional correctness is the focus of many program verification efforts in practice.
+It's not perfect, but it is often a good starting point!
+And we have good tools for reasoning about it (compared to some of the others
+which require deep and difficult encodings, more on this later.)
+
 - A **functional correctness** property is a spec which only depends
   on the set of all ordered pairs (x, y) such that f(x) = y.
-
-But even "True" and "False" are examples of this which aren't very useful.
-Also "if the input is an integer, then the output is an integer"
-isn't very useful.
 
 - A **full functional correctness** spec is one which exactly specifies
     what f should do on every input.
@@ -125,8 +145,16 @@ isn't very useful.
     can actually show that there is only one such y.
     So this is a full functional correctness spec.
 
+Condition for "full functional correctness":
+
     For any f1, f2 satisfying the spec S, if f1(x) = y1 and f2(x) = y2
     then y1 == y2.
+
+But even "True" and "False" are examples of this which aren't very useful.
+Also "if the input is an integer, then the output is an integer"
+isn't very useful.
+
+=== Safety and liveness properties ===
 
 Two other special cases of specifications that turn out to be particularly useful
 (these are not functional correctness):
@@ -145,34 +173,14 @@ These have to do with the behavior of the program when run
 
     "f(x) does terminate"
 
-(Neither of these can be specified using functional correctness.)
+Neither of these can be specified using functional correctness...
+
+- However, often other properties can be encoded as functional correctness
+  by maintaining some additional "state".
 
 Are the above all possible specifications?
 No! We can imagine much more interesting cases...
-    (More examples, again, in cut/other-specs.md)
-
-Review:
-
-Can we test safety properties in Hypothesis?
-
-Can we test liveness properties in Hypothesis?
-
-What are all possible specifications expressible in Hypothesis?
-(pin in this question - more on this soon)
-"""
-
-"""
-=== Functional correctness ===
-
-Functional correctness is the focus of many program verification efforts in practice.
-It's not perfect, but it is often a good starting point!
-And we have good tools for reasoning about it (compared to some of the others
-which require deep and difficult encodings, more on this later.)
-
-- Often other properties can be encoded as functional correctness
-  by maintaining some additional "state".
-
-We typically express functional correctness using...
+    (More examples, again, in extras/other-specs.md)
 
 === Preconditions and postconditions ===
 
@@ -207,26 +215,24 @@ def divide(x, y):
     # (integer division)
     return x // y
 
-# @pytest.mark.skip
-# @pytest.mark.xfail
-@given(
-    st.integers(min_value = -1000, max_value = 1000),
-    # st.integers(min_value = -1000, max_value = 1000),
-    # st.integers(min_value = 1, max_value = 1000),
-    st.integers(min_value = 0, max_value = 1000),
-)
-@settings(max_examples=1000)
-def test_divide(x, y):
-    # # what to test here?
-    # z = divide(x, y)
-    # # Write the spec here:
-    # # (you could write any spec here, but let's use:)
-    # assert z * y <= x < (z + 1) * y
+def spec_divides(x, y):
+    # what to test here?
+    z = divide(x, y)
+    # Write the spec here:
+    # (you could write any spec here, but let's use:)
+    assert z * y <= x < (z + 1) * y
 
     # Fixed version with added precondition
-    if y > 0:
-        z = divide(x, y)
-        assert z * y <= x < (z + 1) * y
+    # if y > 0:
+    #     z = divide(x, y)
+    #     assert z * y <= x < (z + 1) * y
+
+@pytest.mark.skip
+# @pytest.mark.xfail
+def test_divides_1():
+    for x in range(10):
+        for y in range(10):
+            spec_divides(x, y)
 
 # We couldn't even test our statement, because our program
 # crashed :(
@@ -278,7 +284,7 @@ ways:
   want to consider inputs for which the exception is raised
   as valid, we can exclude them via a precondition.
 
-Another example:
+A similar example for floating point division:
 
 (skip for time)
 """
@@ -288,16 +294,19 @@ def divides_2(x, y):
 
 ERROR = .000001
 
-@given(
-    st.integers(min_value = -100, max_value = 100),
-    st.integers(min_value = -100, max_value = 100),
-)
-def test_divides_2(x, y):
+def spec_divides_2(x, y):
     # could do e.g.:
     # assume -100 <= y <= 100
     assume(y != 0)
     result = divides_2(x, y)
     assert (result * y - x < ERROR)
+
+@pytest.mark.skip
+# @pytest.mark.xfail
+def test_divides_2():
+    for x in range(10):
+        for y in range(10):
+            spec_divides_2(x, y)
 
 """
 With the precondition included, the spec says:
@@ -315,21 +324,15 @@ Are pre and postconditions sufficient?
 
 - Can we now express all properties we are interested in?
 
-- Can Hypothesis express anything that pre/postconditions can't?
-
-A: Yes
-    - Runtime? we could write a Hypothesis test that times the program
+    + Runtime? we could write a test that times the program
       (using time.time or something)
-    - What about running the program multiple times?
+    + What about running the program multiple times?
         e.g.: test that the program is deterministic
             y1 = f(x)
             y2 = f(x)
             assert y1 == y2
-    - What about asserting something inside the program?
+    + What about asserting something inside the program?
         Put assertions inside your program
         and assertions before/after running different programs
         so, you don't only have to assert things at the end.
-
-More general way of thinking about the
-kind of specifications that Hypothesis can support:
 """

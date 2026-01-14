@@ -8,20 +8,29 @@ Assume and Assert
 
 Going back to our divide by zero example.
 
+This time we will use Hypothesis again for random testing.
+
+pip3 install hypothesis
+
 What if we want to write it to include positive and negative integers,
 not only positive integers?
 """
 
-from hypothesis import assume
+import pytest
+import hypothesis
+from hypothesis import assume, strategies as st, settings, given
 
 def divides_2(x, y):
     return x / y
+
+ERROR = .00001
 
 @given(
     st.integers(min_value = -1000, max_value = 1000),
     st.integers(min_value = -1000, max_value = 1000),
 )
 @settings(max_examples=1000)
+@pytest.mark.skip
 def test_divide_2(x, y):
     # Assume statement!
     # Adds some constraint to the precondition.
