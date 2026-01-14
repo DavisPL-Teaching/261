@@ -60,3 +60,17 @@ Plan:
 To follow along: do a `git stash; git pull`
 
 Questions?
+
+## Thursday, January 15
+
+Reminders:
+
+- HW1 due Wednesday
+
+Plan:
+
+- Types of specifications
+
+    + in particular:
+    functional correctness, full functional correctness,
+    preconditions and postconditions.
