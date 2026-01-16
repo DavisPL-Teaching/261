@@ -2,6 +2,18 @@
 Lecture 1, Part 6:
 Conclusions
 
+===== Poll =====
+
+Which of the following has no effect? (Select all that apply)
+- assert True
+- assert False
+- assume True
+- assume False
+- assert P if it occurs immediately following assume P
+- assume P if it occurs immediately following assert P
+
+https://forms.gle/x673cssDmmY9aDKH9
+
 ===== Discussion and limitations =====
 
 Testing
