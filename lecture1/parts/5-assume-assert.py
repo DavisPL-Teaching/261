@@ -1,40 +1,47 @@
 """
-Lecture 1, Part 4:
+Lecture 1, Part 5:
 Assume and Assert
-
-**Please note: These notes have not yet been updated for winter quarter 2026.**
 
 ===== Assume and assert =====
 
 Going back to our divide by zero example.
+This time using floating point arithmetic.
 
-This time we will use Hypothesis again for random testing.
-
-pip3 install hypothesis
-
-What if we want to write it to include positive and negative integers,
-not only positive integers?
+Here, we want to exclude 0.
+We saw multiple ways to do this. Another way would be using
+an "assume" keyword.
 """
 
 import pytest
-import hypothesis
-from hypothesis import assume, strategies as st, settings, given
 
 def divides_2(x, y):
     return x / y
 
 ERROR = .00001
 
-@given(
-    st.integers(min_value = -1000, max_value = 1000),
-    st.integers(min_value = -1000, max_value = 1000),
-)
-@settings(max_examples=1000)
-@pytest.mark.skip
-def test_divide_2(x, y):
+import sys
+
+def my_assert(b):
+    if not b:
+        # halt the program with an error :-(
+        sys.exit(1)
+        # alternative:
+        raise AssertionError("assertion failed")
+
+def assume(b):
+    if not b:
+        # halt the program -- no error :-)
+        sys.exit(0)
+
+def spec_divide_2(x, y):
     # Assume statement!
     # Adds some constraint to the precondition.
     assume(y != 0) # If this isn't true, throw away this particular test run.
+
+    # Equivalent to:
+    # if y == 0:
+    #     return
+
     # assert type(divide(x, y)) is float
     assert abs(divides_2(x, y) * y - x) < ERROR
 
@@ -82,8 +89,7 @@ def sort_list(l):
     return l
 
 # The spec:
-@given(st.lists(st.integers()))
-def test_sort_list(l):
+def spec_sort_list(l):
     assume(l == sorted(l))
     assert sort_list(l) == sorted(l)
 
@@ -104,9 +110,9 @@ it to ensure the list is sorted?
 
 """
 Now that we know about assume and assert,
-A more complete definition of specifications in Hypothesis:
+a more complete claim about what testing can express:
 
-Hypothesis can express exactly those specifications that are
+Testing can express exactly those specifications that are
 expressible using assume() and assert().
 
 - On all input executions such that all assume() statements

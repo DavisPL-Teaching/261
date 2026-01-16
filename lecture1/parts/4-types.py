@@ -1,160 +1,395 @@
 """
-Lecture 1, part 3:
-Types of specifications
+Lecture 1, Part 4:
+Types of Specifications
 
-**Please note: These notes have not yet been updated for winter quarter 2026.**
+=== Intro ===
 
+From last time: S1 is stronger than S2 if
+all programs satisfying S1 also satisfy S2.
+
+"stronger than" works how you would expect! for example:
+
+- If S1 is stronger than S2 and S2 is stronger than S3, then S1 is stronger than S3.
+
+Thinking about how strong you want your specification to be is an important part of testing
+and verifying software correctness in practice!
+
+    ==> Weaker specs are often easier to test and verify, but they leave room for mistakes!
+
+    ==> Stronger specs are often harder to write, but
+        can be more likely to find bugs --
+        however, it can be difficult to ensure that the
+        spec covers all cases (more about this in today's lecture).
+
+Note: from last time:
+
+    A criteria that can be used:
+
+An extra practice question on stronger/weaker specs can be found in extras/stronger-weaker-practice.py
+
+"""
+
+import pytest
+
+"""
 === Types of Specifications ===
 
 Our definition of "specification" is very broad:
 
-    ⟦ Spec ⟧ ∈ 2^Prog
+    "any true or false property"
 
 this is very useful! But it is also not very specific.
 
 In practice, we need our specification to be understandable to the tool we are using...
     i.e.: written in a more specific grammar
 
-- example: Python only understands tests which use assert and Python Booleans
+Ex:
 
-- Verification tools like Z3 and Dafny only understand specs written in formal logic
-  (typically, first-order logic)
+- Python unit tests can only write assertions that are expressible in Python syntax
 
-===== Expressibility of specs =====
+- We may be testing a function that we didn't implement! (or a foreign API, such
+  as a network API)
+  If so, we can only test statements that are true *before* and *after* the program executes
 
-Can all specs be expressed as executable Python tests
+    These are called preconditions and postconditions
 
-... No
-... Even on a bounded set of inputs?
+We can express these "statements that are true" using formal logic syntax.
+
+- for all, there exists, if-then, and, or, not, ...
 
 Here are some examples (some previous and some new ones) on integer_sqrt:
 
 1. If the input is an integer, then the output is an integer.
 
+    assert typeof(output) is int
+
     Let's think of our program integer_sqrt, as just a function f
 
-    Forall x, if x ∈ Int then f(x) ∈ Int.
+    For all x, if typeof(x) is int then typeof(f(x)) is int.
 
-2. False (false of all programs)
+2. False (false of all programs) (empty set of programs)
 
-    False
+    assert false
 
-3. The input arguments are not modified by the program.
+3. If the input is greater than or equal to 100, then the output is greater than or equal to 10.
 
-    # check x before and after the run
-    Forall x0, if x = x0 then after f(x) is called (?) x = x0.
+    For all x, if x ≥ 100 then f(x) ≥ 10
 
-    What if f modifies x, does something, and then changes it back?
-    A: We have no way of really getting a hold on this purely
-    using statements about what's true before and after f runs.
+4. The program terminates on all inputs.
 
-4. If the input is greater than or equal to 100, then the output is greater than or equal to 10.
-
-    Forall x, if x ≥ 100 then f(x) ≥ 10
+    For all x, f(x) exists?
+    ^^ maybe expressible using logic?
 
 5. The program does not read any files from the filesystem
 
     ???
     Check the journal log of the computer?
     We would need some way to log all of the function calls
-    (in this case sytem calls) that are made by f when it executes.
+    (in this case system calls) that are made by f when it executes.
+    This would be somewhat difficult to do in testing alone.
 
-6. The program executes in constant time
-7. The program always terminates
-
-You could try to write these as Python tests...
-...but you would soon run into trouble.
+^^ More on these soon!
 """
 
-import pytest
+from math import sqrt
+def integer_sqrt(n):
+    return int(sqrt(n))
 
-def spec_int_sqrt_always_terminates(x):
-    y = integer_sqrt(x)
-    # assert type(y) == int ?
-    # assert True ?
-    # assert False ?
-    # I can't assert that we actually got to this point in the program.
-    raise NotImplementedError
+# Spec 3:
+def spec_3(n):
+    assert integer_sqrt(n) >= 10
 
-@pytest.mark.skip
-def test_int_sqrt_always_terminates():
-    # TODO
-    raise NotImplementedError
-
-@pytest.mark.skip
-def spec_int_sqrt_never_opens_a_file(x):
-    # TODO
-    raise NotImplementedError
-
-@pytest.mark.skip
-def test_int_sqrt_never_opens_a_file():
-    # TODO
+# Spec 4:
+def spec_4(n):
+    # ensure that program terminates for n...
+    # I can run the program...
+    ans = integer_sqrt(n)
+    # ^^^ if the program terminates, great!
+    # ^^^ if the program doesn't terminate... we have a problem
+    # our test also just won't terminate.
+    # TODO ...
+    # assert ???
     raise NotImplementedError
 
 """
-Types of specs above?
-Try translating them to logical statements about a program f.
-
-Some questions:
-
-- Are all of these specifications expressible as Python tests?
-
-    No - some are, some aren't
-
-- Are all of these specifications easily checkable?
-
-    No - some are, some aren't
-
-Other examples?
-    (see exras/other-specs.md)
-
-=== Classes of specifications ===
-
-The discussion about which are testable using Python might leave
-you wondering what properties exactly *can* be tested using Python
-(or easily tested in general)?
-
-This raises an important distinction:
-
-    For some of the specs above, we were able to write the spec
-    just thinking of the program as a mathematical function f
-    (like f(x) = x^2, f(x) = e^x, etc.)
-    only defined by its input-output behavior.
+What properties exactly *can* be tested using testing?
 
 ===== Functional correctness =====
 
-Functional correctness is the focus of many program verification efforts in practice.
-It's not perfect, but it is often a good starting point!
-And we have good tools for reasoning about it (compared to some of the others
-which require deep and difficult encodings, more on this later.)
+An important pattern:
+
+    For some of the specs above, we were able to write the spec
+    just thinking about what's true
+    before/after the program executes.
+
+        --> solely about the input/output behavior of the function
+
+    Like testing a foreign function!
+        e.g. connecting to Google, GitHub, or chatGPT network
+        API
 
 - A **functional correctness** property is a spec which only depends
   on the set of all ordered pairs (x, y) such that f(x) = y.
 
-- A **full functional correctness** spec is one which exactly specifies
-    what f should do on every input.
+Functional correctness is the focus of many program testing and
+verification efforts in practice.
+It's not perfect, but it is often a good starting point!
+And we have good tools for reasoning about it (compared to some of the others
+which require deep and difficult encodings, more on this later.)
 
-    That means: for all x, f(x) is exactly the value y
-    Or more formally our spec should satisfy a functional property like
+- Often other properties can be encoded as functional correctness
+  by maintaining some additional "state".
 
-    Example: if we say "whenever x is an integer, f(x) is an integer", this doesn't define which integer it is!
-    but in our example:
-
-        "for all integers x, y = f(x) is an integer such that x * x <= y < (x + 1) * (x + 1)"
-
-    can actually show that there is only one such y.
-    So this is a full functional correctness spec.
-
-Condition for "full functional correctness":
-
-    For any f1, f2 satisfying the spec S, if f1(x) = y1 and f2(x) = y2
-    then y1 == y2.
+Informally:
+    functional correctness = property of a program that only
+    depends on its input-output behavior.
 
 But even "True" and "False" are examples of this which aren't very useful.
 Also "if the input is an integer, then the output is an integer"
 isn't very useful.
+More useful:
 
-=== Safety and liveness properties ===
+- A **full functional correctness** spec is one which exactly specifies
+    what f should do on every input.
+
+    There is a Q on the HW which asks you to write a full
+    functional correctness spec!
+
+    That means: for all x, f(x) is exactly the value y
+
+    **Pragmatically/informally:** it means...
+
+        if you write a spec, you should go
+        through every piece of data in your output, and
+        verify that every piece of data was computed
+        correctly.
+
+    Example: if we say "whenever x is an integer, f(x) is an integer", this doesn't define which integer it is!
+    but in our example:
+
+        "for all integers x, y = int_sqrt(x) is an integer such that y * y <= x < (y + 1) * (y + 1)"
+
+    can actually show that there is only one such y.
+    So this is a full functional correctness spec.
+
+    **More formally:**
+    it means
+    our spec should satisfy a functional property like
+
+        For any f1, f2 satisfying the spec S, if f1(x) = y1 and f2(x) = y2
+        then y1 == y2.
+
+=== Poll ===
+
+For each of the following, is it a functional correctness spec? Is it a full functional correctness spec?
+
+1. "int_sqrt(x) is always odd"
+    is this functional correctness?
+    is this full functional correctness?
+
+2. "int_sqrt(x) is odd on at least two inputs"
+    is this functional correctness?
+    is this full functional correctness?
+
+3. "int_sqrt(x) takes less than 5 minutes to run"
+    is this functional correctness?
+    is this full functional correctness?
+
+4. "int_sqrt(x) does not read your password from memory"
+    is this functional correctness?
+    is this full functional correctness?
+
+https://forms.gle/4ynHVtSqd4BftFtw9
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+Observation:
+
+    Full functional correctness is stronger than functional correctness.
+"""
+
+"""
+A common way to express (full) functional correctness
+is using...
+
+===== Preconditions and postconditions =====
+
+    (A.k.a.: "Programming by Contract")
+    (A.k.a.: "Hoare triples")
+
+    "An Axiomatic Basis for Computer Programming"
+    Tony C.A.R. Hoare, 1969
+
+A pre/postcondition spec has the following form:
+
+    P and Q: Boolean properties
+
+    - if P is true before executing the program,
+        and we execute f,
+      Q is true after.
+
+In other words:
+
+    - for ALL inputs satisfying P, after executing program
+      f, the output satisfies Q.
+
+We often use preconditions and postconditions to express functional correctness specs.
+"""
+
+# Classic example: Division by zero
+
+# input two integers
+def divide(x, y):
+    # (integer division)
+    return x // y
+
+def spec_divides(x, y):
+    # what to test here?
+    # Write the spec here:
+    # (you could write any spec here, but let's use:)
+    z = divide(x, y)
+    assert z * y <= x < (z + 1) * y
+
+    # Fixed version with added precondition
+    # if y > 0:
+    #     z = divide(x, y)
+    #     assert z * y <= x < (z + 1) * y
+
+# We couldn't even test our statement, because our program
+# crashed :(
+# Exception handling?
+# this is exactly what preconditions are for.
+# Let's directly make sure the thing we are dividing by (y)
+# is > 0.
+
+"""
+Difference between preconditions and regular assertions -
+
+    Preconditions exclude some inputs from consideration
+
+    Even if the program crashes or misbehaves wildly on
+    other inputs, I won't catch it.
+
+Exercise (skip for time)
+Rewrite the examples 1-7 using preconditions/postconditions
+
+Even if you have not heard of the word "precondition",
+you are probably intuitively familiar with the concept of preconditions
+if you have some experience programming and working with libraries...
+
+Examples:
+- list pop: https://docs.python.org/3/tutorial/datastructures.html
+
+    "It raises an IndexError if the list is empty or the index is outside the list range."
+
+    This is another way of saying that the precondition of
+    list.pop() is that the list should be nonempty.
+
+    Implicit preconditions:
+    - input is a list
+    - input should be nonempty
+
+    pre/post style spec:
+
+    "if you generate inputs that are lists and are nonempty,
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                      precondition
+     and run the progam, then the output will satisfy ...."
+                                                ^^^^^^^^^^
+                                                postcondition
+
+- file open: https://docs.python.org/3/library/functions.html#open
+
+    Has a number of preconditions:
+    - The file should be able to be opened (OSError otherwise)
+
+    - "If closefd is False and a file descriptor rather than a filename was given, the underlying file descriptor will be kept open when the file is closed. If a filename is given closefd must be True (the default); otherwise, an error will be raised."
+
+Point:
+You can often read off preconditions from the documentation!
+
+There are always implicit assumptions in any API that you use.
+
+Point:
+Often a precondition that's useful is whatever is needed to not
+have the program crash or otherwise misbehave.
+
+In practice, exceptions are often used to enforce preconditions --
+if we don't know what to do on a particular input, we crash the program
+
+Note that we can model exceptions in our specification in two
+ways:
+- If the exception is expected behavior, we can test that
+  when the function is run on the bad input, the exception is raised.
+  This does NOT involve excluding the input via the precondition,
+  instead we write an assertion to expect the correct behavior.
+
+- If the exception is not expected behavior, or if we don't
+  want to consider inputs for which the exception is raised
+  as valid, we can exclude them via a precondition.
+"""
+
+"""
+Question:
+Are pre and postconditions sufficient?
+
+- Can we now express all properties we are interested in?
+
+    - Runtime? we could write a test that times the program
+      (using time.time or something)
+    - What about running the program multiple times?
+        e.g.: test that the program is deterministic
+            y1 = f(x)
+            y2 = f(x)
+            assert y1 == y2
+    - What about asserting something inside the program?
+        Put assertions inside your program
+        and assertions before/after running different programs
+        so, you don't only have to assert things at the end.
+"""
+
+"""
+=== Other types of specifications? ===
+
+Recall these examples from before:
+
+4. The program terminates on all inputs.
+
+5. The program does not read any files from the filesystem
+
+and others...
+
+6. The program executes in constant time
+7. The input arguments are not modified by the program.
+
+You could try to write these using testing...
+... but you would soon run into trouble.
+"""
+
+"""
+Other examples?
+    (see cut/other-specs.md)
+
+===== Safety and Liveness =====
 
 Two other special cases of specifications that turn out to be particularly useful
 (these are not functional correctness):
@@ -175,164 +410,38 @@ These have to do with the behavior of the program when run
 
 Neither of these can be specified using functional correctness...
 
-- However, often other properties can be encoded as functional correctness
-  by maintaining some additional "state".
+    but they *are* examples of specifications (since they
+    are true or false properties)
+    and they are often useful in practice.
 
 Are the above all possible specifications?
 No! We can imagine much more interesting cases...
-    (More examples, again, in extras/other-specs.md)
+    (More examples, again, in cut/other-specs.md)
 
-=== Preconditions and postconditions ===
+Questions:
 
-    (A.k.a. Hoare triples)
+Can we test safety properties using the test harness method?
 
-A pre/postcondition spec has the following form:
+Can we test liveness properties using the test harness method?
 
-    precondition: P: Input -> Bool
-    postcondition: Q: Output -> Bool
+=== Conclusions ===
 
-    - if P is true before executing the program, and we execute f,
-      Q is true after.
+Review:
 
-    - Equivalently: if P(x) is true and y = f(x) then Q(y) is true.
+- Any testing or verification system is limited to a particular type of specs that it
+  can express or support.
 
-All functional correctness specs can be written using preconditions
-and postconditions!
+- Different ways of writing specs have different advantages and drawbacks!
 
-Q: Why do we need preconditions?
+- A common approach is to focus on properties about the input/output of a function:
 
-    can't we do:
-    if y = f(x) then (P(x) -> Q(y)) is true?
+    + functional correctness
 
-    Yes that encoding works but doesn't allow us to talk about the
-    state of the program before executing it.
-"""
+    + full functional correctness
 
-# Classic example: Division by zero
+    + preconditions/postconditions
 
-# input two integers
-def divide(x, y):
-    # (integer division)
-    return x // y
+- Beyond functional correctness: safety and liveness are two other example classes of specs
+  that are often useful.
 
-def spec_divides(x, y):
-    # what to test here?
-    z = divide(x, y)
-    # Write the spec here:
-    # (you could write any spec here, but let's use:)
-    assert z * y <= x < (z + 1) * y
-
-    # Fixed version with added precondition
-    # if y > 0:
-    #     z = divide(x, y)
-    #     assert z * y <= x < (z + 1) * y
-
-@pytest.mark.skip
-# @pytest.mark.xfail
-def test_divides_1():
-    for x in range(10):
-        for y in range(10):
-            spec_divides(x, y)
-
-# We couldn't even test our statement, because our program
-# crashed :(
-# Exception handling?
-# this is exactly what preconditions are for.
-# Let's directly make sure the thing we are dividing by (y)
-# is > 0.
-
-"""
-Exercise (skip for time):
-Rewrite the examples 1-7 using preconditions/postconditions
-
-Even if you have not heard of the word "precondition",
-you are probably intuitively familiar with the concept of preconditions
-if you have some experience programing and working with libraries...
-
-Examples:
-- list pop: https://docs.python.org/3/tutorial/datastructures.html
-
-    "It raises an IndexError if the list is empty or the index is outside the list range."
-
-    This is another way of saying that the precondition of
-    list.pop() is that the list should be nonempty.
-
-- file open: https://docs.python.org/3/library/functions.html#open
-
-    Has a number of preconditions:
-    - The file should be able to be opened (OSError otherwise)
-
-    - "If closefd is False and a file descriptor rather than a filename was given, the underlying file descriptor will be kept open when the file is closed. If a filename is given closefd must be True (the default); otherwise, an error will be raised."
-
-Point:
-You can often read off preconditions from the documentation!
-
-Point:
-Often a precondition that's useful is whatever is needed to not
-have the program crash.
-In practice, exceptions are often used to enforce preconditions --
-if we don't know what to do on a particular input, we crash the program
-
-Note that we can model exceptions in our specification in two
-ways:
-- If the exception is expected behavior, we can test that
-  when the function is run on the bad input, the exception is raised.
-  This does NOT involve excluding the input via the precondition,
-  instead we write an assertion to expect the correct behavior.
-
-- If the exception is not expected behavior, or if we don't
-  want to consider inputs for which the exception is raised
-  as valid, we can exclude them via a precondition.
-
-A similar example for floating point division:
-
-(skip for time)
-"""
-
-def divides_2(x, y):
-    return x / y
-
-ERROR = .000001
-
-def spec_divides_2(x, y):
-    # could do e.g.:
-    # assume -100 <= y <= 100
-    assume(y != 0)
-    result = divides_2(x, y)
-    assert (result * y - x < ERROR)
-
-@pytest.mark.skip
-# @pytest.mark.xfail
-def test_divides_2():
-    for x in range(10):
-        for y in range(10):
-            spec_divides_2(x, y)
-
-"""
-With the precondition included, the spec says:
-On all inputs x, y such that
-        -100 <= x <= 100 and
-        -100 <= y <= 100 and
-        y is not zero,
-    divides_2(x, y) * y is approximately x.
-
-More generally, the spec has the following form:
-
-    "On all inputs x such that P(x) holds, Q(f(x)) holds."
-
-Are pre and postconditions sufficient?
-
-- Can we now express all properties we are interested in?
-
-    + Runtime? we could write a test that times the program
-      (using time.time or something)
-    + What about running the program multiple times?
-        e.g.: test that the program is deterministic
-            y1 = f(x)
-            y2 = f(x)
-            assert y1 == y2
-    + What about asserting something inside the program?
-        Put assertions inside your program
-        and assertions before/after running different programs
-        so, you don't only have to assert things at the end.
 """

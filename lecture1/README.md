@@ -71,6 +71,14 @@ Plan:
 
 - Types of specifications
 
-    + in particular:
+  + In particular:
     functional correctness, full functional correctness,
     preconditions and postconditions.
+
+  + Poll
+
+- Assume and assert
+
+- Conclusions
+
+This will be the last day working in plain Python tests, then we will move on to Z3.
