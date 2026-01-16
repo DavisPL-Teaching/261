@@ -63,9 +63,11 @@ Questions?
 
 ## Thursday, January 15
 
-Reminders:
+Announcements/Reminders:
 
 - HW1 due Wednesday
+
+- HW1 Q2 fix: you may omit arrow P -> R if P -> Q and Q -> R
 
 Plan:
 
@@ -81,4 +83,5 @@ Plan:
 
 - Conclusions
 
+Try to wrap up Lecture 1 today.
 This will be the last day working in plain Python tests, then we will move on to Z3.

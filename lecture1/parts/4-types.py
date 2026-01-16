@@ -11,6 +11,16 @@ all programs satisfying S1 also satisfy S2.
 
 - If S1 is stronger than S2 and S2 is stronger than S3, then S1 is stronger than S3.
 
+Exercise:
+
+    - show that "stronger than" forms a pre-order on all specifications
+
+        also, each S is stronger than S
+
+        if S1 is stronger than S2 and S2 is stronger than S1, we don't
+        necessarily say that S1 and S2 are equal, but we can call them
+        *equivalent.*
+
 Thinking about how strong you want your specification to be is an important part of testing
 and verifying software correctness in practice!
 
@@ -21,12 +31,15 @@ and verifying software correctness in practice!
         however, it can be difficult to ensure that the
         spec covers all cases (more about this in today's lecture).
 
+An extra practice question on stronger/weaker specs can be found in extras/stronger-weaker-practice.py
+
 Note: from last time:
 
     A criteria that can be used:
 
-An extra practice question on stronger/weaker specs can be found in extras/stronger-weaker-practice.py
-
+        If spec S1 makes a **stronger** requirement on a
+        **larger** set of inputs, compared to S2, then
+        S1 is stronger than S2.
 """
 
 import pytest
@@ -57,6 +70,10 @@ We can express these "statements that are true" using formal logic syntax.
 
 - for all, there exists, if-then, and, or, not, ...
 
+Not all specs can be easily written into Python tests!
+
+    Even using the test harness approach
+
 Here are some examples (some previous and some new ones) on integer_sqrt:
 
 1. If the input is an integer, then the output is an integer.
@@ -66,6 +83,10 @@ Here are some examples (some previous and some new ones) on integer_sqrt:
     Let's think of our program integer_sqrt, as just a function f
 
     For all x, if typeof(x) is int then typeof(f(x)) is int.
+
+    + this test can be expressed using Python syntax
+      (as a Python test using the test harness approach)
+    + It can also be written using formal logic
 
 2. False (false of all programs) (empty set of programs)
 
@@ -97,7 +118,8 @@ def integer_sqrt(n):
 
 # Spec 3:
 def spec_3(n):
-    assert integer_sqrt(n) >= 10
+    if n >= 100:
+        assert integer_sqrt(n) >= 10
 
 # Spec 4:
 def spec_4(n):
@@ -131,8 +153,18 @@ An important pattern:
 - A **functional correctness** property is a spec which only depends
   on the set of all ordered pairs (x, y) such that f(x) = y.
 
-Functional correctness is the focus of many program testing and
-verification efforts in practice.
+    in other words:
+    I have a program f
+
+    I can run it on different inputs x and get different outputs y
+
+    For any (x, y), it is either possible to get f(x) = y or it
+    is not possible
+
+    Functional correctness means: we only care about the set of
+    possible (x, y).
+
+Functional correctness is the focus of many program verification efforts in practice.
 It's not perfect, but it is often a good starting point!
 And we have good tools for reasoning about it (compared to some of the others
 which require deep and difficult encodings, more on this later.)
@@ -147,13 +179,22 @@ Informally:
 But even "True" and "False" are examples of this which aren't very useful.
 Also "if the input is an integer, then the output is an integer"
 isn't very useful.
+
+Problem:
+
+    if my spec is too weak (e.g. True), I may say "I wrote a formally verified system!"
+    but I really didn't verify anything nontrivial or interesting about it.
+
+    if my spec is too strong (e.g. False), I may say, "I wrote a formally verified system!"
+    but in fact, I secretly assumed a false assumption, and proved false.
+
 More useful:
+
+our spec should be fully precise about what our system should do -- omitting
+no unchecked data or edge cases.
 
 - A **full functional correctness** spec is one which exactly specifies
     what f should do on every input.
-
-    There is a Q on the HW which asks you to write a full
-    functional correctness spec!
 
     That means: for all x, f(x) is exactly the value y
 
@@ -173,11 +214,10 @@ More useful:
     So this is a full functional correctness spec.
 
     **More formally:**
-    it means
-    our spec should satisfy a functional property like
+    A spec S is a full functional correctness spec if:
 
-        For any f1, f2 satisfying the spec S, if f1(x) = y1 and f2(x) = y2
-        then y1 == y2.
+        For any f1, f2 satisfying the spec S, and for any input x,
+        if f1(x) = y1 and f2(x) = y2 then y1 == y2.
 
 === Poll ===
 
@@ -224,7 +264,8 @@ https://forms.gle/4ynHVtSqd4BftFtw9
 
 Observation:
 
-    Full functional correctness is stronger than functional correctness.
+    A full functional correctness spec for a program
+    is stronger than any functional correctness spec for that program.
 """
 
 """
@@ -255,7 +296,14 @@ In other words:
 We often use preconditions and postconditions to express functional correctness specs.
 """
 
-# Classic example: Division by zero
+# Spec 3:
+def spec_3(n):
+    #  vvvvvvvv  precondition
+    if n >= 100:
+        assert integer_sqrt(n) >= 10
+        #      ^^^^^^^^^^^^^^^^^^^^^ postcondition
+
+# Another classic example: Division by zero
 
 # input two integers
 def divide(x, y):
@@ -274,12 +322,59 @@ def spec_divides(x, y):
     #     z = divide(x, y)
     #     assert z * y <= x < (z + 1) * y
 
-# We couldn't even test our statement, because our program
-# crashed :(
-# Exception handling?
-# this is exactly what preconditions are for.
-# Let's directly make sure the thing we are dividing by (y)
-# is > 0.
+@pytest.mark.xfail
+def test_spec_divides():
+    for x in range(-100, 100):
+        for y in range(0, 100):
+            spec_divides(x, y)
+
+# problems:
+#    - spec didn't work for negative input
+#    - spec didn't work for y == 0 because the program crashed
+
+"""
+We got an unexpected input! What do we do?
+We have a decision to make here!
+
+    1. specify the behavior on the unexpected input
+
+        ===> if y > 0, then divides(x, y) satisfies ....
+             AND if y == 0, then divides(x, y) throws an error.
+
+             (e.g. use try - catch Python exception handling)
+
+    2. say "I don't care about this input, whether the program
+           crashes or not on a division by zero is not my problem."
+
+Choice (2) is preconditions.
+
+    Preconditions are dangerous! You might think you verified the software,
+    but in fact you accidentally added inconsistent preconditions
+    (equivalent to False)
+
+    If this happens, you've verified the software ... on no inputs.
+
+"""
+
+def precond(x):
+    # returns precond as a Boolean
+    raise NotImplementedError
+
+def postcond(y):
+    # returns postcond as a Boolean
+    raise NotImplementedError
+
+def f(x):
+    # return y
+    raise NotImplementedError
+
+def precond_postcond_spec(x):
+    if precond(x):
+        y = f(x)
+        assert postcond(y)
+
+    # If precond(n) never returns True ... then the above never actually
+    # runs the postcondition and doesn't make any assertions.
 
 """
 Difference between preconditions and regular assertions -
@@ -310,7 +405,7 @@ Examples:
 
     pre/post style spec:
 
-    "if you generate inputs that are lists and are nonempty,
+    "for any          inputs that are lists and are nonempty,
                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
                       precondition
      and run the progam, then the output will satisfy ...."
@@ -325,6 +420,8 @@ Examples:
     - "If closefd is False and a file descriptor rather than a filename was given, the underlying file descriptor will be kept open when the file is closed. If a filename is given closefd must be True (the default); otherwise, an error will be raised."
 
 Point:
+This is why pre/postconditions are sometimes called "design by contract"
+
 You can often read off preconditions from the documentation!
 
 There are always implicit assumptions in any API that you use.
@@ -336,16 +433,12 @@ have the program crash or otherwise misbehave.
 In practice, exceptions are often used to enforce preconditions --
 if we don't know what to do on a particular input, we crash the program
 
-Note that we can model exceptions in our specification in two
-ways:
-- If the exception is expected behavior, we can test that
-  when the function is run on the bad input, the exception is raised.
-  This does NOT involve excluding the input via the precondition,
-  instead we write an assertion to expect the correct behavior.
+"Who is responsible" / "blame" viewpoint:
 
-- If the exception is not expected behavior, or if we don't
-  want to consider inputs for which the exception is raised
-  as valid, we can exclude them via a precondition.
+    precondition = the caller is responsible for ensuring this property
+
+    postcondition = the implementer of this function is responsible for
+       ensuring this property.
 """
 
 """
@@ -354,6 +447,8 @@ Are pre and postconditions sufficient?
 
 - Can we now express all properties we are interested in?
 
+    A: probably not
+
     - Runtime? we could write a test that times the program
       (using time.time or something)
     - What about running the program multiple times?
@@ -361,6 +456,20 @@ Are pre and postconditions sufficient?
             y1 = f(x)
             y2 = f(x)
             assert y1 == y2
+
+      This can't be expressed using a pre/post on f,
+      but it CAN be expressed using a pre/post on a function
+      calling into f
+
+        def f(x):
+            # ...
+            return y
+
+        def f_det(x):
+            y1 = f(x)
+            y2 = f(x)
+            return (y1, y2)
+
     - What about asserting something inside the program?
         Put assertions inside your program
         and assertions before/after running different programs
@@ -381,8 +490,10 @@ and others...
 6. The program executes in constant time
 7. The input arguments are not modified by the program.
 
-You could try to write these using testing...
-... but you would soon run into trouble.
+Again... many of these difficult to write using pre/postconditions,
+
+for some of them: it's not even clear that they can be expressed
+using executable Python tests.
 """
 
 """
@@ -414,6 +525,12 @@ Neither of these can be specified using functional correctness...
     are true or false properties)
     and they are often useful in practice.
 
+Some systems can be used to verify safety and liveness properties...
+
+    e.g. verification tools for distributed systems, we often
+    verify safety and liveness rather than (only) functional
+    correctness.
+
 Are the above all possible specifications?
 No! We can imagine much more interesting cases...
     (More examples, again, in cut/other-specs.md)
@@ -426,7 +543,7 @@ Can we test liveness properties using the test harness method?
 
 === Conclusions ===
 
-Review:
+Some main points:
 
 - Any testing or verification system is limited to a particular type of specs that it
   can express or support.
@@ -443,5 +560,4 @@ Review:
 
 - Beyond functional correctness: safety and liveness are two other example classes of specs
   that are often useful.
-
 """
