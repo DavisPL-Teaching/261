@@ -1,90 +1,105 @@
-# Lecture 2: Logic and Satisfiability
+# Lecture 3: Interactive verification
 
 **Please note: This lecture has not yet been updated for winter quarter 2026.**
 
-## April 15
+Introduction to interactive verification in Dafny.
+
+## Tuesday, April 29
 
 Announcements:
 
-- HW1 is due Friday, April 18 (11:59pm).
+- Mid-quarter survey is out:
+  https://forms.gle/hNz9c6jXkcSXUqXH7
 
-- My OH will be moved this week to Thursday (3-4pm), instead of Friday
+  Please fill it out! I really value your feedback!
 
-- I am aware of issues with undergraduate enrollment
-    + I'll post an update by end of day with the status
+  More theory vs. more practice vote: currently at 2 votes vs. 3 votes
 
-Plan for today:
-move on to automated verification!
+Upcoming deadlines:
 
-- Start with the quiz
+- Due Friday: Mid-quarter survey, Project proposal
 
-- Introduction to Z3
-
-- Satisfiability and validity
-
-- Theories of interest (integers, strings)
-
-- End of class today: Project details (see `project/overview.md`)
-
-## April 17
-
-Announcements:
-
-- HW1 deadline extend to Monday
-
-    + come to OH and Piazza!
-
-- OH today 3-4pm ASB 2085
+- Due Monday: HW2
 
 Plan:
 
-- Satisfiability, validity, and NP-hardness
+- A problem from last time that will be helpful on the homework
 
-- Hands on programming challenges
+- Start with some slides
 
-## April 22
+- Intro to interactive verification in Dafny
+  starting with some examples, then first-order logic, then program logics.
+
+Also covered on slides:
+
+- A note on industry applications
+
+- Some help on the project:
+  think about what you want to verify at runtime vs. at compile time.
+
+## Thursday, May 1
 
 Announcements:
 
-- Project proposal due: next Friday, May 2
+- I am moving the project proposal deadline back 1 week to Friday, May 9.
+  And we will spend the first part of today doing some mini verification exercises in Dafny
+  to give you a better sense of how that works.
 
-    + See `project/proposal.md`
+- Last chance to fill out mid-quarter survey by tomorrow!
+  https://forms.gle/hNz9c6jXkcSXUqXH7
 
-    + Addressing some questions I got on the project proposal
+  Current vote: 5 for more tools, 4 for more theory
 
-- My office hours moved to Thursdays 3-4pm going forward
+- HW2 is still due Monday.
 
 Plan:
 
-- Why can Z3 fail? (Two reasons)
+- Start with the poll
 
-- Finish tour of Z3
+- Dafny examples and mini verification exercise
 
-    + real numbers, strings, arrays, functions, quantifiers
+- How Dafny works: starting with first-order logic proof rules.
 
-- Z3 internals: the DPLL and DPLL(T) algorithms
+## Tuesday, May 6
 
-- Z3 endnotes
+Announcements:
 
-## April 24
+- HW2 deadline extended to EOD today
 
-- HW2 available - due Monday, May 5
+- Proposal due this Friday, May 9
 
-    + This HW is a problem set.
+- HW3 released - due Friday, May 16
+  https://github.com/DavisPL-Teaching/261-hw3
 
-    + [Link](https://github.com/DavisPL-Teaching/261-hw2)
+- Midterm date: Tuesday, May 20
 
-- Project proposal due Friday, May 2
+Plan:
+
+- Start with the poll
+
+- Continue Dafny exercises
+
+- Loop invariants
+
+- How Dafny works: starting with first-order logic proof rules.
+
+## Thursday, May 8
+
+Reminders:
+
+- Proposal due tomorrow, Friday, May 9
+
+- HW3 due Friday, May 16
+  https://github.com/DavisPL-Teaching/261-hw3
+
+- Midterm date: Tuesday, May 20
 
 Plan:
 
 - Poll
 
-- DPLL generalizations: DPLL(T), Nelson-Oppen, and CDCL
+- Some of the theory behind how Dafny works
 
-- The boundary of decidability
+  + Starting with proofs in first-order logic.
 
-- Z3 endnotes
-
-- Crash course in first-order logic (time permitting)
-  (move to Dafny)
+  + (If time) Move on to Lecture 4, Hoare logic and dynamic logic.
