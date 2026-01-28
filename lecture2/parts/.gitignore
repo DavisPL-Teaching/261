@@ -1,0 +1,6 @@
+1-intro
+*.cs
+*.csproj
+*.deps.json
+*.pdb
+obj/

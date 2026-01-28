@@ -8,7 +8,7 @@
     Dafny is a verification-aware programming language.
     (An interactive program verification framework.)
 
-    It allows us to develop a program and its proof together / in tandem.
+    It allows us to develop a program and its spec and proof together / in tandem.
 
     Dafny is widely used in industry applications of verification
     (perhaps seeing a bit more use than tools like Coq/Rocq or Agda, Isabelle, Idris, Lean)
@@ -21,7 +21,7 @@
 
     https://dafny.org/
 
-    Reminder/summary: Dafny advantages over Z3: see slides.
+    Reminder/summary: Dafny advantages over automated verification such as Z3: see slides.
 
     Example: here's our abs function from before.
 
@@ -35,8 +35,19 @@
 
 // This function is executable! (like a Python function)
 // This function is mathematically understandable! (like a Z3 formula)
+// (notice the types)
 function abs(x: int): int {
     if x > 0 then x else -x
+}
+
+// both a mathematical formula and ane executable program.
+// (This is the paradigm of functional programming)
+
+method Main() {
+    var x := -3;
+    var y := abs(x);
+    print(x);
+    print(y);
 }
 
 lemma AbsCorrect(x: int) {
@@ -47,17 +58,6 @@ lemma AbsCorrect(x: int) {
 }
 
 /*
-=== Recap ===
-
-We saw some examples of writing
-functions, assertions, lemmas, and postconditions in Dafny.
-(The postconditions are the "ensures" statements.)
-We also saw examples of quantifiers.
-
-    forall x :: formula
-    exists x :: formula
-
-=== May 1 ===
 
 Poll:
 Which of the following are most likely to be useful steps for verification of a real-world software project?
@@ -166,6 +166,18 @@ method AbsMethod(x: int) returns (y: int)
 }
 
 /*
+
+/*
+    === Recap ===
+
+    We saw some examples of writing
+    functions, assertions, lemmas, and postconditions in Dafny.
+    (The postconditions are the "ensures" statements.)
+    We also saw examples of quantifiers.
+
+    forall x :: formula
+    exists x :: formula
+
     ===== A note on industry applications =====
 
     Course goals:
