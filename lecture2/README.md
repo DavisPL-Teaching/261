@@ -1,105 +1,30 @@
-# Lecture 3: Interactive verification
+# Lecture 2: Program Verification
 
-**Please note: This lecture has not yet been updated for winter quarter 2026.**
+Introduction to interactive program verification in Dafny.
 
-Introduction to interactive verification in Dafny.
+## Tuesday, January 27
 
-## Tuesday, April 29
+Announcements/reminders:
 
-Announcements:
+- I am still sick, hope to be back in person soon
 
-- Mid-quarter survey is out:
-  https://forms.gle/hNz9c6jXkcSXUqXH7
+- Polls synced over the weekend -- if you have a 0 on all polls, check
+  that you have submitted HW0 with your email and student ID.
 
-  Please fill it out! I really value your feedback!
+Lecture plan going forward:
 
-  More theory vs. more practice vote: currently at 2 votes vs. 3 votes
+- I am going to switch Lecture 2 and Lecture 3 from how it was taught last iteration of
+  the class.
 
-Upcoming deadlines:
+  + This means we will start with Dafny, then come back to Z3 later.
 
-- Due Friday: Mid-quarter survey, Project proposal
+  + Reason: I want to give you experience with Dafny earlier on as it will be useful
+    for the final project!
 
-- Due Monday: HW2
+- Plan for today:
 
-Plan:
+  + Loose ends from Lecture 1 + the poll
 
-- A problem from last time that will be helpful on the homework
+  + Introductory slides for lecture 2
 
-- Start with some slides
-
-- Intro to interactive verification in Dafny
-  starting with some examples, then first-order logic, then program logics.
-
-Also covered on slides:
-
-- A note on industry applications
-
-- Some help on the project:
-  think about what you want to verify at runtime vs. at compile time.
-
-## Thursday, May 1
-
-Announcements:
-
-- I am moving the project proposal deadline back 1 week to Friday, May 9.
-  And we will spend the first part of today doing some mini verification exercises in Dafny
-  to give you a better sense of how that works.
-
-- Last chance to fill out mid-quarter survey by tomorrow!
-  https://forms.gle/hNz9c6jXkcSXUqXH7
-
-  Current vote: 5 for more tools, 4 for more theory
-
-- HW2 is still due Monday.
-
-Plan:
-
-- Start with the poll
-
-- Dafny examples and mini verification exercise
-
-- How Dafny works: starting with first-order logic proof rules.
-
-## Tuesday, May 6
-
-Announcements:
-
-- HW2 deadline extended to EOD today
-
-- Proposal due this Friday, May 9
-
-- HW3 released - due Friday, May 16
-  https://github.com/DavisPL-Teaching/261-hw3
-
-- Midterm date: Tuesday, May 20
-
-Plan:
-
-- Start with the poll
-
-- Continue Dafny exercises
-
-- Loop invariants
-
-- How Dafny works: starting with first-order logic proof rules.
-
-## Thursday, May 8
-
-Reminders:
-
-- Proposal due tomorrow, Friday, May 9
-
-- HW3 due Friday, May 16
-  https://github.com/DavisPL-Teaching/261-hw3
-
-- Midterm date: Tuesday, May 20
-
-Plan:
-
-- Poll
-
-- Some of the theory behind how Dafny works
-
-  + Starting with proofs in first-order logic.
-
-  + (If time) Move on to Lecture 4, Hoare logic and dynamic logic.
+  + Introduction to Dafny.

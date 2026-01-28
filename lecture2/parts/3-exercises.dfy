@@ -174,8 +174,6 @@ Write a precondition and postcondition for MinList
 that matches what we had for MinFour.
 (Your pre and postcondition don't have to be valid Dafny, but they should be
  correct logically)
-
-https://forms.gle/eMc6TRonvMUUHXDc9
 */
 
 /*
@@ -330,8 +328,6 @@ assert P;
 assert Q;
 
 Suppose that P implies Q (logically) but Dafny verification passes only for P, and not Q. Which of the following is a possible reason for this? (Select all that apply)
-
-https://forms.gle/d4fSLLh3JUaXWpgk9
 
 === End notes ===
 
