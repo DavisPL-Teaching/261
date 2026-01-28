@@ -46,8 +46,8 @@ function abs(x: int): int {
 method Main() {
     var x := -3;
     var y := abs(x);
-    print(x);
-    print(y);
+    print x, "\n";
+    print y, "\n";
 }
 
 lemma AbsCorrect(x: int) {
