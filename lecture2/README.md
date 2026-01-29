@@ -28,3 +28,21 @@ Lecture plan going forward:
   + Introductory slides for lecture 2
 
   + Introduction to Dafny.
+
+## Thursday, January 29
+
+Announcements/reminders:
+
+- I am still symptomatic so we are still on Zoom, hope to be back in person soon!
+
+- OH moved to 2-3pm Thursdays going forward
+
+Plan:
+
+- Finish part 1: intro to Dafny
+
+    Function/method distinction
+
+    Preconditions and postconditions
+
+- Part 2: Dafny methodology.
