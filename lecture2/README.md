@@ -39,6 +39,8 @@ Announcements/reminders:
 
 - HW2 not ready yet, but hope to release soon!
 
+- I will speak more about the project and timeline (for project proposal etc.) on Tuesday
+
 Plan:
 
 - Finish example from part 1
@@ -52,3 +54,5 @@ Plan:
     Stronger and weaker specs, revisited
 
 - Part 2: Dafny methodology.
+
+Questions before we get started?

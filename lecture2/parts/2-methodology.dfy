@@ -4,15 +4,18 @@ Verification methodology.
 
 === Dafny methodology ===
 
-    1. Start with pseudocode, or whatever code you would have written in your favorite
+    (Optional) 1. Start with pseudocode, or whatever code you would have written in your favorite
        programming language (C/C++, Python, etc.)
 
-    2. Rewrite the code in Dafny
+    2. Write or rewrite the code in Dafny
 
     3. Write the spec:
-        What do we want to verify? Add pre and postconditions
+        What do we want to verify?
+            Add pre and postconditions to each method
 
-    4. Add proofs (assertions, loop invariants, ...)
+    4. Add proofs <-- we have not needed this at all so far
+        but it is where ~90% of the effort lies in practice.
+        (assertions, loop invariants, ...)
        to help the verification go through (as needed)
 
     Dafny tutorial guide:
@@ -29,11 +32,25 @@ Verification methodology.
 
 method MinFour(a: int, b: int, c: int, d: int) returns (result: int)
 // Spec:
-// requires true // no precondition
-requires false
-// ensures true
+// what should the spec be?
+// requires ...
+// requires ...
+ensures result <= a && result <= b && result <= c && result <= d
+// ensures ...
+ensures result == a || result == b || result == c || result == d
 {
-    // TODO
+    var min := a;
+    if b < min {
+        min := b;
+    }
+    if c < min {
+        min := c;
+    }
+    if d < min {
+        min := d;
+    }
+
+    return min;
 }
 
 // Write some unit tests
