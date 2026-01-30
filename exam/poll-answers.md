@@ -1,73 +1,24 @@
 # Poll answers
 
-April 1:
-Either answer is valid (it depends on the definition you came up with).
+Jan 6:
+Can be correct or incorrect, depending on the spec
 
-April 3: E Only.
-"The input to is_even is always between 0 and 4" is not a valid specification as it is a property
-that constraints how is_even is used, not a true-or-false property about the function itself.
+Jan 8:
+All except E (The input x is always between 0 and 4)
 
-April 8 poll #1:
-True, False
-A, B, C, E, and G.
+Jan 13:
+1. True
+2. False
+3. A, B, C, E, G
 
-April 8 poll #2:
-all of row 4, all of column 3, and the diagonal, and 1 => 2.
-```
-x x x _ _ _ _
-_ x x _ _ _ _
-_ _ x _ _ _ _
-x x x x x x x
-_ _ x _ x _ _
-_ _ x _ _ x _
-_ _ x _ _ _ x
-```
+Jan 15:
+1. FC, not FFC
+2. FC, not FFC
+3. not FC or FCC
+4. not FC or FCC
 
-April 10 poll:
-A, C, E, F (assert True, assume True, assert P if it immediately follows assume P, and assume P if it immediately follows assert P).
+Jan 27:
+A, C, E, and F
 
-April 15 poll:
+Jan 29:
 A, B, C, and E
-
-April 17 poll:
-1. Satisfiable only
-2. B only (all valid formulas are satisfiable)
-
-April 22 poll:
-Yes to both: decidable and NP-hard.
-
-April 24:
-C, D, E, and F.
-
-April 29:
-B, C, and F.
-(A and G are limitations of Dafny.)
-
-May 1:
-All answers (A, B, C, D, E, F). (F optional)
-
-May 6:
-(Your answers do not have to be valid Dafny syntax, but the Dafny syntax version is below)
-1. Precondition:
-    a.Length >= 1
-2. Postconditions:
-    exists i :: 0 <= i < a.Length && a[i] == result
-    forall i :: 0 <= i < a.Length ==> a[i] >= result
-
-May 8:
-D, E, F, and H.
-
-May 13:
-1. (i) only
-2. (i) and (ii) only
-3. None (1 <= i <= n would be (ii) only)
-4. (i) and (ii) only
-5. (i) and (ii) only
-
-May 15.
-1:
-    1. (i) and (ii) only, not (iii).
-    2. (iii) only, not (i) and (ii).
-    3. (ii) and (iii) only, not (i).
-
-2: All of the above (A, B, C, and D).

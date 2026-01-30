@@ -56,3 +56,17 @@ Plan:
 - Part 2: Dafny methodology.
 
 Questions before we get started?
+
+## Tuesday, February 3
+
+Announcements:
+
+- HW2 is released, due next Friday
+
+Plan:
+
+- Talk about project
+
+- Poll
+
+- Continue Part 2: Dafny Methodology.

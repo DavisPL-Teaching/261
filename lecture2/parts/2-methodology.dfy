@@ -13,7 +13,9 @@ Verification methodology.
         What do we want to verify?
             Add pre and postconditions to each method
 
-    4. Add proofs <-- we have not needed this at all so far
+    4. Write some unit test <-- important step I added
+
+    5. Add proofs <-- we have not needed this at all so far
         but it is where ~90% of the effort lies in practice.
         (assertions, loop invariants, ...)
        to help the verification go through (as needed)
