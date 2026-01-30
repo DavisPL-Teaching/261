@@ -58,41 +58,34 @@ lemma AbsCorrect(x: int) {
 }
 
 /*
-Recap:
+Above:
 
 - We wrote a program & proved it correct (in the same framework)
 
-- abs() is **both** an executable function and mathematically understandable (verifiable) code
+- We used a lemma instead of an executable spec.
 
-Poll:
+    No code was executed during verification!
 
+- abs() is **both** an executable function and understandable to the verification engine
 
-=====
+  (unlike writing Python functions and translating them to Z3.)
 
+=== Poll ===
+
+(Review question)
+
+Which of the following is a limitation of testing?
+
+https://forms.gle/i5yZ3BSVaZpnjcCX6
+
+.
+.
+.
+.
+.
+
+======
 */
-
-/*
-    === Method/function distinction ===
-
-    The main difference between methods and functions is that
-    methods need pre/postconditions to work, functions don't need
-    pre/postconditions and are purely mathematical functions.
-    function = mathematical function
-    method = imperative code, i.e. Python/C/C++ function
-
-*/
-
-// Below: alternate way of writing Abs as a method.
-method AbsMethod(x: int) returns (y: int)
-    ensures y >= 0
-    ensures y == x || y == -x
-{
-    if x > 0 {
-        y := x;
-    } else {
-        y := -x;
-    }
-}
 
 /*
     Preconditions and postconditions
@@ -110,7 +103,91 @@ method AbsMethod(x: int) returns (y: int)
     and strengthen the postcondition
 */
 
-/*
-=== Recap ===
+// Below: alternate way of writing Abs as a method.
+method AbsMethod(x: int) returns (y: int)
+    ensures y >= 0
+    ensures y == x || y == -x
+{
+    if x > 0 {
+        y := x;
+    } else {
+        y := -x;
+    }
+}
 
 /*
+    Why is Abs a Method instead of a function?
+
+    === Method/function distinction ===
+
+    Roughly speaking:
+    function = mathematical function
+    method = imperative code, i.e. Python/C/C++ function
+
+    Methods need pre/postconditions to work! functions don't
+
+    Methods are opaque!
+    (Let's illustrate this)
+*/
+
+/*
+    === Stronger/weaker specs, revisited ===
+
+    I got some questions about stronger and weaker specs
+    (Q2 on HW1),
+    so I wanted to give some clarification.
+
+Method 1:
+    larger input set, smaller output set = stronger spec
+    smaller input set, larger output set = weaker spec
+
+    weaker input requirement + stronger output requirement = stronger spec
+    stronger input requirement + weaker output requirement = weaker spec
+
+    weaker precondition + stronger postcondition = stronger spec
+    stronger precondition + weaker postcondition = weaker spec
+
+Example:
+
+    spec1:
+        On all inputs x, f(x) = x
+
+    spec2:
+        On all inputs x, f(x) >= x
+
+*/
+
+method F1(x: int)
+requires false
+{
+}
+
+/*
+Method 2:
+    if Method 1 fails (input/output sets are incomparable)
+
+    If Method 1 fails:
+
+    Try to come up with a function that satisfies spec1 but not spec2.
+
+    - If you can, that means spec1 is NOT stronger than spec2
+
+    - If you can't, then spec1 IS stronger than spec2.
+
+    Try to come up with a function that satisfies spec2 but not spec1
+
+    - If you can, that means spec2 is NOT stronger than spec1
+
+Example:
+
+    spec1:
+        On all inputs x, f(x) = x
+
+    spec2:
+        On all inputs x, y, f(x) < f(y).
+*/
+
+method F2(x: int)
+requires false
+{
+}

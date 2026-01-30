@@ -37,12 +37,18 @@ Announcements/reminders:
 
 - OH moved to 2-3pm Thursdays going forward
 
+- HW2 not ready yet, but hope to release soon!
+
 Plan:
 
-- Finish part 1: intro to Dafny
+- Finish example from part 1
+
+    Start with the poll
+
+    Preconditions and postconditions
 
     Function/method distinction
 
-    Preconditions and postconditions
+    Stronger and weaker specs, revisited
 
 - Part 2: Dafny methodology.
