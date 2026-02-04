@@ -1,10 +1,25 @@
 # Project proposal
 
-For the project proposal, you should provide a 2-3 page report.
-I recommend (but do not require) that the report be written in LaTeX.
+For the project proposal, you should provide a 2-4 page proposal.
 
-Your report should address the following 4 sections (the fourth section is optional).
-The subjections may vary, but should address the points outlined below.
+**Report length:** Minimum 2 full pages, maximum 4 pages -- these are hard cutoffs! If you need more material, you should include it only in an "appendix" and it will not be graded.
+
+**Deadline:**
+Friday, February 20 at 11:59pm.
+
+The report should be typed. I recommend (but do not require) that the proposal be written in LaTeX.
+
+Your proposal should address the following 4 sections.
+The subsections may vary, but should address the points outlined below.
+
+## Title and group members
+
+At the top of your proposal, list the title of your project and all of your group members.
+
+Please form groups of size 1-3!
+Most likely, I will be able to accommodate any group sizes in this range.
+If there are too many groups of size 1, there is a chance I will need to ask some groups to combine.
+If you need to find group members, I will enable the "find groups" feature on Piazza.
 
 ### 1. Introduction and problem selection
 
@@ -28,13 +43,15 @@ This should include some papers related to your chosen research area or domain.
 
 Your implementation plan should address the following:
 
-2.1. **Tool and language selection.** What tools and languages will you use for your project?
+2.1. **Tool and language selection.** What tools and languages will you use for your project (including Dafny, but may also include other tools)?
 
 2.2. **Architecture of your code.**
 Lay out an expected architecture for how your tool will work. What component(s) are there and how do they interact? Consider drawing a diagram. This can be tenative at this stage!
 
 2.3. **Verification effort.** Which functions, components, or properties of your software will you need to verify to ensure the above properties?
-Will these properties be verified at compile-time (e.g., Dafny) or run-time (e.g., using domain-specific Z3 constraints)?
+Will these properties be verified at compile-time?
+Is there anything that would be useful to verify at run-time -- will you include specifications for these
+properties?
 
 - It may help to draw an architecture diagram for your software here. Which parts interact in interesting ways?
 
@@ -55,15 +72,24 @@ State your development strategy.
 
 - If you are working in a team, how will you divide into different components that can be developed separately?
 
-- Please include your plans to meet with the whole group -- will you be meeting once a week to discuss the project? Twice a week? How will you communicate with your group?
+- Please include your plans to meet with the whole group.
+  Will you be meeting once a week to discuss the project? Twice a week? What platform will you use to communicate with your group?
 
-- Give a specific weekly timeline with which components will be developed in each week. This timeline can just be "expected", I won't be holding you to these deadlines, but I want to see that you are thinking about what components need to be worked on and how the pieces fit together.
+- **Timeline:** Give a specific weekly timeline with which components will be developed in each week. This timeline can just be "expected", I won't be holding you to these deadlines, but I want to see that you are thinking about what components need to be worked on and how the pieces fit together.
 
-### 4. Conclusion (optional)
+- **Commitment statement:** Lastly, In addition to the group members, please list a statement that each person commits to work and contribute equally to the project. This statement should be included once, for each group member: i.e. "I commit to work and contribute equally to this project" with the group member's name signed.
 
-This section is optional.
+The meeting plan and commitment statement are not required for groups of size 1.
+
+### 4. Conclusion
+
 State what will happen when the verified software is finished. What is exciting about it? What is interesting about it? Why is your application domain important?
+
+Do you have any questions about the project? What are some things you are uncertain about that should be resolved
+
+This section might be shorter than the other sections (e.g., 1-2 paragraphs).
 
 ## References cited
 
-Include any papers or websites related to what your project is going to do and citations at the bottom of your document. Please include at least 2-3 citations at a minimum.
+References cited is mandatory!
+Include any papers or websites related to what your project is going to do and citations at the bottom of your document. Please include at least 3 citations at a minimum.

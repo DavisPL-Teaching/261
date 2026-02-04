@@ -61,12 +61,18 @@ Questions before we get started?
 
 Announcements:
 
-- HW2 is released, due next Friday
+- HW2 was released on Friday - due Tuesday, Feb 10
 
 Plan:
 
-- Talk about project
-
-- Poll
-
 - Continue Part 2: Dafny Methodology.
+
+  + Finish MinFour example
+
+  + Poll
+
+  + ArgMinFour example: a more interesting case!
+
+- If time: we can start Part 3, quantifiers
+
+- End (last 25 mins): Talk about project.

@@ -1,5 +1,5 @@
 /*
-    Lecture 2, part 2:
+    Lecture 2, part 3:
     Quantifiers
 
 So far, we think of
@@ -41,6 +41,9 @@ ensures exists x :: abs(x) == y
 }
 
 /*
+    Before we discuss the syntax above...
+    let's see some simpler examples.
+
     Eventually, it will become clear that we can also verify arbitrary programs
     and this verification will be built on first-order logic.
 
@@ -97,6 +100,8 @@ lemma AbsCorrectQuantifiers() {
 
     // Sadly quantifiers are hard! So we have to help Dafny out sometimes.
     // We will need to get our hands dirty with the proofs.
+
+    // Can we add an assertion which helps Dafny to prove the above?
 }
 
 // Another way of writing the correctness spec for Abs

@@ -1,5 +1,7 @@
 # Final project presentations
 
+**TBD:** This file is mostly ready, but I may make some changes to this file following the project proposal.
+
 Final project presentations will be in class on May 27, May 29, June 3, and June 5.
 Please sign up for a slot on Piazza.
 Here are some guidlines for your presentation.

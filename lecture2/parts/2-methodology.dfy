@@ -60,6 +60,59 @@ method TestMinFour() {
     // TODO
 }
 
+// ***** Where we ended for Jan 29 *****
+// (Still have to complete steps 2-4 for the above)
+/*
+    === Before we continue: Poll question ===
+
+    This poll question is about the function/method distinction.
+
+    Recall the method ReturnPositiveNumber() from part 1.
+    Here is a similar method:
+*/
+
+method ReturnLargerNumber(x: int) returns (y: int)
+    requires x >= 0
+    ensures y > x
+{
+    return x + 1;
+}
+
+/*
+    Which of the following is provable in Dafny about this method given its spec?
+    (Select all that apply)
+
+    A. ReturnLargerNumber applied to 0 is positive
+    B. ReturnLargerNumber applied to 0 is equal to 1
+    C. ReturnLargerNumber applied to a positive number is positive
+    D. ReturnLargerNumber applied to x equals x + 1
+    E. If ReturnLargerNumber(5) is called twice resulting in y1 and y2, then y1 == y2
+    F. In any context where ReturnLargerNumber(x) is called, x >= 0.
+
+    https://forms.gle/ySfx55HVhaJaTabS9
+
+    ==========
+
+    .
+    .
+    .
+    .
+    .
+
+    (On request: we can test any of these out below.)
+*/
+
+// method TestReturnLargerNumber(x: int)
+//     requires x >= 0
+// {
+//     var y1 := ReturnLargerNumber(x);
+//     var y2 := ReturnLargerNumber(x);
+//     assert y1 > 0;
+//     assert y2 > 0;
+//     assert y1 > x;
+//     assert y1 == y2;
+// }
+
 /*
     Exercise 2:
     Write a function to compute the *argument minimum* of four integers.

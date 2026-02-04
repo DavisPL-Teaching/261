@@ -1,5 +1,7 @@
 # Project final report
 
+**TBD:** This file is mostly ready, but I may make some changes to this file following the project proposal.
+
 For the project proposal, you should provide a 5-10 page report (not including references).
 I recommend (but do not require) that the report be written in LaTeX.
 
@@ -23,7 +25,7 @@ At the end of this section, make sure you add specific goals that you want your 
 
 Instead of an implementation plan (that was in your proposal), here you should describe your implementation.
 
-2.1. **Tool and language selection.** What tools and languages did you use for your project? (Including, Dafny or Z3?)
+2.1. **Tool selection.** What tools and languages did you use for your project? (In most cases, this will include at least Dafny, but could include other languages/tools)
 
 2.2. **Architecture of your code.**
 What component(s) are there in your final code and how do they interact? Which of them are implemented and which were you unable to implement? Which are verified? Consider drawing a diagram of all the components.
