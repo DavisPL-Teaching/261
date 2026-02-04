@@ -5,7 +5,7 @@ For the project proposal, you should provide a 2-4 page proposal.
 **Report length:** Minimum 2 full pages, maximum 4 pages -- these are hard cutoffs! If you need more material, you should include it only in an "appendix" and it will not be graded.
 
 **Deadline:**
-Friday, February 20 at 11:59pm.
+Tuesday, February 17 at 11:59pm.
 
 The report should be typed. I recommend (but do not require) that the proposal be written in LaTeX.
 

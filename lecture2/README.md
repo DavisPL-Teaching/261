@@ -63,6 +63,16 @@ Announcements:
 
 - HW2 was released on Friday - due Tuesday, Feb 10
 
+  + "Show counterexample" feature has been renamed to
+    "Show verification trace"
+    Also try: press F7
+
+  + You should be able to complete most of part 1 and all of part 2
+    Part 1, binary search impl (1C) + part 3 require loop invariants
+    Plan is to cover these on Thursday.
+
+- Project proposal deadline: Tuesday, February 17
+
 Plan:
 
 - Continue Part 2: Dafny Methodology.
@@ -75,4 +85,6 @@ Plan:
 
 - If time: we can start Part 3, quantifiers
 
-- End (last 25 mins): Talk about project.
+- End (last 25 mins): Talk about project. (5:35)
+
+Questions about HW2 or plan?

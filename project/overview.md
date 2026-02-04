@@ -8,8 +8,8 @@ The goal of the project is to apply the tools used in this course to build a sma
 
 Three things to think about:
 1. Application domain
-2. Forming a group (2-3 people)
-3. Tool selection
+2. Forming a group (1-3 people)
+3. Plan for implementation.
 
 ### 1. Choosing an application domain
 
@@ -29,17 +29,18 @@ In the early stages, I'd like for you to be thinking about what software domain 
 
 - Computer networks or distributed systems: build a simple a messaging chat, a server/client app, an RPC protocol, a three-phase commit or Paxos implementations
 
-- Game development: build a text-based adventure game or a terminal Snake client
+- Game development: build a text-based adventure game or a terminal Snake client,
+  verified implementation of chess/checkers/some other strategy game
 
 - Algorithms and data structures: build a union find data structure, an implementation of balanced binary trees, or some more complex data structure
 
 - Computability: a Turing machine or finite automaton simulator; a finite automata library supporting various constructions and operations
 
-- Programming languages: an esoteric programming language interpreter or compiler; an interpreter, optimizer, lexer, or parser; a static analyzer or optimizer
+- Programming languages: an esoteric programming language interpreter or compiler; an interpreter, optimizer, lexer, or parser; a static analyzer
 
 - Formalized mathematics or theorem proving: a proof of a theorem in some area of mathematics
 
-- Machine learning: an implementation of neural networks spuporting gradient descent, an implementation of SVM or logistic regression
+- Machine learning: an implementation of neural networks supporting gradient descent, an implementation of SVM or logistic regression, online learning like multi-armed bandit problem, etc.
 
 - Other areas: computational biology, graphics, databases, NLP, etc.
 
@@ -73,8 +74,6 @@ Most likely, I will be able to accommodate any group sizes in this range.
 If there are too many groups of size 1, there is a chance I will need to ask some groups to combine.
 If you need to find group members, I will enable the "find groups" feature on Piazza.
 
-Please use Piazza to form your groups if needed - I have opened a thread for finding teammates.
-
 ### 3. Plan for implementation
 
 Since the goal is to build a verified piece of software, I recommend Dafny as
@@ -93,7 +92,7 @@ For this project direction, you may need to think about how to write Dafny funct
 wrap a Python library. Some of your project could be working with and specifying on, e.g., the Python code side!
 However, if you choose this direction you should also plan to verify at least some of the code in Dafny by translating it manually to those settings; prepare to explain in your report how you approached the translation process and what aspects of it were interesting and challenging.
 
-- Projects which aim to build a "proof of concept" for something related to your research interests.
+- Projects which aim to build a "proof of concept" for something related to your research (PhD or MS project).
 Please be careful about projects in this category!
 This should be a **very minimal** proof of concept for some piece of verified software related to your
 area of research. Just as with the first category, it should be something you already know how to build unverified! For example, you could also pick a recent paper in the last 15-20 years with a simple algorithm somewhere in the paper, and try to implement and verify it.

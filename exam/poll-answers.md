@@ -22,3 +22,6 @@ A, C, E, and F
 
 Jan 29:
 A, B, C, and E
+
+Feb 3:
+A, C, F.
