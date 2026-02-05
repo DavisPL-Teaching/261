@@ -2,6 +2,39 @@
     Lecture 2, part 3:
     Quantifiers
 
+    ===== Poll =====
+
+    After `dafny verify` passes, suppose we run the code,
+    either by running the Dafny directly or compiling it
+    to Python and running that.
+
+    Which of the following are **removed** from the compiled
+    code?
+    (Select all that apply)
+
+    A) assert statements
+    B) assume{:axiom} statements
+    C) preconditions
+    D) postconditions
+    E) if statements
+    F) lemmas
+    G) unused method calls.
+
+    https://forms.gle/WGj4PsyZqgVWXugv5
+
+    .
+    .
+    .
+    .
+    .
+
+    Note/trivia:
+        things that are removed from the compiled code
+        are called "ghost" statements.
+        More on this later.
+*/
+
+/*
 So far, we think of
 
     verification = prove the spec true on all inputs
@@ -9,6 +42,7 @@ So far, we think of
 Q: Are there things we can't express this way?
 
 A: Yes: for example, abs() is surjective onto nonnegative integers:
+
 */
 
 function abs(x: int): int {
@@ -44,8 +78,9 @@ ensures exists x :: abs(x) == y
     Before we discuss the syntax above...
     let's see some simpler examples.
 
-    Eventually, it will become clear that we can also verify arbitrary programs
-    and this verification will be built on first-order logic.
+    Logic with quantifiers is called "first-order logic".
+
+    Eventually, it will become clear that we can also verify arbitrary programs using first-order logic.
 
     Here's a small sneak peak:
 
@@ -67,7 +102,7 @@ ensures
     // while j < |l|
         // Unfamiliar concept: loop invariant
         // Think of this as pre and postconditions on the loop. We will
-        // see more on this later.
+        // see more on this in the next part.
         // Note: the following line would be needed for a while loop,
         // added implicitly for a for loop.
         // invariant j <= |l|
@@ -91,7 +126,7 @@ lemma AbsCorrectQuantifiers() {
     assert forall x :: abs(x) >= 0;
     assert forall x :: abs(x) == x || abs(x) == -x;
     // ^^ quantifiers!
-    //    this takes us away from quantifier-free logics to "first-order logic" (FOL).
+
     // Try modifying this.
 
     // What about this?

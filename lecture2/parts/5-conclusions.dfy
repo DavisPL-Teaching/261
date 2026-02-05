@@ -13,6 +13,11 @@ Suppose that P implies Q (logically) but Dafny verification passes only for P, a
 
 === End notes ===
 
+What are the main advantages of Dafny?
+
+1. Prove arbitrary code correct
+2. Compile & integrate with other languages
+
 What are the main limitations of Dafny?
 
 1. High effort to write and verify real-world software

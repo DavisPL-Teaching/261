@@ -4,18 +4,18 @@ Verification methodology.
 
 === Dafny methodology ===
 
-    (Optional) 1. Start with pseudocode, or whatever code you would have written in your favorite
-       programming language (C/C++, Python, etc.)
+    0. (Optional) Start with pseudocode
+        (or whatever code you would have written in your favorite programming language, C/C++, Python, etc.)
 
-    2. Write or rewrite the code in Dafny
+    1. Write the code in Dafny
 
-    3. Write the spec:
+    2. Write the spec:
         What do we want to verify?
             Add pre and postconditions to each method
 
-    4. Write some unit test <-- important step I added
+    3. Write some unit test <-- important step I added
 
-    5. Add proofs <-- we have not needed this at all so far
+    4. Add proofs <-- we have not needed this at all so far
         but it is where ~90% of the effort lies in practice.
         (assertions, loop invariants, ...)
        to help the verification go through (as needed)
@@ -65,7 +65,7 @@ ensures result == a || result == b || result == c || result == d
 }
 
 // ***** Where we ended for Jan 29 *****
-// (Still have to complete steps 3-4 for the above)
+// (Still have to complete steps 2-3 for the above)
 
 // Write some unit tests
 method TestMinFour() {
@@ -125,7 +125,7 @@ method TestMinFour() {
     */
 }
 
-// What about step 5?
+// What about step 4?
 // In this particular case, Dafny is smart enough to come up with the
 // proof on its own. So , we don't need to do any additional work.
 

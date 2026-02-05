@@ -1,4 +1,4 @@
-# Lecture 2: Program Verification
+# Lecture 2: Interactive Program Verification
 
 Introduction to interactive program verification in Dafny.
 
@@ -88,3 +88,40 @@ Plan:
 - End (last 25 mins): Talk about project. (5:35)
 
 Questions about HW2 or plan?
+
+## Thursday, February 4
+
+Announcements/reminders:
+
+- HW2 due: Tuesday, Feb 10
+
+  + TBD: will extend the deadline if we don't cover
+    loop invariants today.
+
+- Project proposal due: Tuesday, Feb 17.
+
+Plan:
+
+- Briefly discuss project proposal, project examples, Q+A
+
+- Show you how to compile dafny code to Python.
+
+  + Important point that I didn't emphasize enough earlier!
+    This will be useful for your projects
+
+  + Here is a command we can run:
+
+    `dafny build --target:py 1-intro.dfy`
+
+    Then look at `1-intro-py/module_.py`.
+
+    By default, Dafny builds by compiling to C Sharp
+    (see 1-intro.cs)
+
+- Finish ArgMinFour example from part 2
+
+- Poll
+
+- Part 3: Quantifiers
+
+- (If time) Part 4: Loop invariants.
