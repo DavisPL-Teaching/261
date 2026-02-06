@@ -14,10 +14,11 @@ It would be nice to generalize our functions to work with lists!
 Can we?
 This requires: loop invariants!
 
-Continuing the 3-step process:
+Continuing the -step process:
 1. Decide on an implementation (or port an existing one); write in Dafny
 2. Decide on a spec; write pre/postconditions
-3. Help Dafny with the proof (as needed)
+3. Write unit tests
+4. Help Dafny with the proof (as needed)
 
 We did step 1, now step 2:
 
@@ -42,9 +43,30 @@ that matches what we had for MinFour.
     a[i]
 
     Pseudocode:
-    Keep track of a minimum value
-    Iterate through the array, update the min when a smaller value is encountered
 */
+
+method MinList(a: array<int>) returns (result: int)
+    // TODO
+    // example syntax:
+    // forall i :: 0 <= i < a.Length ==> a[i] == 0
+    // Precondition:
+    // requires false
+    requires a.Length >= 1
+    // Postcondition
+    // ensures false
+{
+    // How we would do this with imperative code?
+    // Iteratively: for x in array a, if x < current min, set min := x
+    var min := a[0];
+    // a.Length - for arrays, |a| would be for sequences.
+    for i := 1 to a.Length {
+        if a[i] < min {
+            min := a[i];
+        }
+    }
+
+    return min;
+}
 
 /*
 === What is a loop invariant? ===
@@ -63,17 +85,6 @@ A loop invariant must satisfy the following 3 conditions:
 
 */
 
-method MinList(a: array<int>) returns (result: int)
-    // TODO
-    // example syntax:
-    // forall i :: 0 <= i < a.Length ==> a[i] == 0
-    // Precondition:
-    requires false
-    // Postcondition
-    ensures false
-{
-    // TODO
-}
 
 method ArgMinList(a: array<int>) returns (result: int)
     // TODO

@@ -217,11 +217,18 @@ method TestReturnLargerNumber(x: int)
 method ArgMinFour(a: int, b: int, c: int, d: int) returns (result: int)
 // requires ...
 // requires false
+// requires a != b && a != c && a != d && b != c && b != d && c != d
 ensures result == 0 || result == 1 || result == 2 || result == 3
 ensures result == 0 ==> a <= b && a <= c && a <= d
 ensures result == 1 ==> b <= a && b <= c && b <= d
 ensures result == 2 ==> c <= a && c <= b && c <= d
 ensures result == 3 ==> d <= a && d <= b && d <= c
+// why is this not a complete spec?
+// ==> there could be multiple outputs fitting the spec?
+// Problem: if some of the inputs are equal!
+// Example: a = b = c = d = 1
+// result could be anything! 1 through 4 in this case.
+// In other words, we don't have a way to "break ties".
 {
     var min := a;
     var idx := 0;
@@ -243,22 +250,15 @@ ensures result == 3 ==> d <= a && d <= b && d <= c
 }
 
 /*
-    Exercise 3:
     Write unit tests for the above.
 */
 
-method TestMin() {
-    // var result1 := MinFour(1, 2, 3, 4);
-    // assert result1 == 1;
-    // var result2 := MinFour(3, 3, 3, 4);
-    // assert result2 == 3;
-}
-
 method TestArgMin() {
-    // var result1 := ArgMinFour(1, 2, 3, 4);
-    // assert result1 == 0;
-    // var result2 := ArgMinFour(3, 3, 3, 4);
-    // assert result2 == 0 || result2 == 1 || result2 == 2;
+    var result1 := ArgMinFour(1, 2, 3, 4);
+    assert result1 == 0;
+
+    var result2 := ArgMinFour(3, 3, 3, 4);
+    assert result2 == 0 || result2 == 1 || result2 == 2;
 }
 
 /*
@@ -268,5 +268,5 @@ There are at least 3 possible design choices for ArgMin:
 - Leave the behavior underspecified; has to return one min index, any is OK on tie
 - Exclude the behavior by adding a precondition (require all vals are distinct)
 - Specify the behavior in the case of ties: e.g., return the first or the last index
-  of a min value.
+of a min value.
 */

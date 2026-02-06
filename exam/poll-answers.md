@@ -25,3 +25,6 @@ A, B, C, and E
 
 Feb 3:
 A, C, F.
+
+Feb 5:
+A, B, C, D, F. (All except: if statements, unused method calls.)

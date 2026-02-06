@@ -89,7 +89,7 @@ Plan:
 
 Questions about HW2 or plan?
 
-## Thursday, February 4
+## Thursday, February 5
 
 Announcements/reminders:
 
@@ -104,19 +104,10 @@ Plan:
 
 - Briefly discuss project proposal, project examples, Q+A
 
-- Show you how to compile dafny code to Python.
+- Show you how to compile Dafny code to Python (or other languages).
 
   + Important point that I didn't emphasize enough earlier!
     This will be useful for your projects
-
-  + Here is a command we can run:
-
-    `dafny build --target:py 1-intro.dfy`
-
-    Then look at `1-intro-py/module_.py`.
-
-    By default, Dafny builds by compiling to C Sharp
-    (see 1-intro.cs)
 
 - Finish ArgMinFour example from part 2
 
@@ -125,3 +116,16 @@ Plan:
 - Part 3: Quantifiers
 
 - (If time) Part 4: Loop invariants.
+
+Questions?
+
+### Compiling Dafny to Python
+
+  - Here is a command we can run:
+
+    `dafny build --target:py 1-intro.dfy`
+
+    Then look at `1-intro-py/module_.py`.
+
+    By default, Dafny builds by compiling to C Sharp
+    (see 1-intro.cs)

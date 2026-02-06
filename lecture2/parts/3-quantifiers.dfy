@@ -32,22 +32,59 @@
         things that are removed from the compiled code
         are called "ghost" statements.
         More on this later.
+
+        E.g. actually something called a ghost method
 */
 
 /*
 So far, we think of
 
     verification = prove the spec true on all inputs
+                                        ^^^^^^^^^^^^ implicitly a quantifier
 
-Q: Are there things we can't express this way?
+    Let's say I have a spec with
+
+    def f(x) returns y
+
+        precond(x)
+
+        postcond(x, y)
+
+    What we're really proving is a "for all" statement, which could be
+    expressed using a quantifier
+
+        "for all x, if precond(x) then postcond(x, f(x))"
+
+        ^^^^^^^^^ quantifier!
+
+        quantifiers:
+
+            forall = ∀
+            exists = ∃
+
+We might want these quantifiers more generally - fortunately,
+Dafny gives us direct access to statements involving quantifiers.
+
+Q: Are there things we can't express using quantifiers?
 
 A: Yes: for example, abs() is surjective onto nonnegative integers:
 
+    Surjective:
+    for all outputs y (that are nonnegative), there exists at least one input x
+    such that
+    f(x) = y.
 */
 
 function abs(x: int): int {
     if x > 0 then x else -x
 }
+
+// method Abs(x: int) returns (y: int)
+//     // You might convince yourself: there's no way to say this
+//     // just with a precondition and a postcondition
+//     requires ...
+//     ensures ...
+// }
 
 predicate is_nonnegative(y: int) {
     y >= 0
@@ -57,8 +94,9 @@ lemma AbsSurjective()
 ensures forall y: int :: is_nonnegative(y) ==> exists x :: abs(x) == y
 {
     // Some odd syntax
-    // Commenting the below out - Dafny cannot prove this
     // We need to help Dafny out by providing the proof.
+
+    // This is a proof (!)
     forall y: int | is_nonnegative(y)
     ensures exists x :: abs(x) == y
     {
@@ -71,16 +109,23 @@ requires y >= 0
 ensures exists x :: abs(x) == y
 {
     assert abs(y) == y;
-    // asserts abs(-y) == y; // also works
+    // assert abs(-y) == y; // also works
 }
 
 /*
-    Before we discuss the syntax above...
-    let's see some simpler examples.
+    Dafny is now acting as a proof verification tool!
+
+    We wrote a proof, and Dafny checked that the proof is correct.
+
+    Let's see some simpler examples.
 
     Logic with quantifiers is called "first-order logic".
 
     Eventually, it will become clear that we can also verify arbitrary programs using first-order logic.
+
+    Practically speaking - forall/exists come up frequently when verifying
+    code involving arrays, strings, sequences, and any other more complex
+    data structures.
 
     Here's a small sneak peak:
 
@@ -92,8 +137,8 @@ ensures exists x :: abs(x) == y
 */
 
 method AbsSum(l: seq<int>) returns (result: int)
-ensures
-    forall i :: 0 <= i < |l| ==> result >= abs(l[i])
+// requires |l| == 3
+ensures forall i :: 0 <= i < |l| ==> result >= abs(l[i])
 {
     var sum: nat := 0;
     for j := 0 to |l|
@@ -108,13 +153,18 @@ ensures
         // invariant j <= |l|
         invariant forall i :: 0 <= i < j ==> sum >= abs(l[i])
     {
+        // assert forall i :: 0 <= i < j ==> sum >= abs(l[i]);
         sum := sum + abs(l[j]);
         // While loop version:
         // j := j + 1;
+        // assert forall i :: 0 <= i < j ==> sum >= abs(l[i]);
     }
-    result := sum;
+
+    // assert forall i :: 0 <= i < |l| ==> result >= abs(l[i]);
+
+    // result := sum;
     // equiv. syntax:
-    // return sum;
+    return sum;
 }
 
 /*
