@@ -187,6 +187,15 @@ UC Davis has [policies against harassment and discrimination](https://hr.ucdavis
 Be inclusive of your classmates in group study, in group work and projects, and in your questions and answers in class.
 If you need to, you may reach me by email to report an issue with a classmate.
 
+### Recommendation letter and research requests
+
+I am happy to write recommendation letters for students!
+However, please note that I generally reserve recommendation letters for students who have done particularly well in a course (A or A+), or for students I have interacted more directly with through either research or office hours.
+If you would like to request a recommendation letter from me, please wait until after the quarter to do so
+(in rare cases, I may be able to make an exception to this rule if you have a deadline during the quarter).
+
+If you are asking to get involved in research, a similar rule applies - please wait until after the quarter to ask.
+
 ## Contact and Office Hours
 
 **Please use the Piazza for questions related to course material.**
