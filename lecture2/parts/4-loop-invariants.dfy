@@ -14,20 +14,30 @@ It would be nice to generalize our functions to work with lists!
 Can we?
 This requires: loop invariants!
 
-Continuing the -step process:
+Continuing the 4-step process:
 1. Decide on an implementation (or port an existing one); write in Dafny
 2. Decide on a spec; write pre/postconditions
 3. Write unit tests
 4. Help Dafny with the proof (as needed)
 
-We did step 1, now step 2:
-
 === Poll ===
 
-Write a precondition and postcondition for MinList
-that matches what we had for MinFour.
-(Your pre and postcondition don't have to be valid Dafny, but they should be
- correct logically)
+(Related to some of the discussion from last time.)
+
+Consider the following snippet of a program:
+
+assert P;
+assert Q;
+
+Suppose that P implies Q (logically) but Dafny verification passes only for P, and not Q. Which of the following is a possible reason for this? (Select all that apply)
+
+https://forms.gle/q5WiyPwxyoU7KtgMA
+
+.
+.
+.
+.
+.
 */
 
 /*
@@ -42,7 +52,11 @@ that matches what we had for MinFour.
     a.Length
     a[i]
 
-    Pseudocode:
+    We did step 1, now step 2:
+    Write a precondition and postcondition for MinList
+    that matches what we had for MinFour.
+    (Your pre and postcondition don't have to be valid Dafny, but they should be
+    correct logically)
 */
 
 method MinList(a: array<int>) returns (result: int)
@@ -85,7 +99,6 @@ A loop invariant must satisfy the following 3 conditions:
 
 */
 
-
 method ArgMinList(a: array<int>) returns (result: int)
     // TODO
     // Precondition:
@@ -96,34 +109,72 @@ method ArgMinList(a: array<int>) returns (result: int)
     // TODO
 }
 
-/*
-    Additional practice with loop invariants:
-
-    Exercise 5:
-    (Skip for time)
-    Write a function to compute the gcd of two integers.
-*/
 
 /*
-    Exercise 6
+    (If not already done)
     Write a unit test for the ArgMinList and MinList functions.
 
     (Compile time unit test - checked at compile time, not executed)
-
-    What happens?
-    This will lead to a topic that we will discuss next.
 */
 
 method TestMinList() {
 }
 
 /*
+    Exercise
+
+    Here is another method and a spec.
+
+    1. Which of the following is a valid loop invariants?
+
+    A. y == 0
+    B. y >= 0
+    C. y <= x
+    D. y != x + 1
+    E. True
+    F. False
+
+    2. Try them out below. How do violations of (i), (ii), and (iii) appear in
+    the Dafny VSCode extension?
+
+    3. If none of the above is correct - write the correct invariant.
+*/
+
+// method FindSuccessor(x: int) returns (y: int)
+// requires x >= 0
+// ensures y == x + 1
+// {
+//     y := 0;
+//     while y <= x
+//     invariant ...
+//     {
+//         y := y + 1;
+//     }
+//     return y;
+// }
+
+/*
     Recap
 
     - We saw examples of working with arrays: a[i], a.Length etc.
-    - We defined loop invariants and saw them in actino
+
+    - We defined loop invariants and saw them in action
+
+        + Loop invariant must satisfy properties (i), (ii), (iii)
+
+        + Practice with loop invariants
+
     - We discussed the computationally bounded nature of Dafny, and how
       when writing unit tests we may need additional assertions to walk through
       and help Dafny prove the assertion
-    - This is a more general debugging technique: find out what Dafny knows, and what it doesn't.
+
+        + A more general debugging technique: find out what Dafny knows, and what it doesn't.
+*/
+
+/*
+    Additional loop invariant exercises
+
+    1. Go back to the AbsSum example from part 3. Add a loop invariant.
+
+    2. Write and prove a function to compute the gcd of two integers.
 */

@@ -129,3 +129,15 @@ Questions?
 
     By default, Dafny builds by compiling to C Sharp
     (see 1-intro.cs)
+
+## Tuesday, February 10
+
+Reminders:
+
+- HW2 now due: Friday, Feb 13
+
+- Project proposal due: Tuesday, Feb 17.
+
+Plan:
+
+- Part 4: Loop invariants

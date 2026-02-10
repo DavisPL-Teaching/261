@@ -2,21 +2,13 @@
 Lecture 2, Part 5:
 Conclusions
 
-=== Poll (to wrap up this section) ===
-
-Consider the following snippet of a program:
-
-assert P;
-assert Q;
-
-Suppose that P implies Q (logically) but Dafny verification passes only for P, and not Q. Which of the following is a possible reason for this? (Select all that apply)
-
 === End notes ===
 
 What are the main advantages of Dafny?
 
 1. Prove arbitrary code correct
-2. Compile & integrate with other languages
+2. Don't need to rewrite the code in verification language (executable/verifiable code in same framework)
+3. Compile & integrate with other languages
 
 What are the main limitations of Dafny?
 
@@ -29,11 +21,11 @@ What are the main limitations of Dafny?
 To understand the more fundamental limits of Dafny,
 then, we need to go back to the logics on which Dafny is built,
 and in particular to proofs in first-order logic (FOL).
-See the file fol.dfy.
+We will spend some more time going forward on foundations.
 */
 
 /*
-    ===== A note on industry applications =====
+    ===== Discussion on industry applications =====
 
     Course goals:
     - to understand how verification works
