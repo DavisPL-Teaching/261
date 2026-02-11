@@ -141,3 +141,5 @@ Reminders:
 Plan:
 
 - Part 4: Loop invariants
+
+- (If time) Part 4: conclusions.

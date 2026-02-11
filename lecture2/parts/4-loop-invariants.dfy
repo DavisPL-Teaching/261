@@ -118,6 +118,7 @@ method ArgMinList(a: array<int>) returns (result: int)
 */
 
 method TestMinList() {
+    // var a0 := new int[][1]; // new keyword: allocates an array on the heap
 }
 
 /*
