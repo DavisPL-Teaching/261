@@ -24,7 +24,7 @@ Continuing the 4-step process:
 
 (Related to some of the discussion from last time.)
 
-Consider the following snippet of a program:
+Consider the following snippet of a Dafny program:
 
 assert P;
 assert Q;
@@ -59,7 +59,7 @@ https://forms.gle/q5WiyPwxyoU7KtgMA
     correct logically)
 */
 
-method MinList(a: array<int>) returns (result: int)
+method MinList(a: array<int>) returns (min: int)
     // TODO
     // example syntax:
     // forall i :: 0 <= i < a.Length ==> a[i] == 0
@@ -67,18 +67,61 @@ method MinList(a: array<int>) returns (result: int)
     // requires false
     requires a.Length >= 1
     // Postcondition
-    // ensures false
+    // - The value min should be one of the elements of the array
+    //   "There exists an index i (within correct bounds) such that a[i] == min"
+    ensures exists i :: (0 <= i < a.Length) && a[i] == min
+    // - The value min should be <= each element of the array.
+    ensures forall i :: 0 <= i < a.Length ==> min <= a[i]
+
+    // Q: can you combine exists and forall?
+    // forall i :: exists j :: forall k :: a[i] = a[j] + a[k]
 {
     // How we would do this with imperative code?
     // Iteratively: for x in array a, if x < current min, set min := x
-    var min := a[0];
+    min := a[0];
     // a.Length - for arrays, |a| would be for sequences.
-    for i := 1 to a.Length {
+    // Loop invariant should be true "on every iteration"
+
+    // <-------- ***here***
+    var i := 1;
+    // for i := 1 to a.Length
+
+    // **Property (i)** I is true here
+    // assert Inv;
+
+    while i < a.Length
+        // What we need to do:
+        // Add a "loop invariant" here to explain to Dafny
+        // how the postcondition will be true after executing
+        // any number of iterations of the loop.
+        invariant 0 < i <= a.Length
+        // invariant: min <= any value in the array before index i
+        invariant forall j :: 0 <= j < i ==> min <= a[j]
+        // invariant: min is an element of the array so far
+        invariant exists j :: 0 <= j < i && min == a[j]
+        // Q: do we need old() syntax?
+        // A: hopefully not (sometimes for other examples)
+    {
+        // what is true at this point of the loop?
+        // assert Inv && i < a.Length;
+
         if a[i] < min {
             min := a[i];
         }
+        i := i + 1;
+
+        // (ii) precond = Inv && i < a.Length
+        //      postcond = Inv
+        // <-------- ***here***
+        // assert Inv
+
     }
 
+    // (iii)
+    // Inv && (i >= a.Length) ==> postcondition.
+    // Inv implies the postcondition.
+    // assert Inv && (i >= a.Length);
+    // assert postcond
     return min;
 }
 
@@ -87,18 +130,19 @@ method MinList(a: array<int>) returns (result: int)
 
 A loop invariant is like a pre/postcondition for the loop body.
 
-A loop invariant must satisfy the following 3 conditions:
-1. Loop invariant is true before first entering the loop
+A loop invariant is a Boolean property I such that:
+
+i. Loop invariant is true before first entering the loop
     precondition ==> invariant
 
-2. If the loop condition is true, then the loop invariant is preserved
+ii. If the loop condition is true, then the loop invariant is preserved
     (loop condition) && invariant holds at the start ===> invariant holds at end
 
-3. If the loop condition is false, then the loop invariant implies the postcondition
+iii. If the loop condition is false, then the loop invariant implies the postcondition
     !(loop condition) && invariant holds ==> postcondition.
-
 */
 
+// skip for now
 method ArgMinList(a: array<int>) returns (result: int)
     // TODO
     // Precondition:
@@ -111,6 +155,8 @@ method ArgMinList(a: array<int>) returns (result: int)
 
 
 /*
+    skip for now
+
     (If not already done)
     Write a unit test for the ArgMinList and MinList functions.
 
@@ -118,7 +164,12 @@ method ArgMinList(a: array<int>) returns (result: int)
 */
 
 method TestMinList() {
-    // var a0 := new int[][1]; // new keyword: allocates an array on the heap
+    var a0 := new int[][1]; // new keyword: allocates an array on the heap
+    a0[0] := 3;
+    var result := MinList(a0);
+    assert result == 3;
+
+    // Try more complicated examples here.
 }
 
 /*
@@ -127,6 +178,7 @@ method TestMinList() {
     Here is another method and a spec.
 
     1. Which of the following is a valid loop invariants?
+    Check the properties (i)-(iii) for each one.
 
     A. y == 0
     B. y >= 0
@@ -141,18 +193,49 @@ method TestMinList() {
     3. If none of the above is correct - write the correct invariant.
 */
 
-// method FindSuccessor(x: int) returns (y: int)
-// requires x >= 0
-// ensures y == x + 1
-// {
-//     y := 0;
-//     while y <= x
-//     invariant ...
-//     {
-//         y := y + 1;
-//     }
-//     return y;
-// }
+method FindSuccessor(x: int) returns (y: int)
+requires x >= 0
+ensures y == x + 1
+{
+    y := 0;
+    /*
+        (i) : true before loop executes
+        (ii) : preserved by the loop: if Inv && cond is true at top of loop,
+               Inv is true at bottom of loop
+        (iii) : implies postcondition: if Inv && !cond is true,
+                then postcond is true.
+    */
+    while y <= x
+    // invariant ...
+    // A. y == 0
+    // No because y is not always zero?
+    // (i) is satisfied -- before entering loop, y == 0
+    // (ii) fails: if y == 0 at the top of the loop, y == 1 at the botto
+    //      of the loop, which does not imply y == 0
+    // (iii) fails: if y == 0 and y > x. Does not imply postcond
+
+    // B. y >= 0
+    // (i) is true
+    // (ii) is true - if y >= 0 and we execute y := y + 1, y is still >= 0
+    // (iii) fails: assuming y >= 0 and y > x ==> does not imply postcond.
+
+    // C. y == x + 1
+    // (i) is false - *not* true before entering
+    // (ii) is true
+    //       precond loop body: y <= x && y == x + 1
+    //       postcond loop body: y == x + 1
+    //       *is* preserved by the loop body
+    // (iii) is true - does imply the postcondition.
+
+    // C. y <= x
+    // D. y != x + 1
+    // E. True
+    // F. False
+    {
+        y := y + 1;
+    }
+    return y;
+}
 
 /*
     Recap
@@ -165,9 +248,10 @@ method TestMinList() {
 
         + Practice with loop invariants
 
-    - We discussed the computationally bounded nature of Dafny, and how
-      when writing unit tests we may need additional assertions to walk through
-      and help Dafny prove the assertion
+    - We discussed the computationally bounded nature of Dafny
+
+        + Sometimes we need additional assertions to walk through
+          and help Dafny prove an assertion
 
         + A more general debugging technique: find out what Dafny knows, and what it doesn't.
 */

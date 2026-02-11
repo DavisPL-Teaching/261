@@ -134,12 +134,18 @@ Questions?
 
 Reminders:
 
-- HW2 now due: Friday, Feb 13
+- HW2 now due: Friday, Feb 13 11:59pm
 
-- Project proposal due: Tuesday, Feb 17.
+- Project proposal due: Tuesday, Feb 17 11:59pm
+
+  + Group formation / topics - due with the project proposal
 
 Plan:
 
+- Start with the poll
+
 - Part 4: Loop invariants
 
-- (If time) Part 4: conclusions.
+- (If time) Part 5: conclusions.
+
+Questions?

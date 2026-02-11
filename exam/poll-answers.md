@@ -28,3 +28,7 @@ A, C, F.
 
 Feb 5:
 A, B, C, D, F. (All except: if statements, unused method calls.)
+
+Feb 10:
+D, E, F, I.
+not G and H because we are assuming P and Q are syntactically valid Dafny expressions.
