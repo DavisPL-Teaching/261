@@ -149,3 +149,27 @@ Plan:
 - (If time) Part 5: conclusions.
 
 Questions?
+
+## Thursday, February 10
+
+This will be the last day of Lecture 2!
+
+Next week, advanced Dafny & logical foundations
+
+Reminders:
+
+- HW2 now due: Friday, Feb 13 11:59pm
+
+- Project proposal due: Tuesday, Feb 17 11:59pm
+
+Plan for today:
+
+- Finish on Part 4
+
+  + Poll question
+
+  + Practice with loop invariants
+
+  + Some tips for when Dafny assertions do not pass
+
+- Part 5: Conclusions.

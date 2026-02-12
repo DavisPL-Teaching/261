@@ -32,3 +32,18 @@ A, B, C, D, F. (All except: if statements, unused method calls.)
 Feb 10:
 D, E, F, I.
 not G and H because we are assuming P and Q are syntactically valid Dafny expressions.
+
+Feb 12:
+1)
+    1. (i) only
+    2. (i) and (ii) only
+    3. None (1 <= i <= n would be (ii) only)
+    4. (i) and (ii) only
+    5. (i) and (ii) only
+    6. (i) and (ii)
+    7. (ii) and (iii)
+    8. (iii) only
+
+2)
+    result == ("Hello " * (i - 1)) + "Hello"
+    AND i <= n.

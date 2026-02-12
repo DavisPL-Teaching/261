@@ -163,7 +163,7 @@ method ArgMinList(a: array<int>) returns (result: int)
     (Compile time unit test - checked at compile time, not executed)
 */
 
-method TestMinList() {
+method TestMinList1() {
     var a0 := new int[][1]; // new keyword: allocates an array on the heap
     a0[0] := 3;
     var result := MinList(a0);
@@ -194,8 +194,9 @@ method TestMinList() {
 */
 
 method FindSuccessor(x: int) returns (y: int)
-requires x >= 0
-ensures y == x + 1
+// Uncomment to work on the problem
+// requires x >= 0
+// ensures y == x + 1
 {
     y := 0;
     /*
@@ -257,6 +258,164 @@ ensures y == x + 1
 */
 
 /*
+    Review on loop invariants:
+
+    - A loop invariant is a property that should be true
+        (1) immediately before the loop executes
+        (2) immediately following the loop body, after each loop iteration
+
+    - BUT: Dafny does not know what is true at all points in time!
+        (To do so, you'd have to run the loop / have infinite amount of time)
+
+    - So Dafny does not actually check (1) and (2) above, instead it needs to check a stronger condition in three parts:
+
+        For a program
+
+        method example()
+            requires precond
+            ensures postcond
+        {
+
+            HEADER
+
+            while cond {
+
+                BODY
+
+            }
+
+            FOOTER
+        }
+
+        (i) precond ==> after executing HEADER, Inv
+        (ii) Inv ^ cond ==> after executing BODY, Inv
+        (iii) Inv ^ !cond ==> after executing FOOTER, postcond
+
+    - It is condition (ii) that makes us refer to this as a loop
+      *invariant,* i.e. it is invariant under the execution of the program
+      BODY.
+      This works by analogy with mathematical induction. It's exactly like
+
+       invariant: "for all x, x + x is even"
+
+       proof: need to show "if n is even, then n + 2 even".
+
+    - Foreshadowing:
+        You'll notice all of the above have the form
+
+            "if P, then after executing C, Q"
+
+        This is known as a Hoare triple and will be the foundation for
+        Hoare Logic. It's written
+
+            {{ P }} C {{ Q }}
+
+        There is another logic that is more general called Dynamic Logic,
+        in which we can write it this way
+
+            P        =>       [ C ]                            Q.
+            ^^ if P
+                     ^^ then
+                              ^^^^^ after all executions of C,
+                                                               ^^ Q holds.
+
+
+    - Anything satisfying properties (i)-(iii) is a loop invariant.
+
+    - Any loop invariant also satisfies (1) and (2) above.
+      (In fact, satisfying only (i) and (ii) is enough!)
+      But not necessarily vice versa.
+
+=== Poll ===
+
+Consider the following function.
+
+In the postcondition, assume that s * n is valid Dafny syntax
+(even though it isn't), and works as in Python -
+i.e., multiply a string by an integer to repeat it n times.
+*/
+
+// method HelloNTimes(n: nat) returns (result: string)
+// requires n > 0
+// ensures result == ("Hello " * (n - 1)) + ("Hello")
+// {
+//      result := "Hello";
+//      var i := 1;
+//      while (i < n) {
+//           result := result + " Hello";
+//           i := i + 1;
+//      }
+//      return result;
+// }
+
+/*
+In the postcondition, assume that the syntax s * n works as in Python
+(multiply a string by an integer to repeat it n times).
+
+https://forms.gle/wr6km15E8sH12YYs5
+
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+
+=== When assertions do not pass ===
+
+Last time's poll (Tuesday) also hinted at another issue.
+Sometimes, Dafny assertions do not pass.
+
+Above, we did a simple unit test for MinList.
+What happens when we try a more complicated unit test?
+*/
+
+method TestMinList2() {
+    // previous test:
+    // var a0 := new int[][1];
+    // a0[0] := 3;
+    // var result := MinList(a0);
+    // assert result == 3;
+
+    // Try more complicated examples here.
+
+    // New example syntax:
+    // var a1 := new int[][1, 2, 3, 4, 5];
+    // var result := MinList(a1);
+    // assert result == 1;
+}
+
+/*
+    === Tips when you get stuck ===
+
+    Some techniques for when you get stuck on a Dafny proof.
+
+    1. Find out what Dafny knows.
+
+    You can query with assertions!
+
+    2. Abstract the missing step or cases
+       into a lemma with a precond and postcond.
+
+    3. Convince yourself the thing you're trying to prove is true!
+       Once you are convinced, *assume* away the lemma you need (or axiom it),
+       and come back to it later,
+       to make the proof go through.
+
+    The above technique will allow you to decompose any proof into smaller
+    parts, and tackle each part one at a time.
+
+    If you've simplified the property at all - you've made progress!
+    That's all we need in order to guarantee we eventually complete it.
+
+    === Exercises ===
+
     Additional loop invariant exercises
 
     1. Go back to the AbsSum example from part 3. Add a loop invariant.
