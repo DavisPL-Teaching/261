@@ -142,23 +142,9 @@ iii. If the loop condition is false, then the loop invariant implies the postcon
     !(loop condition) && invariant holds ==> postcondition.
 */
 
-// skip for now
-method ArgMinList(a: array<int>) returns (result: int)
-    // TODO
-    // Precondition:
-    requires false
-    // Postcondition
-    ensures false
-{
-    // TODO
-}
-
-
 /*
-    skip for now
-
     (If not already done)
-    Write a unit test for the ArgMinList and MinList functions.
+    Write a unit test for the MinList function.
 
     (Compile time unit test - checked at compile time, not executed)
 */
@@ -255,9 +241,12 @@ method FindSuccessor(x: int) returns (y: int)
           and help Dafny prove an assertion
 
         + A more general debugging technique: find out what Dafny knows, and what it doesn't.
+
 */
 
 /*
+    (Picking up here for Thursday, February 12)
+
     Review on loop invariants:
 
     - A loop invariant is a property that should be true
@@ -326,13 +315,35 @@ method FindSuccessor(x: int) returns (y: int)
       (In fact, satisfying only (i) and (ii) is enough!)
       But not necessarily vice versa.
 
-=== Poll ===
+Before we continue:
 
-Consider the following function.
+Let's fill in the correct loop invariant for FindSuccessor
+from last time.
+*/
 
-In the postcondition, assume that s * n is valid Dafny syntax
-(even though it isn't), and works as in Python -
-i.e., multiply a string by an integer to repeat it n times.
+method FindSuccessor2(x: int) returns (y: int)
+// Uncomment to work on the problem
+// requires x >= 0
+// ensures y == x + 1
+{
+    y := 0;
+
+    while y <= x
+    // invariant ...
+    {
+        y := y + 1;
+    }
+    return y;
+}
+
+/*
+    === Poll ===
+
+    Consider the following function.
+
+    In the postcondition, assume that s * n is valid Dafny syntax
+    (even though it isn't), and works as in Python -
+    i.e., multiply a string by an integer to repeat it n times.
 */
 
 // method HelloNTimes(n: nat) returns (result: string)
@@ -349,76 +360,42 @@ i.e., multiply a string by an integer to repeat it n times.
 // }
 
 /*
-In the postcondition, assume that the syntax s * n works as in Python
-(multiply a string by an integer to repeat it n times).
+    In the postcondition, assume that the syntax s * n works as in Python
+    (multiply a string by an integer to repeat it n times).
 
-https://forms.gle/wr6km15E8sH12YYs5
+    https://forms.gle/wr6km15E8sH12YYs5
 
-.
-.
-.
-.
-.
-.
-.
-.
-.
-.
-.
-.
-
-=== When assertions do not pass ===
-
-Last time's poll (Tuesday) also hinted at another issue.
-Sometimes, Dafny assertions do not pass.
-
-Above, we did a simple unit test for MinList.
-What happens when we try a more complicated unit test?
-*/
-
-method TestMinList2() {
-    // previous test:
-    // var a0 := new int[][1];
-    // a0[0] := 3;
-    // var result := MinList(a0);
-    // assert result == 3;
-
-    // Try more complicated examples here.
-
-    // New example syntax:
-    // var a1 := new int[][1, 2, 3, 4, 5];
-    // var result := MinList(a1);
-    // assert result == 1;
-}
-
-/*
-    === Tips when you get stuck ===
-
-    Some techniques for when you get stuck on a Dafny proof.
-
-    1. Find out what Dafny knows.
-
-    You can query with assertions!
-
-    2. Abstract the missing step or cases
-       into a lemma with a precond and postcond.
-
-    3. Convince yourself the thing you're trying to prove is true!
-       Once you are convinced, *assume* away the lemma you need (or axiom it),
-       and come back to it later,
-       to make the proof go through.
-
-    The above technique will allow you to decompose any proof into smaller
-    parts, and tackle each part one at a time.
-
-    If you've simplified the property at all - you've made progress!
-    That's all we need in order to guarantee we eventually complete it.
+    .
+    .
+    .
+    .
+    .
+    .
+    .
+    .
+    .
+    .
+    .
+    .
 
     === Exercises ===
 
     Additional loop invariant exercises
 
-    1. Go back to the AbsSum example from part 3. Add a loop invariant.
+    1. Above, we wrote MinList.
+       Now Implement and verify the ArgMinList function.
 
-    2. Write and prove a function to compute the gcd of two integers.
+    2. Go back to the AbsSum example from part 3. Add a loop invariant.
+
+    3. Write and prove a function to compute the gcd of two integers.
 */
+
+method ArgMinList(a: array<int>) returns (result: int)
+    // TODO
+    // Precondition:
+    requires false
+    // Postcondition
+    ensures false
+{
+    // TODO
+}

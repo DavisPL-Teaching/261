@@ -2,6 +2,56 @@
 Lecture 2, Part 5:
 Conclusions
 
+=== When assertions do not pass ===
+
+Last time's poll (Tuesday) also hinted at another issue.
+Sometimes, Dafny assertions do not pass.
+
+Above, we did a simple unit test for MinList.
+What happens when we try a more complicated unit test?
+*/
+
+// Import syntax
+include "4-loop-invariants.dfy"
+
+method TestMinList2() {
+    // previous test:
+    // var a0 := new int[][1];
+    // a0[0] := 3;
+    // var result := MinList(a0);
+    // assert result == 3;
+
+    // Try more complicated examples here.
+
+    // New example syntax:
+    // var a1 := new int[][1, 2, 3, 4, 5];
+    // var result := MinList(a1);
+    // assert result == 1;
+}
+
+/*
+    === Tips when you get stuck ===
+
+    Some techniques for when you get stuck on a Dafny proof.
+
+    1. Find out what Dafny knows.
+
+    You can query with assertions!
+
+    2. Abstract the missing step or cases
+       into a lemma with a precond and postcond.
+
+    3. Convince yourself the thing you're trying to prove is true!
+       Once you are convinced, *assume* away the lemma you need (or axiom it),
+       and come back to it later,
+       to make the proof go through.
+
+    The above technique will allow you to decompose any proof into smaller
+    parts, and tackle each part one at a time.
+
+    If you've simplified the property at all - you've made progress!
+    That's all we need in order to guarantee we eventually complete it.
+
 === End notes ===
 
 What are the main advantages of Dafny?

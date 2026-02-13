@@ -154,11 +154,12 @@ Questions?
 
 This will be the last day of Lecture 2!
 
-Next week, advanced Dafny & logical foundations
+Next week, most likely:
+    advanced Dafny & logical foundations
 
 Reminders:
 
-- HW2 now due: Friday, Feb 13 11:59pm
+- HW2 due: Friday, Feb 13 11:59pm
 
 - Project proposal due: Tuesday, Feb 17 11:59pm
 
