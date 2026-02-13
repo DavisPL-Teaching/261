@@ -176,3 +176,38 @@ We will spend some more time going forward on foundations.
       Verify your library ==> greater assurance against threats, more people want to use it,
       maintain the verification conditions on all future software updates
 */
+
+// FYI: same thing happens for seq<int> instead of array<int>.
+
+method MinList3(a: seq<int>) returns (min: int)
+    requires |a| >= 1
+    ensures exists i :: (0 <= i < |a|) && a[i] == min
+    ensures forall i :: 0 <= i < |a| ==> min <= a[i]
+{
+    min := a[0];
+    var i := 1;
+    while i < |a|
+        invariant 0 < i <= |a|
+        // invariant: min <= any value in the array before index i
+        invariant forall j :: 0 <= j < i ==> min <= a[j]
+        // invariant: min is an element of the array so far
+        invariant exists j :: 0 <= j < i && min == a[j]
+    {
+        if a[i] < min {
+            min := a[i];
+        }
+        i := i + 1;
+    }
+    return min;
+}
+
+method TestMinList3() {
+    var a1 := [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
+    var result1 := MinList3(a1);
+
+    // Needed for the proof to go through
+    // (Try commenting this out)
+    assert a1[0] == 1;
+
+    assert result1 == 1;
+}
