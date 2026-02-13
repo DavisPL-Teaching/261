@@ -256,24 +256,26 @@ method FindSuccessor(x: int) returns (y: int)
     - BUT: Dafny does not know what is true at all points in time!
         (To do so, you'd have to run the loop / have infinite amount of time)
 
+        Properties (1) and (2) - intuitively "intractable"
+
     - So Dafny does not actually check (1) and (2) above, instead it needs to check a stronger condition in three parts:
 
         For a program
 
-        method example()
+        method Example()
             requires precond
             ensures postcond
         {
 
-            HEADER
+            HEADER;
 
             while cond {
 
-                BODY
+                BODY;
 
             }
 
-            FOOTER
+            FOOTER;
         }
 
         (i) precond ==> after executing HEADER, Inv
@@ -285,9 +287,19 @@ method FindSuccessor(x: int) returns (y: int)
       BODY.
       This works by analogy with mathematical induction. It's exactly like
 
-       invariant: "for all x, x + x is even"
+        property we want to show: "for all x, x + x is even"
 
-       proof: need to show "if n is even, then n + 2 even".
+        but in order to *prove* that it's true, we need to show
+        it via some invariant on all integers: that is we need to show
+        a property P(n) such that
+
+            if P(n) holds, then P(n+1) holds.
+
+        proof: need to show "if n + n is even, then (n + 1) + (n + 1) even".
+
+        Just like properties about integers are proven by induction on n,
+        properties about programs are proven by induction on the number
+        of iterations of the while loop.
 
     - Foreshadowing:
         You'll notice all of the above have the form
@@ -297,10 +309,15 @@ method FindSuccessor(x: int) returns (y: int)
         This is known as a Hoare triple and will be the foundation for
         Hoare Logic. It's written
 
-            {{ P }} C {{ Q }}
+            { P } C { Q }
+
+    - Extra-foreshadowing:
 
         There is another logic that is more general called Dynamic Logic,
         in which we can write it this way
+
+            P => [ C ] Q
+            (P => [ C ] Q && [ C2 ] Q2) => ~ [ C3 ] Q3
 
             P        =>       [ C ]                            Q.
             ^^ if P
@@ -308,8 +325,9 @@ method FindSuccessor(x: int) returns (y: int)
                               ^^^^^ after all executions of C,
                                                                ^^ Q holds.
 
-
-    - Anything satisfying properties (i)-(iii) is a loop invariant.
+    - Definition we will take:
+        A loop invariant is any property Inv satisfying
+        conditions (i)-(iii).
 
     - Any loop invariant also satisfies (1) and (2) above.
       (In fact, satisfying only (i) and (ii) is enough!)
@@ -323,15 +341,21 @@ from last time.
 
 method FindSuccessor2(x: int) returns (y: int)
 // Uncomment to work on the problem
-// requires x >= 0
-// ensures y == x + 1
+requires x >= 0
+ensures y == x + 1
 {
     y := 0;
 
     while y <= x
-    // invariant ...
+    invariant 0 <= y <= x + 1
     {
+        // What does Dafny know here
+        assert 0 <= y <= x;
+
         y := y + 1;
+
+        // What does Dafny know here
+        assert 0 <= y <= x + 1;
     }
     return y;
 }
@@ -339,12 +363,15 @@ method FindSuccessor2(x: int) returns (y: int)
 /*
     === Poll ===
 
-    Consider the following function.
+    Consider the following method.
 
     In the postcondition, assume that s * n is valid Dafny syntax
     (even though it isn't), and works as in Python -
     i.e., multiply a string by an integer to repeat it n times.
 */
+
+// btw.: nat = nonnegative integer (natural number)
+// (unsigned integer)
 
 // method HelloNTimes(n: nat) returns (result: string)
 // requires n > 0
@@ -360,8 +387,11 @@ method FindSuccessor2(x: int) returns (y: int)
 // }
 
 /*
-    In the postcondition, assume that the syntax s * n works as in Python
-    (multiply a string by an integer to repeat it n times).
+    For each of the following, which of the conditions of a loop invariant are satisfied?
+
+    (i) Invariant is true before entering the loop.
+    (ii) Invariant is preserved by the loop body (given the while condition is true)
+    (iii) Invariant implies the postcondition (given the while condition is false).
 
     https://forms.gle/wr6km15E8sH12YYs5
 
@@ -378,12 +408,21 @@ method FindSuccessor2(x: int) returns (y: int)
     .
     .
 
+    None of the invariants was correct
+
+    But we can get a correct invariant with (4) && (5)
+
+    i <= n && result == ("Hello "* (i - 1)) + "Hello".
+
+    after loop executes:
+    1 <= i <= n && result == ("Hello " * (i - 1)) + "Hello".
+
     === Exercises ===
 
     Additional loop invariant exercises
 
     1. Above, we wrote MinList.
-       Now Implement and verify the ArgMinList function.
+       Now Implement and verify the ArgMinList method.
 
     2. Go back to the AbsSum example from part 3. Add a loop invariant.
 

@@ -1,32 +1,77 @@
 /*
-Lecture 2, Part 5:
-Conclusions
+  Lecture 2, Part 5:
+  Conclusions
 
-=== When assertions do not pass ===
+  === When assertions do not pass ===
 
-Last time's poll (Tuesday) also hinted at another issue.
-Sometimes, Dafny assertions do not pass.
+  Last time's poll (Tuesday) also hinted at another issue.
+  Recall:
 
-Above, we did a simple unit test for MinList.
-What happens when we try a more complicated unit test?
+    assert P;
+    assert Q;
+
+    ^^^ suppose P ==> Q is logically true, but P passes and Q fails, why might
+        this be?
+
+  Sometimes, Dafny assertions do not pass.
+
+  Above, we did a simple unit test for MinList.
+  What happens when we try a more complicated unit test?
 */
 
 // Import syntax
 include "4-loop-invariants.dfy"
 
+lemma MissingStep(
+  a: array<int>,
+  result: int
+)
+  requires a.Length > 3
+  requires a[1] == 2
+  requires a[2] == 3
+  requires a[3] == 4
+  ensures result == 1
+{
+  // Omit for now
+  assume{:axiom} false;
+}
+
 method TestMinList2() {
     // previous test:
-    // var a0 := new int[][1];
+    var a0 := new int[][1];
     // a0[0] := 3;
-    // var result := MinList(a0);
-    // assert result == 3;
+    var result1 := MinList(a0);
+    assert result1 == 1;
 
     // Try more complicated examples here.
 
     // New example syntax:
-    // var a1 := new int[][1, 2, 3, 4, 5];
-    // var result := MinList(a1);
-    // assert result == 1;
+    var a1 := new int[][1, 2, 3, 4, 5];
+    // var a1 := new int[][1, 2, 3, 4, 0];
+    var result2 := MinList(a1);
+
+    // (Us trying to figure out what Dafny knows)
+    var a2 := new int[][1, 2, 3, 4, 5];
+    // assert a1 == a2;
+    // assert a1[0] == 1;
+    assert a1[1] == 2;
+    assert a1[2] == 3;
+    assert a1[3] == 4;
+    // assert a1[4] == 0;
+
+    MissingStep(a1, result2);
+
+    assert result2 == 1;
+
+    // Why did first unit test pass, but second unit test failed?
+    // Dafny is a "computationally bounded verifier"
+    // Dafny is not executing the unit test, it's verifying that it's
+    // logically provable.
+    // So?
+    // Does Dafny even know the array is [1, 2, 3, 4, 5]?
+    // Evaluating the array a1 is doing computation!
+    // What's happening - 1 is below the length of an array that Dafny
+    // is willing to evaluate; 5 is above that amount.
 }
 
 /*
@@ -37,6 +82,13 @@ method TestMinList2() {
     1. Find out what Dafny knows.
 
     You can query with assertions!
+
+        assert P
+
+      If it passes - either Dafny knows P (or Dafny did not previously
+          know P, but now does)
+
+      If it fails - Dafny does not know P.
 
     2. Abstract the missing step or cases
        into a lemma with a precond and postcond.
