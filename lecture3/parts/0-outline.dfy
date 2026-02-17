@@ -22,5 +22,4 @@
 
     If time, some possible advanced topics:
     dynamic logic, and the Curry-Howard correspondence.
-
 */

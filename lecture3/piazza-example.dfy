@@ -1,4 +1,50 @@
 /*
+    Example from piazza and poll.
+
+    === Poll ===
+
+    Consider the program
+
+    HEAD;
+    while P
+        invariant Inv
+    {
+        BODY;
+    }
+    FOOT;
+
+    Suppose two possible invariants are I1 and I2, and
+    I1 is *strictly* stronger than I2.
+    (meaning some programs satisfy I2 but not I1.)
+
+    Which of the following are possible?
+    (select all that apply)
+
+    A. I1 is a valid loop invariant, I2 is not
+    B. I2 is a valid loop invariant, I1 is not
+    C. Both I1, I2 are valid loop invariants
+    D. Neither I1, I2 are valid loop invariants
+
+    https://forms.gle/9Y95S8ftdoxLaTNn8
+
+    .
+    .
+    .
+    .
+    .
+    .
+    .
+    .
+    .
+    .
+    .
+    .
+    .
+    .
+    .
+
+    === Example from Piazza (last Thursday) ===
+
     I made a point in class of saying that the traces on which you evaluate an invariant do not always correspond to real executions, but I didn't provide an example!
 
     Here is a (possibly a bit contrived) one.
