@@ -1,3 +1,0 @@
-/*
-    The Curry-Howard correspondence.
-*/

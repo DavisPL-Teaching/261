@@ -1,33 +1,9 @@
 /*
+    Lecture 3, Part 3:
     First-order logic (FOL)
 
-    We've been talking a lot about proofs.
-    What is a proof?
-
-    === Why learn about proofs? ===
-
-    Sometimes, Dafny gets stuck and we need to help out.
-    We saw examples of this with the unit tests.
-
-    To do so, I find that it will help you be successful to understand the logic behind how
-    Dafny works and what steps are needed to get from
-        point A = what Dafny knows
-    to
-        point B = what we want to show.
-
-    That is:
-    We must know how to do the proof ourselves, so that we can walk through
-    the steps in case it is needed.
-
-    Basically:
-    We should be the expert, Dafny is the assistant.
-
-    This part of the lecture (and the following one) will get a bit more into how Dafny
-    works "under the hood".
-    The concepts covered will be more general than just Dafny, and would be applicable to any other
-    modern proof assistant (Coq/Rocq, Lean, Isabelle, Idris, Agda, etc.)
-
     Important concepts:
+
     - Syntax vs. semantics distinction.
     - True vs. provability distinction.
 
@@ -58,7 +34,7 @@
             | forall Var φ
             | exists Var φ.
 
-    Examples we saw:
+    Examples:
         natural number arithmetic
         real number arithmetic
         theory of strings and regular expressions
@@ -628,4 +604,52 @@ ensures p_of_x(y)
        Second-order quantification involves quantifying over sets of elements,
        not single elements. (Like sets of natural numbers, or even
        relations between natural numbers.)
+*/
+
+/*
+    === End notes ===
+
+        === Truth vs. provability in first-order logic ===
+
+    Finishing up and recap from last time:
+    see fol.dfy.
+
+    Summarize key points from fol.dfy:
+
+    + Truth vs. provability distinction: remember we defined what it means
+        for a formula to be true in a structure (like the natural numbers or real
+        numbers) - this was a recursive/inductive definition.
+
+        A statement is provable though if it can be deduced by a finite sequence
+        of allowed rules (in FOL),
+        including from axioms.
+
+        Incompleteness theorem (Godel):
+            Not all true statements are provable.
+            Formally: For any finite set of axioms A, such that
+            every axiom in A is true (in the natural numbers N),
+            there is a formula φ such that
+            - φ is true (in the natural numbers N), but
+            - φ is not provable in FOL from the set of axioms A.
+
+            (More generally: this is true if A is a recursively enumerable set of axioms,
+             not just finite.)
+
+    + Axioms and assume: are used for:
+
+        - statements about the base theory (nat, real numbers, strings)
+
+        - external functions
+
+        - you can't figure a certain case, add
+
+            assume{:axiom} false;
+
+          as a temporary case, come back to it later!
+
+    === Connection between proofs and programs? ===
+
+    The connection between proofs and programs is demonstrated in Hoare logic, as we covered last time.
+    See relative completeness statements at the bottom
+    of that lecture.
 */

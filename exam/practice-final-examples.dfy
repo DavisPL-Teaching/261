@@ -1,4 +1,9 @@
 /*
+    Some worked examples in Dafny
+    from the practice final.
+*/
+
+/*
     Round to 100
 */
 

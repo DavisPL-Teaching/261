@@ -1,4 +1,5 @@
 /*
+    Lecture 3, Part 4:
     Dynamic logic.
 
     === Motivation ===

@@ -1,83 +1,22 @@
 /*
-    === May 13 ===
+    Lecture 3, Part 1:
+    Hoare Logic
 
-    === Poll ===
+    ===
 
-    Poll: some review and practice with loop invariants.
+    Foundations behind how Dafny works:
 
-    https://forms.gle/1qEvaDUcmPjhxFg49
+    Dafny is able to (sometimes automatically, sometimes
+    with assistance validate how programs work).
 
-    Example program:
+    How?
+    We need a system of formal rules for determining whether
+    programs are valid according to their specifications -
+    i.e., we need
 
-    Assume that the syntax s * n works as in Python
-    (multiply a string by an integer to repeat it n times).
-*/
+        *Proofs about programs.*
 
-method HelloNTimes(n: nat) returns (result: string)
-// requires n > 0
-// ensures result == ("Hello " * (n - 1)) + ("Hello")
-{
-    result := "Hello";
-    var i := 1;
-    while (i < n) {
-        result := result + " Hello";
-        i := i + 1;
-    }
-    return result;
-}
-
-/*
-    For each of the following, which of the conditions of a loop invariant are satisfied?
-    ((i), (ii), and (iii))?
-
-    - result == "Hello"
-    - exists m: result == ("Hello " * (m - 1)) + ("Hello")
-    - 0 <= i < n
-    - 1 <= i <= n
-    - result == ("Hello " * (i - 1)) + "Hello"
-
-    === Truth vs. provability in first-order logic ===
-
-    Finishing up and recap from last time:
-    see fol.dfy.
-
-    Summarize key points from fol.dfy:
-
-    + Truth vs. provability distinction: remember we defined what it means
-        for a formula to be true in a structure (like the natural numbers or real
-        numbers) - this was a recursive/inductive definition.
-
-        A statement is provable though if it can be deduced by a finite sequence
-        of allowed rules (in FOL),
-        including from axioms.
-
-        Incompleteness theorem (Godel):
-            Not all true statements are provable.
-            Formally: For any finite set of axioms A, such that
-            every axiom in A is true (in the natural numbers N),
-            there is a formula φ such that
-            - φ is true (in the natural numbers N), but
-            - φ is not provable in FOL from the set of axioms A.
-
-            (More generally: this is true if A is a recursively enumerable set of axioms,
-             not just finite.)
-
-    + Axioms and assume: are used for:
-
-        - statements about the base theory (nat, real numbers, strings)
-
-        - external functions
-
-        - you can't figure a certain case, add
-
-            assume{:axiom} false;
-
-          as a temporary case, come back to it later!
-
-    === Connection between proofs and programs? ===
-
-    The connection between proofs and programs is demonstrated in a formalism
-    known as Hoare logic.
+    === Hoare paper (1969) ===
 
     Tony Hoare:
     - https://en.wikipedia.org/wiki/Tony_Hoare
@@ -95,6 +34,34 @@ method HelloNTimes(n: nat) returns (result: string)
     The question is what it means to prove a program correct?
 
     Hoare showed that programs can be proven via a small set of simple rules.
+
+    === Why learn about proofs? ===
+
+    Sometimes, Dafny gets stuck and we need to help out.
+    We saw examples of this with the unit tests.
+
+    To do so, I find that it will help you be successful to understand the logic behind how
+    Dafny works and what steps are needed to get from
+        point A = what Dafny knows
+    to
+        point B = what we want to show.
+
+    That is:
+    We must know how to do the proof ourselves, so that we can walk through
+    the steps in case it is needed.
+
+    Basically:
+    We should be the expert, Dafny is the assistant.
+
+    This part of the lecture (and the following one) will get a bit more into how Dafny
+    works "under the hood".
+    The concepts covered will be more general than just Dafny, and would be applicable to any other
+    modern proof assistant (Coq/Rocq, Lean, Isabelle, Idris, Agda, etc.)
+
+    Important concepts:
+    - Partial vs. total correctness
+    - Strongest and weakest preconditions
+    - Predicate vs. program distinction
 
     === Q: What is a program? ===
 
@@ -291,25 +258,7 @@ ensures z >= 4
 
       is true.
 
-    Examples:
-
-    - Weakest precondition of x := x + 1 with respect to x == 2?
-
-        Weakest possible precondition is?
-        x == 1.
-
-    - Strongest postcondition of y := x with respect to x >= 4?
-
-        Strongest possible postcondition is?
-        x >= 4 && y >= 4 && x == y
-
-    Both weakest precondition and strongest postcondition are defined up to
-    formula equivalence, i.e., weakest/strongest possible formula (up to equivalence)
-    such that ...
-
-    We will see that weakest preconditions and strongest postconditions can be
-    computed automatically for any loop-free program.
-    This means taht all of the rules for Hoare logic can be automated, aside from the loop rule.
+    We will explore these in the next part.
 */
 
 /*
@@ -469,7 +418,7 @@ ensures y >= 3
     You might ask the question:
     - Can everything that is true about a program be proven in Hoare logic?
 
-    See the section at the end of last lecture (fol.dfy) for some additional discussion on this.
+    See the section at the end of next lecture (fol.dfy) for some additional discussion on this.
 
     The main result about Hoare logic from this standpoint is that it is *relatively complete*,
     meaning that it can prove anything about a program that can be proven in first-order logic.
