@@ -5,17 +5,18 @@
 
     Consider the program
 
-    HEAD;
+    HEADER;
     while P
         invariant Inv
     {
         BODY;
     }
-    FOOT;
+    FOOTER;
 
     Suppose two possible invariants are I1 and I2, and
     I1 is *strictly* stronger than I2.
-    (meaning some programs satisfy I2 but not I1.)
+    (meaning some program states satisfy I2 but not I1.)
+    (strict subset)
 
     Which of the following are possible?
     (select all that apply)
@@ -43,6 +44,12 @@
     .
     .
 
+    Answer: all four are possible (good job if you got that)
+
+    In fact: all four are possible, *even restricting* to invariants Inv that
+    are actually true on all executions of the program, by which I mean:
+    true before the loop executes, and true after each loop iteration.
+
     === Example from Piazza (last Thursday) ===
 
     I made a point in class of saying that the traces on which you evaluate an invariant do not always correspond to real executions, but I didn't provide an example!
@@ -68,7 +75,9 @@ decreases * // ignore this for now
     while y != x + 1
     decreases * // ignore this for now
     // Invalid invariant - even though it's true on every real execution of the program!
-    // invariant y < x + 10
+        // invariant true
+        // invariant y < x + 10
+        // invariant 0 <= y <= x + 1
     {
         y := y + 1;
     }
@@ -93,4 +102,10 @@ decreases * // ignore this for now
     But by adding the property `y < x + 10`, we go from having a valid loop invariant satisfying all of (i)-(iii) to one that satisfies only (i) and (iii), and fails (ii).
 
     :)
+
+    But it's not all bad news -
+    if you add **all possible information**
+    (that is, give Dafny the strongest possible condition that is true on all real
+    executions of the program),
+    that is always a valid loop invariant.
 */

@@ -16,6 +16,7 @@
 
         *Proofs about programs.*
 
+
     === Hoare paper (1969) ===
 
     Tony Hoare:
@@ -23,7 +24,7 @@
     - also known as: C. A. R. Hoare
     - British computer scientist
     - Born 1934 (still alive!)
-    - Won the Turing award in 1980 (45 years ago now)
+    - Won the Turing award in 1980 (46 years ago now)
     - Also famous for: inventing the null reference (calling it his "billion-dollar mistake")
 
     Probably the most foundational paper in program verification:
@@ -35,75 +36,74 @@
 
     Hoare showed that programs can be proven via a small set of simple rules.
 
-    === Why learn about proofs? ===
-
-    Sometimes, Dafny gets stuck and we need to help out.
-    We saw examples of this with the unit tests.
-
-    To do so, I find that it will help you be successful to understand the logic behind how
-    Dafny works and what steps are needed to get from
-        point A = what Dafny knows
-    to
-        point B = what we want to show.
-
-    That is:
-    We must know how to do the proof ourselves, so that we can walk through
-    the steps in case it is needed.
-
-    Basically:
-    We should be the expert, Dafny is the assistant.
-
-    This part of the lecture (and the following one) will get a bit more into how Dafny
-    works "under the hood".
-    The concepts covered will be more general than just Dafny, and would be applicable to any other
-    modern proof assistant (Coq/Rocq, Lean, Isabelle, Idris, Agda, etc.)
-
-    Important concepts:
-    - Partial vs. total correctness
-    - Strongest and weakest preconditions
-    - Predicate vs. program distinction
-
     === Q: What is a program? ===
 
-    We have a grammar for formulas, but not programs...
+    Definition suggestions?
 
-    Suggestions?
+    - (A list of) Executable instructions
 
-    - A Turing machine with input and output
+    - A function that takes in fields and returns some
+      output
 
-    - Structured programs:
-        Assignments for variables, conditionals (if-then-else) and loops
-        and...?
-        input?
-        output?
-        data types or numbers?
-        expressions or operations?
-        Sequencing: C1; C2
+    - A sequence of symbols in some alphabet
+      (e.g., in binary, sequence of 0s and 1s)
 
-    This is correct:
-    To write arbitrary programs, we just need constructs for
-    variable assignment, some construct for conditional branching,
-    loops, and sequencing.
+    Other answers:
 
-    How is the program executed? (Program semantics - we will assume
-    the intuitive semantics we have in mind for the above is correct.)
+    - A Turing machine
+      (or your favorite other model of computation)
 
-    Is a program with a syntax error a program?
-    Let's say no.
+    - An expression in the lambda calculus
 
-    So let's give a grammar:
+    Definition we want:
 
-    Expr ::= 0 | 1 | Var | Expr + Expr | Expr * Expr | Expr - Expr
+        We want to decompose verifying properties
+        of programs into verifying properties of
+        smaller programs.
+        (Most of the above abstractions do not
+        give us this property)
 
-    (same as formulas, but no quantifiers)
-    BoolExpr ::= True | False | BoolExpr ^ BoolExpr | BoolExpr v BoolExpr
-        | !BoolExpr | Expr < Expr | Expr == Expr
+    So we really want a definition of
+    *structured program.*
 
-    Prog ::=
-        Var := Expr
-        | if BoolExpr then Prog else Prog end
-        | while BoolExpr do Prog end
-        | Prog ; Prog
+    So let's define a program via a structured grammar.
+    - Basically, a simple programming language.
+
+    A program P is defined by the grammar
+
+        Var ::= n1 | n2 | n3 | ...
+
+        IntExpr
+            IE ::=
+                IE + IE
+                | IE - IE
+                | IE * IE
+                | 0
+                | 1
+                | Var
+
+        BoolExpr ::=
+            BE ::=
+                true
+                | false
+                | not BE
+                | BE or BE
+                | BE and BE
+                | IE == IE
+                | IE < IE
+
+            // Could add, but probably unneeded
+                | BoolVar
+
+        Prog ::=
+            | Var := IE // Assignment statement
+            | if BE then Prog else Prog end
+            | while BE do Prog end
+            | Prog ; Prog
+
+    Fundamentally - if we have
+    expressions, variables, assignment, branching, looping, and sequencing --
+        we have arbitrary programs.
 
     === Hoare triples ===
 
@@ -120,6 +120,17 @@
     the statement
 
         { P } C { Q }
+
+    For each grammar construct for constructing programs, i.e.
+
+        Var := IE
+        if BE then Prog else Prog end
+        while BE do Prog end
+        Prog ; Prog
+
+    we will give a corresponding proof rule for how to deduce the corresponding
+    Hoare triple.
+
 */
 
 /*
@@ -132,7 +143,7 @@
     We show this by proving, for some intermediate condition R, that
     { P } C1 { R } and  { R } C2 { Q }.
 
-    Thinking of this as an "introduction rule"
+    Thinking of this as a proof rule:
 
     From:
 
@@ -143,6 +154,11 @@
 
         { P } C1 ; C2 { Q }.
 
+    (In fact, this is what Dafny is basically doing internally.)
+
+    We should also give a grammar for preconditions and postconditions
+    P, Q.
+
     Recap:
 
         - Hoare logic is an axiomatic system for writing proofs
@@ -150,30 +166,29 @@
 
         - All programs are just assignments, conditionals, sequencing, and loops
 
+            (and expressions and variables - used to build the above)
+
         - The Hoare triple { P } C { Q } means that C is correct with precond
           P and postcond Q
 
-        - For each program syntax constructor, we are going to give a Hoare logic
-          rule for deducing (proving) the triple { P } C { Q }.
+        - Game plan:
+          For each program syntax constructor, we are going to give a Hoare logic
+          rule for deducing (proving) the triple { P } C { Q }
+          from some already-proven triples.
 
-    ***** Where we ended for today. *****
+          That is, we give a "proof rule" which has the form:
 
-    === May 15 ===
+          From:
 
-    Poll:
-    https://forms.gle/mZhY57M6o5PKecbB6
+            <some things we have already proven>
 
-    1. A few more loop invariants about HelloNTimes
+          ------------------------------
 
-    2. Which of the following is true about the relationship between Dafny and logic?
-    (select all that apply)
+          Deduce that:
 
-    Assume we are just working with programs that operate over integers (with axioms over the integers), and that there are no other axioms/assume or external functions.
+            <some things we can conclude>.
 
-    A. Everything provable in first-order logic is provable in Dafny.
-    B. Everything provable in Hoare logic is provable in Dafny.
-    C. Everything provable in Dafny is provable in Hoare logic.
-    D. Everything provable in Dafny is provable in first-order logic.
+    ***** Where we ended for today, Feb 17. *****
 
     === Resuming from last time: the sequencing rule ===
 
@@ -228,14 +243,19 @@ ensures z >= 4
     // How to check?
     // assert y >= 2;
     // Why don't we have to write this explicitly?
-    // (More on this soon)
     // ***
     z := 2 * y;
     // return z;
 }
 
 /*
-    **Aside:**
+    Why don't we have to write the intermediate condition
+
+        assert y >= 2
+
+    explicitly?
+
+    This has to do with a topic we will cover in another part,
     Automating verification with weakest preconditions and strongest postconditions
 
     Definition:
@@ -258,7 +278,10 @@ ensures z >= 4
 
       is true.
 
-    We will explore these in the next part.
+    Dafny is calculating these automatically.
+
+    Important fact: WP and SP can be calculated automatically for any
+    loop-free programs.
 */
 
 /*
@@ -370,7 +393,7 @@ ensures y >= 3
         { P' } C { Q' }
         Q' ==> Q
 
-    Then I can deduce:
+    We can deduce:
 
         { P } C { Q }.
 */
@@ -397,13 +420,13 @@ ensures y >= 3
     It just is loop invariants.
 
     We need to invent a loop invariant (cleverly, from scratch)
-    to prove the loop correct. Call this invariant I
+    to prove the loop correct. Call this invariant Inv
 
     From:
 
-        (i) P ==> I
-        (ii) { I ^ cond } C { I }
-        (iii) I ^ !cond ==> Q
+        (i) P ==> Inv
+        (ii) { Inv ^ cond } C { Inv }
+        (iii) Inv ^ !cond ==> Q
 
     We can deduce:
 

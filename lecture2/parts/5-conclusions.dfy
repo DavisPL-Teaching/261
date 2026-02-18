@@ -115,14 +115,17 @@ What are the main advantages of Dafny?
 What are the main limitations of Dafny?
 
 1. High effort to write and verify real-world software
+  (10x estimate)
 2. Q is true, but not provable from P?
+
+    could be: your code is actually correct, and you can't prove it!
 
 (1) is true, but not fundamental.
 (2) is actually possible and is more fundamental.
 
 To understand the more fundamental limits of Dafny,
 then, we need to go back to the logics on which Dafny is built,
-and in particular to proofs in first-order logic (FOL).
+and in particular to proofs in first-order logic (FOL) and Hoare logic.
 We will spend some more time going forward on foundations.
 */
 
