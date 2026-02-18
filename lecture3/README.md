@@ -14,6 +14,8 @@ Announcements:
 
 - HW3 released: due next Tuesday
 
+  https://piazza.com/class/mk1iokbuqef52p/post/59
+
 Plan:
 
 - Finish a few loose ends from last time
