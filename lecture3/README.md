@@ -28,8 +28,22 @@ Plan:
 
 Questions?
 
-Q about termination?
-  - Dafny cares about termination, (i)-(iii) that we gave in class do not
-  - There will be two variants of Hoare logic, one that cares about termination and one that doesn't
-  - Note that if you add `decreases *` to any method/loop that
-    might not terminate, and Dafny will accept the code.
+## Thursday, February 19
+
+Announcements/reminders:
+
+- Project proposals - we are working on grading and feedback, will get them back to you soon!
+
+- HW3 due next Tuesday
+
+Plan:
+
+- Hoare logic, continued.
+
+If time:
+
+- First-order logic
+
+- Definitions of weakest preconditions, strongest postconditions.
+
+Questions?

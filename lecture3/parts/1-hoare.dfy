@@ -16,7 +16,6 @@
 
         *Proofs about programs.*
 
-
     === Hoare paper (1969) ===
 
     Tony Hoare:
@@ -240,9 +239,11 @@ ensures z >= 4
     var y := x + 1;
     // ***
     // Dafny implicitly figures out the intermediate condition required here!
+    // Q: what is the intermediate condition?
     // How to check?
-    // assert y >= 2;
-    // Why don't we have to write this explicitly?
+
+    // TODO
+
     // ***
     z := 2 * y;
     // return z;
@@ -255,42 +256,55 @@ ensures z >= 4
 
     explicitly?
 
-    This has to do with a topic we will cover in another part,
-    Automating verification with weakest preconditions and strongest postconditions
+    A:
 
-    Definition:
+    .
+    .
+    .
+    .
+    .
 
-    Let φ be a formula and C be a program.
-
-    - The **weakest precondition** of C is the weakest possible statement ψ
-      such that
-
-        { ψ } C { φ }
-
-      is true.
-      (I haven't proven that such a weakest statement exists, but it always
-       does, at least for loop-free programs.)
-
-    - The **strongest postcondition** of C is the strongest possible statement
-      Ψ such that
-
-        { φ } C { ψ }
-
-      is true.
-
-    Dafny is calculating these automatically.
-
-    Important fact: WP and SP can be calculated automatically for any
-    loop-free programs.
+    This has to do with a topic we will cover in Part 3,
+    Automating verification with weakest preconditions and strongest postconditions!
 */
 
 /*
     2. The conditional rule
 
-    How do we prove an if statement?
+    Q: How do we prove an if statement?
 
         if cond then C1 else C2 end
 
+    (don't peak at the answer)
+
+    From:
+
+
+
+    Deduce:
+
+
+
+    ...
+    ...
+    ...
+    ...
+    ...
+    ...
+    ...
+    ...
+    ...
+    ...
+    ...
+    ...
+    ...
+    ...
+    ...
+    ...
+    ...
+    ...
+    ...
+    ...
     ...
 
     From:
@@ -371,9 +385,19 @@ ensures y >= 4
     4. Weakening and strengthening
 
     So far our rules are self-contained and don't relate to the underlying
-    first-order logic for formulas.
+    logic for formulas.
+
+    (In fact, I have left the logic of how to describe formulas (preconditions and postconditions)
+    completely abstract! When we have
+
+        { P } C { Q }
+
+    I haven't said what P and Q are.
+    We will give this in the next part.)
 
     This rule changes this:
+
+    Example:
 */
 
 method UseProg1(x: nat) returns (y: nat)
@@ -406,9 +430,73 @@ ensures y >= 3
 
     What's the Hoare rule for assume?
 
+    (don't peak at the answer)
+
+    From:
+
+
+
+    Deduce:
+
+
+
+    ...
+    ...
+    ...
+    ...
+    ...
+    ...
+    ...
+    ...
+    ...
+    ...
+    ...
+    ...
+    ...
+    ...
+    ...
+    ...
+    ...
+    ...
+    ...
+    ...
+    ...
+
         { ? } assume φ; { Q }
 
     What's the Hoare rule for assert?
+
+    (don't peak at the answer)
+
+    From:
+
+
+
+    Deduce:
+
+
+
+    ...
+    ...
+    ...
+    ...
+    ...
+    ...
+    ...
+    ...
+    ...
+    ...
+    ...
+    ...
+    ...
+    ...
+    ...
+    ...
+    ...
+    ...
+    ...
+    ...
+    ...
 
         { ? } assert φ; { Q }
 
@@ -436,20 +524,113 @@ ensures y >= 3
 */
 
 /*
-    === Relative completeness of Hoare logic ===
+    ===== What is tractable / what is decidable? =====
+
+    Ideally, we'd like to decide Hoare triples automatically; that is, we'd love to have a program
+    that takes as input a triple like
+
+        { P } C { Q }
+
+    and decides if the Hoare triple is true or false for the program.
+
+    Of course, as you might imagine, this is in general impossible!
+    But what is surprising is that it is essentially possible for a large subset of programs,
+    namely the loop-free programs.
+
+    We will say what we mean more formally in part 3 (3-wp-sp.dfy).
+    For now, the informal statement.
+    First define the following:
+
+        Definitions:
+
+        Let φ be a formula and C be a program.
+
+        - The **weakest precondition** of C is the weakest possible statement ψ
+        such that
+
+            { ψ } C { φ }
+
+        is true.
+        (I haven't proven that such a weakest statement exists, but it always
+        does, at least for loop-free programs.)
+
+        - The **strongest postcondition** of C is the strongest possible statement
+        Ψ such that
+
+            { φ } C { ψ }
+
+        is true.
+
+    Claim:
+    Given any loop-free program C, precondition P, and postcondition Q, we can calculate automatically:
+
+        + the weakest precondition Q' such that { Q' } C { Q } holds;
+
+        + the strongest postcondition Q such that { P } C { P' } holds.
+
+    Dafny is calculating these automatically.
+*/
+
+/*
+    ===== On termination =====
+
+    I've been ignoring an important point: termination!
+
+    Dafny actually cares about termination.
+
+    So far, the rules we gave for
+
+        { P } C { Q }
+
+    are what's called *partial correctness*.
+
+        Def. Partial correctness:
+
+    We also need *total correctness:
+
+        Def. Total correctness:
+
+    We can solve this by defining a triple like
+
+        { P }_T C { Q }_T
+
+    to denote total correctness.
+
+    Q: Which rules need to change to support total correctness? :-)
+
+    .
+    .
+    .
+    .
+    .
+    .
+    .
+    .
+    .
+    .
+    .
+    .
+    .
+    .
+    .
+*/
+
+/*
+    ===== Relative completeness of Hoare logic =====
 
     You might ask the question:
     - Can everything that is true about a program be proven in Hoare logic?
 
-    See the section at the end of next lecture (fol.dfy) for some additional discussion on this.
+    See the next part (2-fol.dfy) for some additional discussion on this.
 
     The main result about Hoare logic from this standpoint is that it is *relatively complete*,
-    meaning that it can prove anything about a program that can be proven in first-order logic.
+    meaning that it can prove anything about a program that can be proven in first-order logic (FOL).
 
     Formal theorem statements:
 
     **Theorem 1.**
     Hoare logic is sound. That is:
+
         For all programs C and preconditions P and postconditions Q,
         if { P } C { Q } is provable in Hoare logic, then it is true:
         C satisfies the spec with precondition P and postcondition Q.
@@ -457,10 +638,12 @@ ensures y >= 3
     **Theorem 2.**
     Hoare logic is not complete. That is: There is some program C,
     precondition P, and postcondition Q such that
+
         { P } C { Q }
+
     is true, but not provable in Hoare logic. In fact, we can just
     take C to be the empty program, and P to be true, and Q to be
-    any statement not provable in FOL. Any optional problem on HW4
+    any true statement not provable in first-order logic. Any optional problem on HW4
     explores this a little more with more complex programs.
 
     Even though Hoare logic is not complete, we have:
@@ -468,13 +651,63 @@ ensures y >= 3
     **Theorem 3.**
     Hoare logic is relatively complete. That is:
     For all preconds P, programs C, and postconds Q, if the fact
+
         "{ P } C { Q } is true"
+
     is provable *in an appropriate encoding using natural numbers in
     first-order logic*, then
+
         { P } C { Q }
+
     is provable in Hoare logic.
     Intuitively: we can prove in Hoare logic exactly what we can prove
     in FOL, it does not fundamentally increase expressiveness beyond
     FOL. It just introduces new syntax that is useful for verifying
     programs.
+
+    ===== Summary and review =====
+
+    Review:
+
+    - Hoare triple: { P } C { Q } means
+
+    - Grammar for programs C: to get arbitrary programs, we need
+
+      + Expressions and variables
+
+      + Assignment, Branching, Sequencing, and Loops
+
+    - distinction between programs and logical propositions
+
+        { P } C { Q }
+
+        P, Q: propositions
+
+        C: a program
+
+        (Are logical propositions just Boolean expressions?
+         No, they will be slightly more general!
+         We allow Boolean expressions but we also want to allow quantifiers.)
+
+    - giving additional rules: if we add additional syntax elements to our grammar for programs, we can
+      give corresponding additional rules in Hoare logic. Above, we saw rules for
+
+        assume
+        assert
+
+      On the HW you will explore this further, there is a problem that asks you to come up with a rule for
+      a "case" statement, matching for two integers on whether
+      they are <, =, or >.
+
+    - def. of weakest precondition and strongest postcondition
+
+      sneak peak: automatically deciding Hoare logic: for loop-free programs, weakest preconditions
+      and strongest postconditions can be calculated automatically.
+
+    - termination: distinction between *partial correctness* triples { P } C { Q } and *total correctness* triples,
+
+        { P } C { Q }_T
+
+    - soundness and relative completeness theorem for Hoare logic.
+
 */

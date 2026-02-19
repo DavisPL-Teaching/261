@@ -39,7 +39,7 @@
     formula equivalence, i.e., weakest/strongest possible formula (up to equivalence)
     such that ...
 
-    We will see that weakest preconditions and strongest postconditions can be
+    Weakest preconditions and strongest postconditions can be
     computed automatically for any loop-free program.
     This means that all of the rules for Hoare logic can be automated, aside from the loop rule.
 */

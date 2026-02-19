@@ -2,6 +2,17 @@
     Lecture 3, Part 3:
     First-order logic (FOL)
 
+    In the Hoare triple:
+
+        { P } C { Q }
+
+    P and Q are propositions.
+
+    It was rightly pointed out that we have given only a grammar for C, and not for P and Q!
+
+    P and Q can be given in any (plain) logic (not a program logic like Hoare logic),
+    but we will take first-order logic to be our foundation here.
+
     Important concepts:
 
     - Syntax vs. semantics distinction.
@@ -608,13 +619,6 @@ ensures p_of_x(y)
 
 /*
     === End notes ===
-
-        === Truth vs. provability in first-order logic ===
-
-    Finishing up and recap from last time:
-    see fol.dfy.
-
-    Summarize key points from fol.dfy:
 
     + Truth vs. provability distinction: remember we defined what it means
         for a formula to be true in a structure (like the natural numbers or real

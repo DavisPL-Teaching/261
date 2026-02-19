@@ -2,6 +2,17 @@
     Lecture 3, Part 0:
     Outline
 
+    === Termination? ===
+
+    (Question that came up related to HW3)
+
+    Q about termination?
+    - Dafny cares about termination, (i)-(iii) that we gave in class do not
+    - There will be two variants of Hoare logic, one that cares about termination and one that doesn't
+    - Note that if you add `decreases *` to any method/loop that
+        might not terminate, and Dafny will accept the code.
+
+    === Intro ===
     This lecture will study the foundations behind how Dafny works behind the scenes.
 
     We will cover:
