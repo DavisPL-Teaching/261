@@ -202,6 +202,8 @@
 
         { P } C1 ; C2 { Q }.
 
+    === Sequencing rule in Dafny ===
+
     What does this look like in Dafny?
 
     Example:
@@ -266,6 +268,40 @@ ensures z >= 4
 
     This has to do with a topic we will cover in Part 3,
     Automating verification with weakest preconditions and strongest postconditions!
+
+    === Poll ===
+
+    Consider the Hoare triple
+
+        { x == 1 } x += 1; x += 1; { y is odd }
+
+    1. Suppose we wanted to prove this Hoare triple using the sequencing rule.
+       How many logically inequivalent possible choices are there for R?
+
+        A. 0
+        A. 1
+        B. 2
+        C. 3 or more, but finite
+        D. Infinite
+
+    2. (Skip if you answered A or B :-) )
+        Why is this not a problem in Dafny?
+        That is, why does Dafny not get stuck having to search the space of possible choices if
+        there is not a unique possible choice?
+
+    https://forms.gle/Hs6piKkygQaaQYR28
+
+    .
+    .
+    .
+    .
+    .
+    .
+    .
+    .
+    .
+    .
+
 */
 
 /*
