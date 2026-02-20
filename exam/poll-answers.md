@@ -47,3 +47,11 @@ Feb 12:
 2)
     result == ("Hello " * (i - 1)) + "Hello"
     AND i <= n.
+
+Feb 17:
+    All are possible: I, II, III, and IV.
+    This remains true even if we restrict to candidate invariants I1, I2 that are actually true on all
+    real traces of the program, as we discussed in class.
+
+Feb 19:
+1.

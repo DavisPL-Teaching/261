@@ -210,15 +210,15 @@
 */
 
 method Prog1(x: nat) returns (y: nat)
-requires x >= 1
-ensures y >= 2
+requires x >= 1 // P
+ensures y >= 2 // R
 {
     y := x + 1;
 }
 
 method Prog2(x: nat) returns (y: nat)
-requires x >= 2
-ensures y >= 4
+requires x >= 2 // R
+ensures y >= 4 // Q
 {
     y := 2 * x;
 }
@@ -235,19 +235,22 @@ ensures z >= 4
 // Or as a single inline program:
 
 method ProgInline(x: nat) returns (z: nat)
-requires x >= 1
-ensures z >= 4
+requires x >= 3
+ensures z >= 8
 {
     var y := x + 1;
+
     // ***
     // Dafny implicitly figures out the intermediate condition required here!
     // Q: what is the intermediate condition?
     // How to check?
 
     // TODO
+    assert y >= 4;
 
     // ***
     z := 2 * y;
+
     // return z;
 }
 
@@ -258,31 +261,30 @@ ensures z >= 4
 
     explicitly?
 
-    A:
-
-    .
-    .
-    .
-    .
-    .
-
+    Dafny infers it automatically.
     This has to do with a topic we will cover in Part 3,
     Automating verification with weakest preconditions and strongest postconditions!
+
+    Observation:
+        - R appears in the premises of the sequencing rule but not in the conclusion -
+          therefore we have to synthesize it from scratch
+
+        - there may be multiple possible Rs.
 
     === Poll ===
 
     Consider the Hoare triple
 
-        { x == 1 } x += 1; x += 1; { y is odd }
+        { x == 1 } x += 1; x += 1; { x is odd }
 
     1. Suppose we wanted to prove this Hoare triple using the sequencing rule.
        How many logically inequivalent possible choices are there for R?
 
         A. 0
-        A. 1
-        B. 2
-        C. 3 or more, but finite
-        D. Infinite
+        B. 1
+        C. 2
+        D. 3 or more, but finite
+        E. Infinite
 
     2. (Skip if you answered A or B :-) )
         Why is this not a problem in Dafny?
@@ -291,17 +293,46 @@ ensures z >= 4
 
     https://forms.gle/Hs6piKkygQaaQYR28
 
-    .
-    .
-    .
-    .
-    .
-    .
-    .
-    .
-    .
-    .
+    1. The space of possible valid Rs is basically any set of integers which contains 2 and is contained
+       in all even numbers.
 
+        e.g.,
+
+            x == 2
+            x == 2 or x == 42
+            x == 2 or x == 4 or x == 8
+            x is even
+            x is even and x <= 10
+            x is even and x <= 12
+            x is even and x >= -10
+            x is even and x >= -12
+
+        2. Dafny is not searching over all of these automatically, but just computes one "canonical" representative
+           assertion, which it turns out (we will see) can be computed in a completely algorithmic way.
+
+            possible canonical choices?
+
+                x == 2
+                ^^^^^^ strongest possible intermediate condition R
+                       (i.e. smallest set)
+
+                          i.e. strongest postcondition under which { x == 1 } x + 1 { R } is valid.
+
+                x is even
+                ^^^^^^^^^ weakest possible intermediate condition R
+                          (i.e. largest set)
+
+                          i.e., weakest precondition under which { R } x += 1 { x is odd } is valid.
+
+            Claim: either of these can be computed algorithmically.
+
+            Dafny can just either:
+
+                - compute strongest postcondition for x == 1 and C1 = x += 1; use that for R
+
+            or:
+
+                - compute weakest precondition for "x is even" and C2 = x += 1; use that for R.
 */
 
 /*
@@ -315,42 +346,13 @@ ensures z >= 4
 
     From:
 
+        { P && cond } C1 { Q }
 
-
-    Deduce:
-
-
-
-    ...
-    ...
-    ...
-    ...
-    ...
-    ...
-    ...
-    ...
-    ...
-    ...
-    ...
-    ...
-    ...
-    ...
-    ...
-    ...
-    ...
-    ...
-    ...
-    ...
-    ...
-
-    From:
-
-        { P ^ cond } C1 { Q }
-        { P ^ !cond } C2 { Q }
+        { P && !cond } C2 { Q }
 
     Deduce:
 
-        { P } if cond then C1 else C2 end { Q }.
+        { P } if cond then C1 else C2 end { Q }
 
     Examples:
 */
@@ -361,13 +363,21 @@ ensures (y == 2) || (y == 4)
 {
     var x := x;
     if x == 1 {
+
         // assert (1 <= x <= 2) && (x == 1);
+
         x := x + 1;
+
         // x := Prog1(x);
+
         // assert (x == 2 || x == 4);
+
     } else if x >= 2 {
+
         // assert (1 <= x <= 2) && (x >= 2);
+
         x := 2 * x;
+
         // x := Prog2(x);
         // assert (x == 2 || x == 4);
     } else {
@@ -383,14 +393,17 @@ ensures (y == 2) || (y == 4)
     of the Hoare logic rules. (Even more counterintuitive than loop invariants?)
     It's the backbone of how Hoare logic works:
 
-    Amazingly, it turns out that to prove a program about assignment, it suffices
+    Amazingly, it turns out that to prove a Hoare triple about assignment, it suffices
     to evaluate the program "in reverse", in the following sense:
 
-    Program we are given:
+    Given a program:
 
         x := E
 
-    The Hoare rule:
+    and any postcondition
+
+        Q
+
     We may deduce:
 
         { Q[substitute x := E] } x := E { Q }.
@@ -402,23 +415,65 @@ method Prog1Revisited(x: nat) returns (y: nat)
 requires x >= 1
 ensures y >= 2
 {
-    // what should be true here?
-    // (x + 1) >= 2
+    // what do I know here:
+    // x + 1 >= 2
+    // equiv.: x >= 1
+
     y := x + 1;
+
     // we want y >= 2
 }
+
+// trying to prove the triple: { x >= 1 } y := x + 1 { y >= 2 }
 
 method Prog2Revisited(x: nat) returns (y: nat)
 requires x >= 2
 ensures y >= 4
 {
     // need: (2 * x) >= 4
+    // need: (thing that we set y to) >= 4
     y := 2 * x;
     // want: y >= 4
 }
 
 /*
-    4. Weakening and strengthening
+    4. The loop rule.
+
+    It just is loop invariants.
+
+    We need to invent a loop invariant (cleverly, from scratch)
+    to prove the loop correct. Call this invariant Inv
+
+    From:
+
+        (i) P ==> Inv
+        (ii) { Inv ^ cond } C { Inv }
+        (iii) Inv ^ !cond ==> Q
+
+    We can deduce:
+
+        { P } while cond do C end { Q }
+
+    Observations:
+
+    - This reduces verification of a program involving loops to that of a program not involving loops
+      (as we've seen)
+
+    - Like the sequencing rule, there is stuff that appears in the premises of the rule that didn't
+      show up in the conclusion.
+
+        (i.e., this loop invariant Inv)
+
+    - Unlike with sequencing, there's not in general any way to come up with Inv algorithmically.
+
+    We truly need to resort to some sort of flash of insight of some kind
+    (reasoning task - invariant synthesis)
+
+    Loops are the cases where we have to go in and help.
+*/
+
+/*
+    5. Weakening and strengthening
 
     So far our rules are self-contained and don't relate to the underlying
     logic for formulas.
@@ -459,9 +514,32 @@ ensures y >= 3
 */
 
 /*
-    5. Rules for assume and assert
+    That's it!
+    Rule 1-5 is Hoare logic.
+
+    Using rules 1-5, we can verify properties of arbitrary programs purely by reduction
+    to properties about the underlying logic.
+
+    But real programming languages have other syntax
+
+    - maybe you want to do for loops, not just while loops!
+
+    - maybe you want to add something for functions, function application, etc.
+
+    - general process: add some other syntax element; then add a corresponding rule for that syntax element.
+
+      (HW has a question that explores this)
+
+    One example:
+
+    === Adding additional rules ===
+
+    6. Rules for assume and assert
 
     Early on in the class, we saw about assume and assert.
+
+        in Dafny: assert and assume{:axiom}
+
     We can also give Hoare rules for these, and they are quite interesting.
 
     What's the Hoare rule for assume?
@@ -470,93 +548,51 @@ ensures y >= 3
 
     From:
 
-
-
-    Deduce:
-
-
-
-    ...
-    ...
-    ...
-    ...
-    ...
-    ...
-    ...
-    ...
-    ...
-    ...
-    ...
-    ...
-    ...
-    ...
-    ...
-    ...
-    ...
-    ...
-    ...
-    ...
-    ...
-
-        { ? } assume φ; { Q }
-
-    What's the Hoare rule for assert?
-
-    (don't peak at the answer)
-
-    From:
-
-
+        P ==> R
+        R ==> Q
 
     Deduce:
 
+        { P } assert R; { Q }
 
+    (I think this works)
 
-    ...
-    ...
-    ...
-    ...
-    ...
-    ...
-    ...
-    ...
-    ...
-    ...
-    ...
-    ...
-    ...
-    ...
-    ...
-    ...
-    ...
-    ...
-    ...
-    ...
-    ...
-
-        { ? } assert φ; { Q }
-
-*/
-
-/*
-    6. The loop rule.
-
-    It just is loop invariants.
-
-    We need to invent a loop invariant (cleverly, from scratch)
-    to prove the loop correct. Call this invariant Inv
+    Equivalent rule:
 
     From:
 
-        (i) P ==> Inv
-        (ii) { Inv ^ cond } C { Inv }
-        (iii) Inv ^ !cond ==> Q
+        ---
 
-    We can deduce:
+    Deduce:
 
-        { P } while cond do C end { Q }
+        { P && Q } assert P; { Q }
 
-    Loops are the cases where we have to go in and help.
+    for assume:
+
+    From:
+
+        ---
+
+    Deduce:
+
+        { P ==> Q } assume P; { Q }
+
+        or equivalently:
+
+        { not P or Q } assume P; { Q }
+
+    in particular:
+
+        { false ==> Q } assume false; { Q }
+
+        i.e.
+
+        { true } assume false; { Q }
+                               ^^^^^ any postcondition we want!
+                                     (cheating)
+
+    ***** where we ended for today *****
+
 */
 
 /*

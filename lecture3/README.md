@@ -34,7 +34,11 @@ Announcements/reminders:
 
 - Project proposals - we are working on grading and feedback, will get them back to you soon!
 
-- HW3 due next Tuesday
+- I will need to leave class right at 6pm today.
+  OH most likely on Monday morning (say, 9am or 10am) on Zoom,
+  I will confirm Sunday night.
+
+- HW3 due next Tuesday - Feb 24 11:59pm
 
 Plan:
 
