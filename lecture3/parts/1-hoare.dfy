@@ -596,6 +596,54 @@ ensures y >= 3
 */
 
 /*
+    ===== Poll =====
+
+    Consider the following program to multiply two numbers:
+
+*/
+
+method Multiply(x: nat, y: nat) returns (result: nat)
+    // Comment out to test this example
+    requires false
+    ensures result == x * y
+{
+    result := 0;
+    var x_ := x;
+    while x_ > 0 {
+        var y_ := y;
+        while y_ > 0 {
+            y_ := y_ - 1;
+            result := result + 1;
+        }
+        x_ := x_ - 1;
+    }
+}
+
+/*
+    1. Is the program correct?
+
+    2. To prove the program correct via Hoare logic, how many times should we apply each of the 5 rules?
+
+        (sequencing rule, conditional rule, assignment rule, loop rule, strengthening/weakening)
+
+    https://forms.gle/JPMp8CVJnbVGRcKj7
+
+    .
+    .
+    .
+    .
+    .
+    .
+    .
+    .
+    .
+    .
+    .
+    .
+    .
+    .
+    .
+
     ===== What is tractable / what is decidable? =====
 
     Ideally, we'd like to decide Hoare triples automatically; that is, we'd love to have a program

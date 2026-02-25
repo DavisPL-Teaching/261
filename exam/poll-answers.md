@@ -54,4 +54,18 @@ Feb 17:
     real traces of the program, as we discussed in class.
 
 Feb 19:
-1.
+1. E
+2. We don't need to store all possibilities, because we can compute only one and use that.
+   In fact, we can algorithmically compute the strongest possibility via the "strongest poscondition", and weakest possibility
+   via the "weakest precondition", we will see roughly how this works in class.
+
+Feb 24:
+1. Yes
+2.
+    Sequencing: 5
+    Branching: 0
+    Assignment: 5
+    Loop: 3
+    Strengthening/weakening: at least one :-)
+
+Feb 26:

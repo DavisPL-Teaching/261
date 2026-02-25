@@ -51,3 +51,59 @@ If time:
 - Definitions of weakest preconditions, strongest postconditions.
 
 Questions?
+
+## Tuesday, February 24
+
+Announcements/reminders:
+
+- Proposal feedback is back - please let us know if you have questions!
+
+  Special thanks to the TA for getting the feedback back as I wanted you to get feedback
+  back to you ASAP and I had to be away over the weekend.
+
+  Two comments of things we noticed in particular:
+
+  1. Some people said they would implement in Python first, then Dafny.
+
+    Probably don't do this!! Just impl in Dafny, you can compile it to Python.
+    (same with any other lang)
+
+    the Python part would be useful for interfacing with other libraries, or if you want
+    to build a GUI or some other runnable version of your code.
+
+  2. Timeline: think about the "easy goal", "target goal", "reach goal" framework!
+
+      Easy goal: what can you complete by end of this week?
+
+      Target goal: what can you complete by the end of next week project presentations?
+
+      Reach goal: if you complete the work early, what features/extensions will you implement?
+
+    Helps ensure you have a "complete" deliverable product - even if it doesn't have all the
+    bells and whistles - by the end of the project.
+
+    Deadlines:
+
+      + Project presentations: last 3 class periods
+
+      + Final project reports: will be due March 19, 11:59pm (day before final exam).
+
+        Final exam: March 20, 6-8pm
+
+        Not ideal, but I think this is slightly better than being due the same day as the final.
+
+- HW3: deadline extend to **tomorrow Wednesday** 11:59pm
+
+  + extra OH on Zoom tomorrow:
+
+      Looks like 10am was most popular
+
+  + I have updated the deadline in Gradescope
+
+Plan for today:
+
+- finish Hoare logic, loose ends
+
+  + incl. Definitions of weakest preconditions, strongest postconditions.
+
+- part 2: first-order logic.
