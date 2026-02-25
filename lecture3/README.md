@@ -69,13 +69,30 @@ Announcements/reminders:
     (same with any other lang)
 
     the Python part would be useful for interfacing with other libraries, or if you want
-    to build a GUI or some other runnable version of your code.
+    to build a GUI or terminal interface, or
+    some other runnable version of your code.
 
-  2. Timeline: think about the "easy goal", "target goal", "reach goal" framework!
+  2. Think more carefully about **what** you will verify
 
-      Easy goal: what can you complete by end of this week?
+    specific method with pre/post
 
-      Target goal: what can you complete by the end of next week project presentations?
+  3. Timeline: think about the "minimum goal", "target goal", "reach goal" framework!
+
+      Minimum goal: what can you complete in the next ~1.5 weeks
+
+        Typically: Dafny code only
+
+      Target goal: what can you complete by the end of the quarter?
+        (estimated) -- roughly ~3.5 weeks
+
+          Contain all the "core" components of your software that are
+          needed to have a fully working application
+
+          Typically/often, Dafny + Python code
+
+            OR some other way to run the code / runnable interface
+
+            Complete working prototype, but not all the features
 
       Reach goal: if you complete the work early, what features/extensions will you implement?
 
@@ -92,11 +109,15 @@ Announcements/reminders:
 
         Not ideal, but I think this is slightly better than being due the same day as the final.
 
+      I'll post a vote on Piazza
+
 - HW3: deadline extend to **tomorrow Wednesday** 11:59pm
 
   + extra OH on Zoom tomorrow:
 
-      Looks like 10am was most popular
+      ~~Looks like 10am was most popular~~
+
+      5pm wins. (We will assume(that no voter manipulation occurred).)
 
   + I have updated the deadline in Gradescope
 
@@ -104,6 +125,8 @@ Plan for today:
 
 - finish Hoare logic, loose ends
 
+  + starting with the poll
+
   + incl. Definitions of weakest preconditions, strongest postconditions.
 
-- part 2: first-order logic.
+- Part 2: first-order logic.

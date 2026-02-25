@@ -64,8 +64,8 @@ Feb 24:
 2.
     Sequencing: 5
     Branching: 0
-    Assignment: 5
+    Assignment: 6 or more
     Loop: 3
-    Strengthening/weakening: at least one :-)
+    Strengthening/weakening: 3
 
 Feb 26:

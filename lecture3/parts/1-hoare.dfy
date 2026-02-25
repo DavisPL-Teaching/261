@@ -604,18 +604,80 @@ ensures y >= 3
 
 method Multiply(x: nat, y: nat) returns (result: nat)
     // Comment out to test this example
-    requires false
+    // requires false
     ensures result == x * y
 {
+    // {{ Q6[substitute result := 0] }}
     result := 0;
+    // {{ Q6 }}
+
+    // {{ Q5[substitute x_ := x] }}
     var x_ := x;
-    while x_ > 0 {
+    // {{ Q5 }}
+
+    while x_ > 0
+        invariant x >= x_ >= 0
+        invariant result == y * (x - x_)
+    {
+
+        // {{ Q4[substitute y_ := y_] }}
         var y_ := y;
-        while y_ > 0 {
+        // {{ Q4 }}
+
+        while y_ > 0
+            invariant x >= x_ >= 0
+            invariant y >= y_ >= 0
+            invariant result == y * (x - x_ + 1) - y_
+        {
+
+            // {{ Inv && y_ > 0 }}
+            // BODY
+            // {{ Inv }}
+
+            // have from top of the loop is:
+            // Inv && y_ > 0
+            // which is:
+            /* {{
+                x >= x_ >= 0
+                && y >= y_
+                && result == y * (x - x_ + 1) - y_
+                && y_ > 0
+            }} */
+
+            // ** application of strengthening/weakening here
+
+            // NEED:
+            /* {{
+                x >= x_ >= 0
+                && y >= (y_ - 1)
+                && y_ > 0
+                && result == y * (x - x_ + 1) - y_
+            }} */
             y_ := y_ - 1;
+            /* {{
+                x >= x_ >= 0
+                && y >= y_ >= 0
+                && result + 1 == y * (x - x_ + 1) - y_
+            }} */
+
+            /* {{
+                x >= x_ >= 0
+                && y >= y_ >= 0
+                && result + 1 == y * (x - x_ + 1) - y_
+            }} */
             result := result + 1;
+            /* {{
+                x >= x_ >= 0
+                && y >= y_ >= 0
+                && result == y * (x - x_ + 1) - y_
+            }} */
+
+
         }
+
+        // {{ Q3[substitute x_ := x_ - 1] }}
         x_ := x_ - 1;
+        // {{ Q3 }}
     }
 }
 
@@ -628,22 +690,6 @@ method Multiply(x: nat, y: nat) returns (result: nat)
 
     https://forms.gle/JPMp8CVJnbVGRcKj7
 
-    .
-    .
-    .
-    .
-    .
-    .
-    .
-    .
-    .
-    .
-    .
-    .
-    .
-    .
-    .
-
     ===== What is tractable / what is decidable? =====
 
     Ideally, we'd like to decide Hoare triples automatically; that is, we'd love to have a program
@@ -654,6 +700,11 @@ method Multiply(x: nat, y: nat) returns (result: nat)
     and decides if the Hoare triple is true or false for the program.
 
     Of course, as you might imagine, this is in general impossible!
+
+        (Any nontrivial semantic property about computer programs
+         is undecidable -- Rice's theorem)
+        (e.g.: { True } C { x == 1 } -- already provably undecidable.)
+
     But what is surprising is that it is essentially possible for a large subset of programs,
     namely the loop-free programs.
 
@@ -665,7 +716,7 @@ method Multiply(x: nat, y: nat) returns (result: nat)
 
         Let φ be a formula and C be a program.
 
-        - The **weakest precondition** of C is the weakest possible statement ψ
+        - The **weakest precondition** of C is the weakest possible statement ψ (up to logical equivalence)
         such that
 
             { ψ } C { φ }
@@ -686,7 +737,7 @@ method Multiply(x: nat, y: nat) returns (result: nat)
 
         + the weakest precondition Q' such that { Q' } C { Q } holds;
 
-        + the strongest postcondition Q such that { P } C { P' } holds.
+        + the strongest postcondition P' such that { P } C { P' } holds.
 
     Dafny is calculating these automatically.
 */
@@ -702,15 +753,22 @@ method Multiply(x: nat, y: nat) returns (result: nat)
 
         { P } C { Q }
 
-    are what's called *partial correctness*.
+    are what's called *partial correctness Hoare logic*.
 
         Def. Partial correctness:
+            A program is partially correct if, in any input
+            satisfying the precondition P,
+            if we execute the program, and **if** it terminates,
+            the end state satisfies the postcondition Q
 
     We also need *total correctness:
 
         Def. Total correctness:
-
-    We can solve this by defining a triple like
+            A program is totally correct if, in any input
+            satisfying the precondition P,
+            if we execute the program, **then** the program terminates, **and**
+            the end state satisfies the postcondition Q
+            We can solve this by defining a triple like
 
         { P }_T C { Q }_T
 
@@ -718,6 +776,14 @@ method Multiply(x: nat, y: nat) returns (result: nat)
 
     Q: Which rules need to change to support total correctness? :-)
 
+    For this class, we will only care about partial correctness,
+    but Dafny is internally using total correctness;
+    and this is the reason for those `decreases` clauses
+    that you may have seen come up.
+
+    To ask Dafny to do partial correctness, just add
+    `decreases *` to every method and loop (usually not necessary).
+
     .
     .
     .
@@ -733,6 +799,8 @@ method Multiply(x: nat, y: nat) returns (result: nat)
     .
     .
     .
+
+    *** where we ended for Feb 24 ***
 */
 
 /*
