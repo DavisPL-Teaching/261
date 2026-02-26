@@ -130,3 +130,27 @@ Plan for today:
   + incl. Definitions of weakest preconditions, strongest postconditions.
 
 - Part 2: first-order logic.
+
+## Thursday, February 26
+
+Announcements/reminders:
+
+- Presentations in class: starting 1 week from today:
+
+    Thursday, March 5
+
+    Tuesday, March 10
+
+    Thursday, March 12
+
+- Final project report:
+
+    Due (?) Thursday, March 19, 11:59pm
+
+- Final exam:
+
+    Friday, March 20, 6-8pm
+
+- There will be no further homeworks.
+
+For report & presentations, I will go over some details.
