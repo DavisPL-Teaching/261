@@ -145,7 +145,7 @@ Announcements/reminders:
 
 - Final project report:
 
-    Due (?) Thursday, March 19, 11:59pm
+    Due (?) Thursday, March 19, 11:59pm (TBD - will be a poll)
 
 - Final exam:
 
@@ -153,4 +153,23 @@ Announcements/reminders:
 
 - There will be no further homeworks.
 
-For report & presentations, I will go over some details.
+Plan:
+
+- I will now go over a few details for the project presentations:
+  see `project/presentation.md`
+
+- Project report is also posted (I may make minor updates): see `project/report.md`.
+
+- I will post after class sometime this evening:
+
+  + a Piazza poll for the due date for the final report;
+
+  + a sign-up sheet for the final presentations.
+
+Then:
+
+- Finish Hoare logic, loose ends
+
+- Part 2: first-order logic.
+
+Questions?

@@ -1,5 +1,5 @@
 /*
-    Lecture 3, Part 2:
+    Lecture 3, Part 3:
 
     Automating verification with weakest preconditions and strongest postconditions
 

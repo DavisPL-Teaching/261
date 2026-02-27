@@ -1,12 +1,8 @@
 # Final project presentations
 
-**TBD:** This file is mostly ready, but I may make some changes to this file following the project proposal.
-
-Final project presentations will be in class on May 27, May 29, June 3, and June 5.
-Please sign up for a slot on Piazza.
-Here are some guidlines for your presentation.
-
-**Update:** I've updated these guidelines to help ensure that we are able to complete all the presentations on time.
+Final project presentations will be in class on March 5, 10, and 12.
+Please sign up for a slot on Piazza!
+Here are some guidelines for your presentation.
 
 ## Guidelines
 
@@ -28,11 +24,14 @@ If you are in a group, each person should present part of your project (aim for 
 
 ### Options
 
-You may choose from the following options: prepare slides or show a demo:
+You may choose from the following two options: prepare slides or show a demo:
 
 - **Slides:** Plan for 8-10 slides (I would set 10 as a maximum), plus the 5 Q+A slides. Plan some slides that you can skip if you are short on time. A good rule of thumb is to aim for about 1 slide per minute (on average).
 
 - **Demo:** Show us a demo of your tool! Have some specific examples ready to try with your demo. For this option, please prepare 3-5 backup slides in case they are needed to fill the time, along with your 5 backup Q+A slides.
+
+You can combine the two options as you see fit (e.g., 4-5 slides + a shorter demo).
+Once again, please prepare a few additional backup slides in addition to the Q+A slides in case they are needed to fill the time.
 
 ### Content (for the slides option)
 
@@ -56,4 +55,4 @@ You may make changes at least 24 hours in advance if you agree with another grou
 
 ### Sign-up
 
-A sign-up link has been posted on Piazza.
+A sign-up link will be posted on Piazza.

@@ -1,5 +1,5 @@
 /*
-    Lecture 3, Part 3:
+    Lecture 3, Part 2:
     First-order logic (FOL)
 
     In the Hoare triple:
@@ -18,6 +18,40 @@
     - Syntax vs. semantics distinction.
     - True vs. provability distinction.
 
+    ===== Poll =====
+
+    Let WP(C, phi) denote the weakest precondition of C with postcondition phi.
+    Let SP(C, phi) denote the strongest postcondition of C with precondition phi.
+
+    1. Calculate WP(x := x + y; x := x * y, x == 10).
+
+    2. Calculate SP(x := x + y; x := x * y, x == 10).
+
+    https://forms.gle/wHyfU9g5MrwKQSZE8
+
+    .
+    .
+    .
+    .
+    .
+    .
+    .
+    .
+    .
+    .
+    .
+    .
+    .
+    .
+    .
+    .
+    .
+    .
+    .
+    .
+*/
+
+/*
     ===== Syntax and semantics =====
 
     Let's start with the difference between syntax and semantics.
@@ -25,9 +59,7 @@
 
     SYNTAX
 
-    Recall:
-
-    A logic consists of
+    A **logic** consists of
     - A set of variables
     - A set of function symbols (combine these to form expressions)
         // ex. function symbols: +, *, -

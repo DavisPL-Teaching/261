@@ -1,6 +1,6 @@
 # Project final report
 
-**TBD:** This file is mostly ready, but I may make some changes to this file following the project proposal.
+**Due date: TBD**
 
 For the project proposal, you should provide a 5-10 page report (not including references).
 I recommend (but do not require) that the report be written in LaTeX.
@@ -76,4 +76,5 @@ Please summarize your honest experience! The above are some of the questions to 
 
 Include any papers or websites related to what your project is going to do and citations at the bottom of your document.
 This can be the same list of references from your proposal, or it can include additional references.
-Please include at least 3-5 citations for your final report.
+Please include at least 5 citations for your final report.
+At least 2 of these should be research papers or textbooks, not websites/repositories.
