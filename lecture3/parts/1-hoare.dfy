@@ -784,23 +784,21 @@ method Multiply(x: nat, y: nat) returns (result: nat)
     To ask Dafny to do partial correctness, just add
     `decreases *` to every method and loop (usually not necessary).
 
-    .
-    .
-    .
-    .
-    .
-    .
-    .
-    .
-    .
-    .
-    .
-    .
-    .
-    .
-    .
-
     *** where we ended for Feb 24 ***
+
+    A to Q above: only the while rule
+
+    we should guarantee that the loop terminates...
+
+    rough idea: we have to define some positive integer quantity
+    that is always decreasing on every iteration.
+
+        e.g. quantity: x + y
+
+        in Dafny: `decreases x + y`
+
+        Just need to add a condition (iv) to the while rule for
+        this decreases thing.
 */
 
 /*
@@ -813,6 +811,12 @@ method Multiply(x: nat, y: nat) returns (result: nat)
 
     The main result about Hoare logic from this standpoint is that it is *relatively complete*,
     meaning that it can prove anything about a program that can be proven in first-order logic (FOL).
+
+    In logic we care about soundness & completeness:
+
+        The logic is sound = "everything that is provable is true"
+
+        The logic is complete = "everything that is true is provable"
 
     Formal theorem statements:
 
@@ -853,11 +857,20 @@ method Multiply(x: nat, y: nat) returns (result: nat)
     FOL. It just introduces new syntax that is useful for verifying
     programs.
 
+    I.e.: we've proven everything that we possibly can about programs,
+    i.e., we are no weaker than the underlying logic for proving properties
+    about P and Q.
+
     ===== Summary and review =====
 
     Review:
 
     - Hoare triple: { P } C { Q } means
+
+        (We use the partial correctness version:
+         *if* the program is executed in a state satisfying P,
+         and we execute C, *and if* it terminates, then the end
+         state satisfies Q.)
 
     - Grammar for programs C: to get arbitrary programs, we need
 

@@ -155,7 +155,7 @@ Announcements/reminders:
 
 Plan:
 
-- I will now go over a few details for the project presentations:
+- I will first go over a few details for the project presentations:
   see `project/presentation.md`
 
 - Project report is also posted (I may make minor updates): see `project/report.md`.

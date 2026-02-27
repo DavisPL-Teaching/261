@@ -48,7 +48,7 @@ Include a Q+A at the end of your presentation, followed by your backup 5 Q+A sli
 ### For the presentation day
 
 If you are the first group to present, please come early!
-Please come prepared with your slides and a laptop that can plug in to USB-C, and give everyone in the group an equal chance to present.
+Please come prepared with your slides and a laptop that can plug in to USB-C or HDMI, and give everyone in the group an equal chance to present.
 
 Changes to the schedule will not be possible on the same day as the presentation (see Piazza).
 You may make changes at least 24 hours in advance if you agree with another group to switch.

@@ -20,14 +20,74 @@
 
     ===== Poll =====
 
-    Let WP(C, phi) denote the weakest precondition of C with postcondition phi.
-    Let SP(C, phi) denote the strongest postcondition of C with precondition phi.
+    Let WP(C, φ) denote the weakest precondition of C with postcondition φ.
+    Let SP(C, φ) denote the strongest postcondition of C with precondition φ.
 
     1. Calculate WP(x := x + y; x := x * y, x == 10).
 
     2. Calculate SP(x := x + y; x := x * y, x == 10).
 
     https://forms.gle/wHyfU9g5MrwKQSZE8
+
+    1.
+        x is a number such that x / y - y == 10
+
+        (x + y) * y == 10
+
+        x == 10/y - y
+
+        ex.: x = 3, y = 2
+        --> x == 5, y = 2
+        --> x == 10
+
+        Mechanical way?
+
+            Work backwards!
+            (Comes from that assignment rule from Hoare logic)
+
+            x == 10
+                x := x * y
+            x * y == 10
+                x := x + y
+            (x + y) * y == 10
+
+                WP(x := E, φ) = φ[sub E for x].
+
+        2.
+
+            x == (10 + y) * y
+
+            For SP, we can do it mechanically in this case
+            but in general it's a little weirder
+
+            basically we go forward instead of backwards
+
+            x == 10
+            --> x == 10 + y
+            --> x == (10 + y) * y
+
+            CAUTION:
+            In general it is NOT the case that
+
+                SP(x := E, φ) = φ[substitute E for x]
+
+            Here:
+
+                x := x + y, x == 10
+                sub:
+                x + y == 10 <-- wrong
+
+            What we sort of did was sub the formula φ
+            into the expression E,
+            but this is not possible in general!
+            This was only possible because
+            φ happened to have the form "x == 10",
+
+            Caution in general this doesn't work.
+
+            The general rule for SP:
+
+                SP(x := E, φ) = exists x0. φ[sub x0 for x] and x == E[x0 for x]
 
     .
     .
@@ -60,14 +120,17 @@
     SYNTAX
 
     A **logic** consists of
-    - A set of variables
+    - A set of variables (x, y, z, ...)
     - A set of function symbols (combine these to form expressions)
         // ex. function symbols: +, *, -
     - A set of relation symbols (combine these to form formulas, along with AND, OR, NOT, and equality)
-        // ex. relation symbols: <, InRe, PrefixOf
+        // ex. relation symbols: <, <=
     - Quantifiers forall and exists
 
     And a formal grammar for each of the above:
+
+        IntVar ::=
+        IntExpr E ::= E + E | E * E | E - E
 
         Var ::= Var1 | Var2 | Var3 | ...
         Expr ::= FnSymbol(Expr, ..., Expr)
@@ -76,6 +139,13 @@
             | False
             | forall Var φ
             | exists Var φ.
+
+    Everything up to the last two lines was just Boolean expressions
+    (would be the same in a programming language - see IntExpr BoolExpr from
+     part 1)
+    Last two lines turn this into First Order Logic (FOL)
+
+        TL;DR: FOL == Boolean expressions + quantifiers
 
     Examples:
         natural number arithmetic
@@ -110,8 +180,8 @@ method FormulaExamples() {
     // assert MethodName(x) == 3; // MethodName is a method, not a mathematical function
     // etc.
 
-    // Think of: well-formed formula == valid Dafny syntax for an expression.
-    // Expressions can be created from functions, but not methods.
+    // Think of: well-formed formula == valid Dafny syntax for a logical
+    // formula / proposition.
 }
 
 /*
@@ -179,12 +249,16 @@ method FormulaExamples() {
 
         for all x, there exists y such that y == x + 1
 
-        evaluates to true because for any intenger literal n, if we map x ↦ n
+            ∀ x . ∃ y . y == x + 1
+
+        evaluates to true because for any integer literal n, if we map x ↦ n
         we get
             there exists y such that y == n + 1
         and from there we can plug in the integer literal n + 1 to get
             n + 1 == n + 1
         which is true.
+
+    // SKIP --------
 
     A *closed formula* is one in which all variables are bound by quantifiers.
     Typically we only consider truth for closed formulas.
@@ -235,13 +309,18 @@ method FormulaExamples() {
     an "elimination rule".
 
     True introduction:
+    From:
+        (nothing)
+    We can deduce:
         Γ ⊢ True.
 
     False elimination:
-    If
+    From:
         Γ ⊢ False
-    Then:
+    We can deduce:
         Γ ⊢ φ.
+
+    (This is called the "principle of explosion" or "ex falso quodlibet")
 
     From this point, let's start writing the rules in Dafny.
 */
@@ -267,19 +346,17 @@ ensures p()
 
 /*
     And introduction:
-    If:
+    From:
         Γ ⊢ φ1
-    and
         Γ ⊢ φ2
-    then:
+    Deduce:
         Γ ⊢ φ1 ^ φ2
 
     And elimination:
-    If:
+    From:
         Γ ⊢ φ1 ^ φ2
-    then:
+    Deduce:
         Γ ⊢ φ1
-    and
         Γ ⊢ φ2
 */
 
@@ -333,10 +410,22 @@ ensures r()
 {}
 
 /*
+    In FOL syntax:
+
+        From:
+            Γ ⊢ p ∨ q
+            Γ U {p} ⊢ r
+            Γ U {q} ⊢ r
+
+        We can deduce
+            Γ ⊢ r.
+*/
+
+/*
     I will just mention that there are deeper reasons that Or is not symmetric with And.
-    It has to do with the difference between classical logic and "constructive" logic,
-    where the latter is more useful for capturing the rules of proofs, because proofs have to
-    be constructive.
+    It has to do with the difference between classical logic and "constructive" logic.
+
+    In constructive logic, all proofs have "computational content"
 
     (I cannot claim I have a proof, without actually showing one)
     (take a class in proof theory if interested
@@ -380,6 +469,17 @@ ensures p()
 }
 
 /*
+    Quick recap:
+
+    - We covered a crash course in FOL
+    - we defined syntax of formulas (logical formulas)
+    - FOL = Boolean expressions + quantifiers
+    - we briefly discussed how to define semantics (truth) of formulas
+    - We went over some of the proof rules available in FOL (proof) for formulas
+    - We saw that Dafny understands these proof rules and agrees that they are true -- providing some anecdotal evidence that Dafny is based on FOL proof rules.
+
+    ***** Where we ended for today *****
+
     At this point, I've given enough information that we could prove any Boolean formula.
 
     Have we covered everything?
