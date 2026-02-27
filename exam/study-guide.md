@@ -1,6 +1,6 @@
 # Study guide
 
-**Midterm date:** In class, Tuesday, May 20, 2025 (10:30-11:50am)
+**TBD: This has not yet been updated for Winter Quarter 2026.**
 
 ## Specifications
 

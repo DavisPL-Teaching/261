@@ -785,7 +785,6 @@ ensures p_of_x(y)
 
     === Connection between proofs and programs? ===
 
-    The connection between proofs and programs is demonstrated in Hoare logic, as we covered last time.
-    See relative completeness statements at the bottom
-    of that lecture.
+    The connection between proofs and programs is demonstrated in Hoare logic, as we covered in part 1.
+    See relative completeness statements at the bottom of that lecture.
 */

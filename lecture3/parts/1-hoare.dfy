@@ -805,9 +805,8 @@ method Multiply(x: nat, y: nat) returns (result: nat)
     ===== Relative completeness of Hoare logic =====
 
     You might ask the question:
-    - Can everything that is true about a program be proven in Hoare logic?
 
-    See the next part (2-fol.dfy) for some additional discussion on this.
+    - Can everything that is true about a program be proven in Hoare logic?
 
     The main result about Hoare logic from this standpoint is that it is *relatively complete*,
     meaning that it can prove anything about a program that can be proven in first-order logic (FOL).
