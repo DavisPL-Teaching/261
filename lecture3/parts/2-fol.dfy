@@ -605,15 +605,17 @@ ensures
 /*
     Poll
 
-    Which of the following is possible given the relative completeness of Hoare logic? (select all that apply)
+    Which of the following is possible given the relative completeness / incompleteness of Hoare logic? (select all that apply)
 
     A. { P } x := 1; { x == 1 } may be true, but not provable in Hoare logic for some precondition P
 
     B. { True } C { x == 1 } may be true, but unprovable in Hoare logic for some program C
 
-    C. { P } C { Q } may be provable but not true for some precondition P, program C, and postcondition Q
+    C. { P } x := x; { Q } may be true, but not provable in Hoare logic for some preconditon P and postcondition Q
 
-    D. { P } C { Q } is always reducible to some corresponding statement in first order logic.
+    D. { P } C { Q } may be provable but not true for some precondition P, program C, and postcondition Q
+
+    E. { P } C { Q } is always reducible to some corresponding statement in first order logic.
 
     https://forms.gle/bVcYwK7MGGAxqS6g6
 */
@@ -622,6 +624,10 @@ ensures
     Recap from last time:
 
     * Truth vs. provability distinction
+
+        Soundness: all that is provable is true
+
+        Completeness: all that is true is provable
 
     * Axioms (and their purpose)
 
@@ -674,6 +680,7 @@ ensures forall x: int :: p_of_x(x)
     forall x: int
     ensures p_of_x(x)
     {
+        // insert your proof here
         ForallIntroEx(x);
     }
 }
@@ -696,7 +703,7 @@ ensures p_of_x(y)
     // This is again special Dafny syntax: the *assign such that* block:
     var x :| p_of_x(x);
     // Assign to our return value
-    y := x;
+    return x;
 }
 
 /*
@@ -708,6 +715,7 @@ ensures p_of_x(y)
 
     A: Variables (x, y, z) range over elements of some structure
        (natural numbers, reals, etc.), so called "first-order" quantification.
+
        Second-order quantification involves quantifying over sets of elements,
        not single elements. (Like sets of natural numbers, or even
        relations between natural numbers.)
@@ -747,12 +755,12 @@ ensures p_of_x(y)
 
     Arguments against:
 
+        Godel's incompleteness theorem:
+        Shows that not all statements that are true are provable.
+
         Fitch's paradox:
         If all truths are knowable, then all truth's are known.
         https://en.wikipedia.org/wiki/Fitch%27s_paradox_of_knowability
-
-        Godel's incompleteness theorem:
-        Shows that not all statements that are true are provable.
 */
 
 /*

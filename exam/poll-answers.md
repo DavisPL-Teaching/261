@@ -69,3 +69,10 @@ Feb 24:
     Strengthening/weakening: 3
 
 Feb 26:
+1. (x + y) * y == 10
+2. x == (10 + y) * y
+    (Easily computable without quantifiers in this case!
+     but note that strongest postconditions require adding existential quantifiers in general.)
+
+Mar 3:
+    B, C, and E.

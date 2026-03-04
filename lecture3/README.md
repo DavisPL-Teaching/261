@@ -185,9 +185,12 @@ Announcements/reminders:
 
   + see Piazza for schedule
     (make sure you write down your slot!)
+
   + 4 presentations this Thursday, 5 next Tuesday/Thursday
 
   + Reminder:
+    * 8-10 min for presentation itself, 3-5 for Q+A
+    * Review document at `project/presentation.md` for details
     * Arrive early
     * Bring a device that can plug in to USB-C.
     * You can trade with others, but only at least 24 hrs before your slot.
@@ -201,11 +204,46 @@ Announcements/reminders:
 
 - Final exam: **Friday, March 20, 6-8pm**
 
+  + Study guide - post sometime this week --
+    I will go over this in the extra slot, most likely on Thursday
+
 Plan for today:
 Most of today's material (Part 4) will not be covered on the final.
 
 - Start with the poll
 
 - Finish a few things from FOL
+  (high level details covered on final)
 
 - Dynamic Logic.
+  (bonus material - not covered)
+
+Remainder of lecture (~25 mins)
+
+  Vote 1: Dynamic Logic:
+
+    Another example of a program logic
+    Which is a little more foundational and more general than Hoare logic
+    We will see that all Hoare logic rulres can be derived from Dynamic logic rules,
+    but Dynamic logic is more general and can talk about more general properties of programs
+
+      Surprising fact: Verifying deterministic programs is no easier than verifying
+          nondeterministic ones
+          Turns out that a logic based on verifying nondeterministic programs is more
+          general and simpler than verifying deterministic ones.
+
+  Vote 2: Curry Howard
+
+    Curry Howard is another answer to the connection between proofs and programs
+
+        What is a proof?
+
+      Surprising fact: proofs correspond exactly to (terminating) pure functional programs
+
+      Proven isomorphism: (programs) == (proofs)
+
+  Vote result:
+  1: 6
+  2: 3
+
+Questions?
