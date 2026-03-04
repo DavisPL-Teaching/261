@@ -180,20 +180,32 @@ This is the last day of lectures!
 
 Announcements/reminders:
 
-- Project presentations will begin on Thursday, and continue next week (Tue/Thu)
+- Project presentations will begin on Thursday!
+  and continue next week (Tue/Thu)
 
-  + One person still needs to sign up for a presentation slot!
+  + see Piazza for schedule
+    (make sure you write down your slot!)
+  + 4 presentations this Thursday, 5 next Tuesday/Thursday
+
+  + Reminder:
+    * Arrive early
+    * Bring a device that can plug in to USB-C.
+    * You can trade with others, but only at least 24 hrs before your slot.
 
 - The people have spoken!
-  https://piazza.com/class/mk1iokbuqef52p/post/73
   Final project reports will be due:
-    Thursday, March 19, 11:59pm
 
-- Final exam: Friday, March 20, 6-8pm
+    **Thursday, March 19, 11:59pm**
+
+  https://piazza.com/class/mk1iokbuqef52p/post/73
+
+- Final exam: **Friday, March 20, 6-8pm**
 
 Plan for today:
-Today's material will not be covered on the final.
+Most of today's material (Part 4) will not be covered on the final.
 
-- We will quickly skip over most of FOL.
+- Start with the poll
+
+- Finish a few things from FOL
 
 - Dynamic Logic.

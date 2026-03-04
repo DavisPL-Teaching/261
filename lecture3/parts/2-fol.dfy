@@ -603,26 +603,29 @@ ensures
 // ********** Where we left off for today **********
 
 /*
-    === May 12 ===
+    Poll
 
+    Which of the following is possible given the relative completeness of Hoare logic? (select all that apply)
+
+    A. { P } x := 1; { x == 1 } may be true, but not provable in Hoare logic for some precondition P
+
+    B. { True } C { x == 1 } may be true, but unprovable in Hoare logic for some program C
+
+    C. { P } C { Q } may be provable but not true for some precondition P, program C, and postcondition Q
+
+    D. { P } C { Q } is always reducible to some corresponding statement in first order logic.
+
+    https://forms.gle/bVcYwK7MGGAxqS6g6
+*/
+
+/*
     Recap from last time:
 
     * Truth vs. provability distinction
 
-
-
-    * This connects back to some questions from HW2!
-    Remember problem 2 about integers vs. reals. vs. truncated integers?
-
-
-    * Axioms, assume statements (and their purpose)
+    * Axioms (and their purpose)
 
       (See examples above and below for good usage & what can go wrong)
-
-    * External methods
-
-      Something to demonstrate: `dafny build --target:py exercises.dfy
-
 */
 
 // lemma{:axiom} AssumeFalse()
@@ -635,6 +638,10 @@ ensures
 
 /*
     Finally, quantifiers
+
+    what makes it FOL!
+
+        FOL = expressions + boolean expressions + quantifiers
 
     Here for the first time we will see that Dafny cannot do the proof automatically.
     Also the syntax is a little less intuitive.
@@ -671,8 +678,8 @@ ensures forall x: int :: p_of_x(x)
     }
 }
 
-// The idea of the axiom approach is to show how you would apply this in your own projects,
-// where in that case it would not actually be an axiom, it would be something you already proved.
+// (The idea of the axiom approach is to show how you would apply this in your own projects,
+// where in that case it would not actually be an axiom, it would be something you already proved.)
 
 // Rules for exists
 
@@ -697,19 +704,26 @@ ensures p_of_x(y)
 
     === Philosophical discussion ===
 
-    Why do we care about first-order logic?
+    Q: why is it called first-order logic?
+
+    A: Variables (x, y, z) range over elements of some structure
+       (natural numbers, reals, etc.), so called "first-order" quantification.
+       Second-order quantification involves quantifying over sets of elements,
+       not single elements. (Like sets of natural numbers, or even
+       relations between natural numbers.)
+
+    Q: Why do we care about first-order logic?
 
     -> All verification is built on the base logic.
 
     -> As a result, FOL also gives us the limits of what we can prove, and what we cannot.
-        (Foreshadowing:
+        (
+            Recall "relative completeness" discussion from bottom of part 1:
             Most program logics are what we call "relatively complete", meaning we can prove anything
             for programs that we could have proved in the base logic.
             That means, that if we can't prove something in FOL we are out of luck for proving it about
             your favorite computer program :)
         )
-
-    === Some provocative questions ===
 
     Q: Is Dafny and its FOL base
        sufficient to prove all true statements that come in practice?
@@ -724,12 +738,12 @@ ensures p_of_x(y)
         Set theory is a theory of axioms in first-order logic,
         so first-order logic is enough.
 
-        The argument from "code that is actually written":
-        People don't write code that they don't know why is true!
-
         Godel's completeness theorem:
         Godel showed that FOL formulas are provable if and only if
         they are true in *every* structure satisfying the axioms.
+
+        Argument from "code that is actually written":
+        People don't write code that they don't know why is true!
 
     Arguments against:
 
@@ -739,14 +753,6 @@ ensures p_of_x(y)
 
         Godel's incompleteness theorem:
         Shows that not all statements that are true are provable.
-
-    Q: why is it called first-order logic?
-
-    A: Variables (x, y, z) range over elements of some structure
-       (natural numbers, reals, etc.), so called "first-order" quantification.
-       Second-order quantification involves quantifying over sets of elements,
-       not single elements. (Like sets of natural numbers, or even
-       relations between natural numbers.)
 */
 
 /*
@@ -783,8 +789,10 @@ ensures p_of_x(y)
 
           as a temporary case, come back to it later!
 
-    === Connection between proofs and programs? ===
+    + Connection between proofs and programs
 
-    The connection between proofs and programs is demonstrated in Hoare logic, as we covered in part 1.
-    See relative completeness statements at the bottom of that lecture.
+      We build a logic for programs *over* the base logic.
+      So starting from any logic for propositions, we can
+      build a logic for programs,
+      as with Hoare logic in part 1.
 */

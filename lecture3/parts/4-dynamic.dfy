@@ -4,21 +4,17 @@
 
     === Motivation ===
 
-    I would like to make two points:
-
-    1. Hoare logic limitations
+    Hoare logic limitations?
 
     Hoare logic encompasses all of Dafny programs that we write in practice!
     But it does have some limitations.
 
-    One of the best-understood of these goes back to some concepts we saw in
+    1. One of the best-understood of these goes back to some concepts we saw in
     lecture 1, but have not revisited since:
 
-    - Safety properties
+        - Safety properties
 
-    - Liveness properties
-
-    - Testing properties on multiple traces?
+        - Liveness properties
 
     2. Nondeterministic programs
 
@@ -26,7 +22,7 @@
 
         A program that flips a coin? That reads a file on the operating system?
 
-    3. Properties on multiple traces
+    3. More generally: testing properties on multiple traces!
 
     Sometimes we want to test properties on multiple traces of a program.
 
@@ -62,13 +58,11 @@
 
     (answer here)
 
-    - "On all programs"
+    - "For all ..."
 
       This suggests some kind of nondeterminism.
 
-      In fact, nondeterministic pr
-
-    What's possibly even more surprising is that this leads to an even simpler formulation of programs and proofs, that is (arguably) more fundamental and, perhaps, more elegant than Hoare logic.
+    What's possibly even more surprising is that this leads to an even simpler formulation of programs and proofs, that is (arguably) more fundamental and more general than Hoare logic.
 
     === Q: What is a program? (revisited) ===
 

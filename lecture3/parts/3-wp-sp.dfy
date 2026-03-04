@@ -1,4 +1,10 @@
 /*
+    NOTE: We skipped this part in lecture.
+    We covered weakest preconditions and strongest postconditions
+    as part of Part 1.
+
+    ----------
+
     Lecture 3, Part 3:
 
     Automating verification with weakest preconditions and strongest postconditions
