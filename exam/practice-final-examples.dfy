@@ -1,28 +1,36 @@
 /*
     Some worked examples in Dafny
-    for practice exam questions.
+    for the practice exam questions.
 */
 
 /*
-    ------------
-    Round to 100
-    ------------
+    ------------------
+    Round to 100 (Q14)
+    ------------------
 
-    Q: Consider the following method:
+    Q: The following is an implementation of a function RoundTo100 in Dafny that uses a while loop. It is missing the loop invariant. For the possible loop invariants (a) and (b), which of the three loop invariant properties (i)-(iii) does it satisfy
+
+    Briefly explain your reasoning for each one.
 
         method RoundTo100(x: int) returns (y: int)
             ensures y % 100 == 0
             ensures x <= y < x + 100
     {
         y := x;
-        while (y % 100 != 0)
+        while y % 100 != 0
             // invariant ...
         {
             y := y + 1;
         }
     }
 
-    Fill in a correct invariant for the method.
+        (a) y >= x
+
+        (b) y < x + 100
+
+        (c)  If neither of the above satisfies all three properties, fill in the correct loop invariant below.
+        Your loop invariant may use quantifiers if needed.
+        Otherwise, write which of (a) and (b) is correct.
 */
 
 predicate invariant_cond(n: int, x: int, y: int) {
@@ -88,10 +96,9 @@ method RoundTo100(x: int) returns (y: int)
 }
 
 /*
-    --------------------
-    Equivalent unit test
-    --------------------
-    (Q4 on practice final)
+    -------------------------
+    Equivalent unit test (Q4)
+    -------------------------
 
     Q: Suppose that F1 and F2 are methods in Dafny that we want to prove are equivalent: for all
     nonnegative integers x, the output F1(x)and F2(x)are the same. Write pseudocode for a test

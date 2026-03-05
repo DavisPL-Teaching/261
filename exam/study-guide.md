@@ -5,7 +5,7 @@ Review all the in class polls!
 Practice exam will be provided on Piazza.
 There are 2 additional practice questions with worked solutions in Dafny
 in `practice-final-examples.dfy`
-(one of these is from the practice final).
+(both of these questions are from the practice final).
 
 ## 1: Program Specifications
 
