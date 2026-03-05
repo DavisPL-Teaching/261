@@ -1,15 +1,101 @@
 # Study guide
 
-**TBD: This has not yet been updated for Winter Quarter 2026.**
+Review all the in class polls!
 
-## Specifications
+Practice exam will be provided on Piazza.
+There are 2 additional practice questions with worked solutions in Dafny
+in `practice-final-examples.dfy`
+(one of these is from the practice final).
+
+## 1: Program Specifications
 
 - Definition of specifications
+
 - Stronger and weaker specs
-- Types of specs (functional correctness, full functional correctness, safety, and liveness)
+
+- Types of specs: functional correctness, full functional correctness, safety, and liveness
+
 - Preconditions and postconditions
+
 - Assume and assert
-- Difference between testing and verification
+
+- Difference between testing and verification; advantages and limitations
+
+## 2: Interactive verification in Dafny
+
+- When is interactive verification useful / worth investing in?
+    + industry applications and determining impact
+    + correctness is critical (bugs are catastrophic); security; cost ($$$)
+
+- Verification methodology: 4-step process
+    1. Write the code
+    2. Write the spec
+    3. Write unit tests (to check if the spec is strong enough)
+    4. Add proofs (loop invariants, assertions, lemmas, etc.)
+
+- Quantifiers
+
+    when proofs are necessary: quantifiers, complex data types, loops
+
+- Function/method distinction - "methods are opaque"
+
+    + Advantages of leaving the spec underspecified!
+
+- Compile-time vs. runtime (assertions are compiled out)
+
+- Axioms and assume statements; external methods
+    assume{:axiom}, lemma{:axiom}, method{:axiom}
+    what can go wrong
+
+- Loop invariants (3 conditions (i), (ii), (iii). Definition, purpose, and application)
+
+     example problems:
+     - here is a program, come up with a loop invariant that can be used to verify it
+     - here is a possible invariant, which of (i) (ii) (iii) does it satisfy?
+
+- Dafny as a computationally bounded verifier
+
+- Advantages and limitations of Dafny
+
+## 3: Proofs and Programs
+
+- Hoare logic: definition of { P } C { Q }, Hoare logic rules and their application
+
+    + I will give the rules if the specific syntax is needed, but
+      you should understand them conceptually
+
+- Definition of computer program:
+    variables and expressions
+    sequencing, branching, assignment, and loops
+
+    + distinction between programs and logical propositions
+
+- Strongest preconditions and strongest postconditions
+
+    Know: given a predicate φ and program C, how to
+    compute WP(C, φ) and SP(C, φ)
+
+- Automating verification; loop-free code
+
+- Difference between partial and total correctness
+
+- Soundness and completeness; relative completeness of Hoare logic
+
+- First order logic:
+
+    + expressions + quantifiers
+
+    + difference between syntax and semantics
+
+    + difference between truth and provability.
+
+--------------------
+--------------------
+--------------------
+
+## Not covered this year (WQ 26)
+
+The following were **not** covered this year and will not appear on the final.
 
 ## Logic and satisfiability
 
@@ -21,36 +107,3 @@
     + DPLL(T), Nelson-Oppen and CDCL (basic overview only)
 - Decidability of theories; boundary of decidability and expressiveness (an example problem might be a reduction like the PrefixOf problem or the fixed-width integer theory problem you saw on HW2)
 - Limitations of Z3
-
-## Interactive verification
-
-- Verification methodology; 3-step process
-    + industry applications and determining impact
-- First-order logic: extending formulas with quantifiers
-- Assertions and pre/postconditions (revisited)
-- Lemmas and unit tests
-- Function/method distinction - "methods are opaque"
-- Loop invariants (3 conditions (i), (ii), (iii). Definition, purpose, and application - an example problem is, here is a program, come up with a loop invariant that can be used to verify it)
-- Dafny as a computationally bounded verifier
-- Difference between truth and provability
-- Axioms and assume statements; external methods
-- Limitations of Dafny
-
-## Remaining topics
-
-There will be 1-2 questions on the exam about the following topics.
-These will be covered in class this week:
-
-Dafny internals:
-- Hoare triples
-- Hoare logic rules (these generalize what we have seen with assertions and loop invariants)
-- Relative completeness of Hoare logic
-- Strongest postconditions and weakest preconditions
-
-Additional topics will be covered in class (time permitting), but will NOT apepar on the exam.
-
-## Practice exam
-
-I have posted a practice exam on Piazza (this was the final exam for ECS 189C last year, and will be useful to help you study). It does not 100% overlap, but it contains much of the same material and the format of the midterm this year for ECS 261 will be similar. (Please do not share the exam or post it online!)
-
-Please note that in addition to multiple choice and short answer questions, unlike the practice exam, there will be 1-2 longer form problems which may involve a proof or explanations (worth approximately 10-20% of the points). These problems will be similar to HW2.

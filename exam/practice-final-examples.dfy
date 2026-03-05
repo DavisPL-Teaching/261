@@ -1,10 +1,28 @@
 /*
     Some worked examples in Dafny
-    from the practice final.
+    for practice exam questions.
 */
 
 /*
+    ------------
     Round to 100
+    ------------
+
+    Q: Consider the following method:
+
+        method RoundTo100(x: int) returns (y: int)
+            ensures y % 100 == 0
+            ensures x <= y < x + 100
+    {
+        y := x;
+        while (y % 100 != 0)
+            // invariant ...
+        {
+            y := y + 1;
+        }
+    }
+
+    Fill in a correct invariant for the method.
 */
 
 predicate invariant_cond(n: int, x: int, y: int) {
@@ -69,9 +87,18 @@ method RoundTo100(x: int) returns (y: int)
     // y >= x
 }
 
-
 /*
-    One of the example questions on the exam.
+    --------------------
+    Equivalent unit test
+    --------------------
+    (Q4 on practice final)
+
+    Q: Suppose that F1 and F2 are methods in Dafny that we want to prove are equivalent: for all
+    nonnegative integers x, the output F1(x)and F2(x)are the same. Write pseudocode for a test
+    that will prove this in Dafny. Are there any additional requirements needed on the specifications
+    for F1 and F2 (i.e., on the ensures … parts below) in order for your proof to go through? State
+    these requirements.
+    You won't be graded on syntax; only on whether your answer is conceptually correct.
 */
 
 // methods F1()
