@@ -2,7 +2,8 @@
 
 Review all the in class polls!
 
-Practice exam will be provided on Piazza.
+Try the practice final (provided on Piazza)
+
 There are 2 additional practice questions with worked solutions in Dafny
 in `practice-final-examples.dfy`
 (both of these questions are from the practice final).
@@ -64,6 +65,7 @@ in `practice-final-examples.dfy`
     + I will give the rules if the specific syntax is needed, but
       you should understand them conceptually
 
+
 - Definition of computer program:
     variables and expressions
     sequencing, branching, assignment, and loops
@@ -88,6 +90,8 @@ in `practice-final-examples.dfy`
     + difference between syntax and semantics
 
     + difference between truth and provability.
+
+    + what a proof rule is (from X deduce Y)
 
 --------------------
 --------------------
