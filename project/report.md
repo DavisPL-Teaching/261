@@ -1,29 +1,27 @@
 # Project final report
 
-**Due date: TBD**
+**Due: Thursday, March 19, 11:59pm**
 
-For the project proposal, you should provide a 5-10 page report (not including references).
-I recommend (but do not require) that the report be written in LaTeX.
+For the final submission of your project, you should provide a 5-10 page report.
+You will submit both your project report *and* your project code in Gradescope.
 
 Your report may adapt the same document from your proposal, but it should be modified based on the following outline to include your results and conclusions.
-Please address at least the following sections
-(these are required, but not exhaustive, that is, you may also add additional subsections if you like).
+Your proposal should address the following 6 sections and should address at least the points outlined below.
+(You may add additional subsection(s) as needed, but should keep the structure with the 6 sections and address at least all of the following points.)
 Please also address any feedback from your project proposal, for example, if there were any suggestions for things you should fix or describe.
 
-**Page limit:**
-For the final report, the 10-page limit is strict!
-If you have over 10 pages, you may include an "Appendix" after the references, this
-may contain additional details but may not be used during grading (at our discretion).
-Don't change the font, margins or do other spacing tricks to fit within 10 pages.
-The 5-page minimum is also strict (it should be 5 full pages, not including references).
+As with the proposal, I recommend (but do not require) that the report be written in LaTeX.
+
+**Report length:** Minimum 5 full pages, maximum 10 pages (not including references) -- these are hard cutoffs! If you need more material, you should include it only in an "appendix" and it may not be graded (at our discretion).
+Do not change the font, margins or do other spacing tricks to fit within the page limit.
 
 ## 1. Introduction, problem selection, and goals
 
-At the end of this section, make sure you add specific goals that you want your project to have.
+This can be similar to your proposal. At the end of this section, make sure you add specific goals that you had at the time of your project proposal (even if these weren't included in your proposal, this is new for the final report -- it may be helpful to structure as minimum goal, target goal, reach goal).
 
 ## 2. Implementation
 
-Instead of an implementation plan (that was in your proposal), here you should describe your implementation.
+Instead of an implementation plan (that was in your proposal), here you should describe your actual implementation! Please make sure to update this from your proposal.
 
 2.1. **Tool selection.** What tools and languages did you use for your project? (In most cases, this will include at least Dafny, but could include other languages/tools)
 
@@ -53,14 +51,15 @@ Summarize your results!
 
 Then, tie this back to your goals from the introduction.
 Which goals that you set out to do were you able to complete?
-(Please note that it is not required that you complete all of the goals you set out to do! I expect that for some of you, your proejcts will end up being too hard to fully verify. But, you should make a serious effort.)
+Please note that it is not required that you complete all of the goals you set out to do! It's possible that some parts of your project ended up being too hard to fully verify.
+You won't be graded on whether you completed all of your goals, but on whether: (1) you made a serious effort to do so; and (2) whether you describe and document clearly what it is you were able to do, as well as what you were not able to complete for the project, including any unimplemented code, unproven assumptions, axioms, or lemmas, etc.
 
 Please also state some details about the amount of effort required. For example, how many weeks did you spend on each component? How many lines of code did you write? You don't have to break these numbers up by different project members.
-(Please note that there is no specific requirement that you write a certain number of lines of code. I'm more interested in whether you can explain your results clearly and what progress you were able to make.)
+(Please note that there is no specific requirement that you write a certain number of lines of code. I'm more interested in whether you can explain your results clearly and what progress you were able to make. Lines of code is one way of describing at a bird's eye level the complexity of the various components that made it into your final code.)
 
 ## 5. Contribution statement
 
-Please include a list out the members of your group and what each person contributed to (in 2-3 sentences). For example, built components, participated in discussions, helped prepare the proposal (sections A, B, and C) and report (sections D, E, and F).
+Please include a list of the members of your group and what each person contributed to (in 2-3 sentences). For example, built components X, Y, Z, participated in weekly discussions, helped prepare the proposal (sections A, B, and C) and report (sections D, E, and F).
 
 ## 6. Conclusions
 
