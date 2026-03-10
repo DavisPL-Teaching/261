@@ -59,7 +59,14 @@ Please also state some details about the amount of effort required. For example,
 
 ## 5. Contribution statement
 
+**Contributors:**
 Please include a list of the members of your group and what each person contributed to (in 2-3 sentences). For example, built components X, Y, Z, participated in weekly discussions, helped prepare the proposal (sections A, B, and C) and report (sections D, E, and F).
+
+**AI statement:**
+This year it is also mandatory to include an AI statement.
+AI tools are allowed in the course syllabus.
+Please state how you used AI, for which parts, and in what manner. What did you find it helpful/not helpful for?
+Your grade will not be penalized for using AI.
 
 ## 6. Conclusions
 
