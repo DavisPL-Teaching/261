@@ -23,7 +23,7 @@ This can be similar to your proposal.
 
 1.2 **Goals**
 
-Talk about the specific goals that you had at the time of your project proposal (even if these weren't included in your proposal, this is new for the final report! -- it may be helpful to structure as minimum goal, target goal, reach goal).
+Talk about the specific goals that you had at the time of your project proposal (as with the proposal, please structure as minimum goal, target goal, reach goal).
 
 1.3 **Response to Proposal Feedback**
 
