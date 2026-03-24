@@ -17,7 +17,17 @@ Do not change the font, margins or do other spacing tricks to fit within the pag
 
 ## 1. Introduction, problem selection, and goals
 
-This can be similar to your proposal. At the end of this section, make sure you add specific goals that you had at the time of your project proposal (even if these weren't included in your proposal, this is new for the final report -- it may be helpful to structure as minimum goal, target goal, reach goal).
+1.1 **Motivation.**
+
+This can be similar to your proposal.
+
+1.2 **Goals**
+
+Talk about the specific goals that you had at the time of your project proposal (even if these weren't included in your proposal, this is new for the final report! -- it may be helpful to structure as minimum goal, target goal, reach goal).
+
+1.3 **Response to Proposal Feedback**
+
+Optional - include any changes/updates you made to address feedback on the project proposal and presentation.
 
 ## 2. Implementation
 
