@@ -187,6 +187,8 @@ UC Davis has [policies against harassment and discrimination](https://hr.ucdavis
 Be inclusive of your classmates in group study, in group work and projects, and in your questions and answers in class.
 If you need to, you may reach me by email to report an issue with a classmate.
 
+If you or another graduate student you know needs help, please look at the [GGCS support form](https://ucdavis.co1.qualtrics.com/jfe/form/SV_bCLSRFqZ1lLKgM6). It can be filled out to get help, and contains many links to support resources.
+
 ### Recommendation letter and research requests
 
 I am happy to write recommendation letters for students!
